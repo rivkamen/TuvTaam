@@ -1,0 +1,26 @@
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+const sessionSchema = new Schema({
+    userId: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+      }],
+      
+    adminId:{
+          type: mongoose.Schema.Types.ObjectId, ref: 'Admin'//, required: true 
+                  
+        },
+    messages: [messageSchema],     
+    
+  
+},
+    
+{
+    timestamps:true
+    });
+
+module.exports = mongoose.model('Session', sessionSchema);
+
+
