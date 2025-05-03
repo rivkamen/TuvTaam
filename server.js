@@ -11,16 +11,16 @@ app.use(cors(corsOptions))
 app.use(express.json())
 app.use(express.static("public"))
 app.use('/api/users',require("./routes/UserRoute"))
-// app.use('/api/auth',require("./routes/auths"))
-// app.use('/api/functionToken',require("./middleware/verifyJWT"))
+app.use('/api/auth',require("./routes/AuthRoute"))
+app.use('/api/functionToken',require("./middleware/verifyJWT"))
 
 
 
-app.get('*',(req,res)=>{
-    res.status(404).send("not defind")
-})
+// app.get('(.*)',(req,res)=>{
+//     res.status(404).send("not defind")
+// })
 
-app.post('*',(req,res)=>{
+app.use((req,res)=>{
     res.status(404).send("not defind")
 })
 mongoose.connection.once("open",()=>{
