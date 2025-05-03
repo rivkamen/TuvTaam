@@ -1,6 +1,6 @@
 require("dotenv").config()
 const mongoose=require("mongoose")
-const conectDB=require("./config/dbConn")
+const conectDB=require("./config/dbConn.js")
 const express=require("express")
 const cors=require("cors")
 const corsOptions=require("./config/corsOptions")
@@ -16,13 +16,19 @@ app.use('/api/users',require("./routes/UserRoute"))
 
 
 
-app.get('*',(req,res)=>{
-    res.status(404).send("not defind")
-})
+// app.get("",(req,res)=>{
+//     res.status(404).send("not defind")
+// })
 
-app.post('*',(req,res)=>{
+// app.post('*',(req,res)=>{
+//     res.status(404).send("not defind")
+// })
+// app.all((req, res) => {
+//     res.status(404).send("not defined");
+//   });
+app.use((req,res)=>{
     res.status(404).send("not defind")
-})
+}) 
 mongoose.connection.once("open",()=>{
     console.log("conect to mongoDB")
     app.listen(PORT,()=>{
