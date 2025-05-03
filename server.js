@@ -12,13 +12,8 @@ app.use(express.json())
 app.use(express.static("public"))
 app.use('/api/users',require("./routes/UserRoute"))
 app.use('/api/auth',require("./routes/AuthRoute"))
+app.use('/api/autha',require("./routes/AdminAuthRoute"))
 app.use('/api/functionToken',require("./middleware/verifyJWT"))
-
-
-
-// app.get('(.*)',(req,res)=>{
-//     res.status(404).send("not defind")
-// })
 
 app.use((req,res)=>{
     res.status(404).send("not defind")
