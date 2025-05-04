@@ -10,8 +10,11 @@ const sessionSchema = new Schema({
       
     adminId:{
           type: mongoose.Schema.Types.ObjectId, ref: 'Admin'//, required: true 
-                  
+        
         },
+        title: { 
+          type: String 
+           },
     messages: [messageSchema],     
     
   

@@ -9,7 +9,7 @@ const adminLogin=async(req,res)=>{
     if(admin){
         const match = await bcrypt.compare(password,admin.password)
         if(match){
-            const userInfo= {_id:admin._id,username:admin.username,email:admin.email}
+            const userInfo= {_id:admin._id,username:admin.username,email:admin.email,role: 'admin'}
             const token = jwt.sign(userInfo,process.env.ACCESS_TOKEN_SECRET)
             return res.json({token:token})
         }
