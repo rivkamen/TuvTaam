@@ -1,4 +1,5 @@
 const Session = require("../models/Session");
+const Admin = require("../models/Admin");
 const createSession=async(req,res)=>{
 
     const {userId,adminId,messages,title} = req.body
@@ -50,7 +51,11 @@ const updateSession=async(req,res)=>{
   const {_id}=req.params
     const {messages,title}=req.body
     const session=await Session.findById(_id).exec()
+    console.log(req.user._id);
+    
 const admin=await Admin.findById({_id:req.user._id})
+console.log(admin);
+
     if(!session){
     return res.status(401).json({message:"not found"})
     }
@@ -189,6 +194,8 @@ const updateMessage = async (req, res) => {
     });
   };
   const getUserSessions = async (req, res) => {
+    console.log("hi");
+    
     try {
       const userId = req.user._id;
       const sessions = await Session.find({ userId }).lean();

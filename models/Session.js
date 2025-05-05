@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const messageSchema = require('../models/Message');
+
 const Schema = mongoose.Schema;
 
 const sessionSchema = new Schema({
