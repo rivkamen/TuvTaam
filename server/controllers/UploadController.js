@@ -101,7 +101,7 @@
 
 const fs = require("fs");
 const path = require("path");
-const gcs = require("../gcsService");
+const gcs = require("../service/gcsService");
 
 const uploadToCloudDirect = async (req, res) => {
   try {
