@@ -1,35 +1,33 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { UploadService } from '../../services/upload.service';
-import { belongingOptions } from '../../constants/belonging-options';
 
 
-import { HttpClientModule } from '@angular/common/http';
-import { CardModule } from 'primeng/card';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { FormsModule } from '@angular/forms';
+import { InputTextModule } from 'primeng/inputtext';
+import { DropdownModule } from 'primeng/dropdown';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { CheckboxModule } from 'primeng/checkbox';
 import { ButtonModule } from 'primeng/button';
-import { MessageModule } from 'primeng/message';
-
+import { belongingOptions } from '../../constants/belonging-options';
 @Component({
   selector: 'app-upload',
   standalone: true,
- imports: [
-    CommonModule,
-    HttpClientModule,
-    MessageModule,
+  imports: [
+    FormsModule,
+    InputTextModule,
+    DropdownModule,
+    MultiSelectModule,
+    CheckboxModule,
     ButtonModule,
-    ProgressSpinnerModule,
-    CardModule,
-    CommonModule,
-    HttpClientModule,
+    CommonModule
   ],
     templateUrl: './upload.component.html',
 })
 export class UploadComponent {
   recordName = '';
   type: 't' | 'n' | 'c' = 't';
-  belonging = '';
+belonging: string[] = [];
   isSpecial = false;
   selectedFile: File | null = null;
 
@@ -55,17 +53,21 @@ export class UploadComponent {
       alert('נא למלא את כל השדות ולהעלות קובץ');
       return;
     }
+console.log("formData");
 
     const formData = new FormData();
     formData.append('file', this.selectedFile);
     formData.append('recordName', this.recordName);
     formData.append('type', this.type);
-    formData.append('belonging', this.belonging);
+    // formData.append('belonging', this.belonging);
+  this.belonging.forEach(val => formData.append('belonging', val));
+
+
     formData.append('IsSpecial', this.isSpecial.toString());
 
     this.uploadService.uploadFileWithMetadata(formData).subscribe(
       res => alert('ההקלטה נשמרה בהצלחה'),
-      err => alert('אירעה שגיאה בהעלאה')
+      err => alert(`${formData}אירkklkעה שגיאה בהעלאה`)
     );
   }
 }

@@ -166,16 +166,13 @@
 
   <div class="field">
     <label for="type">סוג הקלטה</label>
-    <p-select
-      [options]="types"
-      [(ngModel)]="type"
-      name="type"
-      optionLabel="label"
-      optionValue="value"
-      placeholder="בחר סוג"
-      [filter]="true"
-      required
-    ></p-select>
+   <p-dropdown
+  [options]="types"
+  [(ngModel)]="type"
+  optionLabel="label"
+  placeholder="בחר סוג"
+  class="w-full"
+></p-dropdown>
   </div>
 
   <div class="field">
