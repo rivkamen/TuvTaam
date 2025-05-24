@@ -66,6 +66,5 @@ export const belongingOptions = [
   { value: '7.6', label: 'פורים' },
   { value: '7.7', label: 'פסח' },
   { value: '7.8', label: 'שבועות' },
-  { value: '7.9', label: 'תשעה באב' },
-  { value: '7.10', label: 'יום העצמאות' }
+  { value: '7.9', label: 'תשעה באב' }
 ];

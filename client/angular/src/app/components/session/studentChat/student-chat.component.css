@@ -1,0 +1,54 @@
+.session-bar {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.chat-container {
+  border: 1px solid #ccc;
+  padding: 1rem;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.message {
+  margin: 0.5rem 0;
+}
+
+.message-input {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+.messages {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+}
+
+.message-wrapper {
+  display: flex;
+  max-width: 70%;
+}
+
+.message-wrapper.user {
+  justify-content: flex-start; /* הודעת משתמש - מימין */
+}
+
+.message-wrapper.admin {
+  justify-content: flex-end; /* הודעת מורה - משמאל */
+}
+
+.bubble {
+  background-color: #e0f7fa;
+  padding: 10px 14px;
+  border-radius: 16px;
+  direction: rtl;
+  word-wrap: break-word;
+}
+
+.message-wrapper.admin .bubble {
+  background-color: #f1f1f1;
+  text-align: right;
+}

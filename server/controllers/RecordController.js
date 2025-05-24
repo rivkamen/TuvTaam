@@ -4,8 +4,7 @@ const gcs = require('../service/gcsService');
 
 // העלאה + שמירה במסד
 const uploadAndCreateRecord = async (req, res) => {
-  console.log("mmmm");
-  
+
   try {
     const file = req.file;
       console.log(file);
@@ -47,10 +46,14 @@ const getRecordById = async (req, res) => {
     }
 
     const signedUrlData = await gcs.generateSignedUrl(record.path);
+    console.log("hgjhjkhjkhkhkhk");
+    
+    console.log(signedUrlData.signedUrl);
+    console.log("signedUrlData.signedUrl");
     
     return res.status(200).json({
       ...record.toObject(),
-      signedUrl: signedUrlData.url,
+      signedUrl: signedUrlData.signedUrl,
       expiresAt: signedUrlData.expiresAt
     });
   } catch (error) {
@@ -101,9 +104,12 @@ const getAllRecords = async (req, res) => {
     
     const enhancedRecords = await Promise.all(records.map(async (record) => {
       const signedUrlData = await gcs.generateSignedUrl(record.path); 
+    
+    console.log(signedUrlData.signedUrl);
+    console.log("signedUrlData.signedUrl");
       return {
         ...record.toObject(),
-        signedUrl: signedUrlData.url,
+        signedUrl: signedUrlData.signedUrl,
         expiresAt: signedUrlData.expiresAt
       };
     }));
@@ -123,7 +129,7 @@ const deleteRecord = async (req, res) => {
     if (!record) return res.status(404).json({ message: 'Record not found' });
 
     // מחיקת הקובץ מ-GCS
-    await gcs.deleteFromGCS(record.path); // או רק השם, תלוי איך שמרת
+    await gcs.deleteFromGCS(record.path);
 
     // מחיקת הרשומה מהמסד
     await Record.findByIdAndDelete(_id);

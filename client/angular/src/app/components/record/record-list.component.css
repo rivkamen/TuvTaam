@@ -110,3 +110,23 @@ body {
 .ng-valid.ng-touched {
   border-color: green;
 }
+.initial-message-container {
+  height: calc(100vh - 200px); /* גובה מותאם (פחות ההדרים וכו') */
+  display: flex;
+  justify-content: center; /* מרכז אופקית */
+  align-items: center;     /* מרכז אנכית */
+  text-align: center;
+}
+
+.initial-message-box {
+  font-size: 1.5rem;
+  padding: 2rem;
+  width: 80%;
+  max-width: 600px;
+  border-radius: 1rem;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+.rtl-tree .p-treenode-content {
+  direction: rtl;
+  text-align: right;
+}
