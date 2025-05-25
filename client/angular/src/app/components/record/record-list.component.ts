@@ -360,9 +360,11 @@ if (!hasAnyFilter) {
 
   getTypeLabel(value: string): string {
     const types = [
-      { value: 't', label: 'תורה' },
-      { value: 'n', label: 'נביאים' },
-      { value: 'c', label: 'כתובים' }
+      { value: 't', label: 'קריאות התורה' },
+      { value: 'n', label: 'הפטרות' },
+      { value: 'c', label: 'מגילות' },
+      { value: 'm', label: 'מפטיר' }
+
     ];
     const type = types.find(t => t.value === value);
     return type ? type.label : value;

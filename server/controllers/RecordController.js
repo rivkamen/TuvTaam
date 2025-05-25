@@ -15,11 +15,13 @@ const uploadAndCreateRecord = async (req, res) => {
     const uploaded = await gcs.uploadToGCS(file);
 
     // שלב 2: שמירת הנתונים במסד
-    const { recordName, type, belonging, IsSpecial } = req.body;
-  console.log("kkkk");
-
+    const { recordName, recordSource, type, belonging, IsSpecial } = req.body;
+    if (!recordName || !recordSource || !type || !belonging) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
     const newRecord = new Record({
       recordName,
+      recordSource,
       type,
       belonging,
       IsSpecial,
@@ -65,7 +67,7 @@ const getRecordById = async (req, res) => {
 const updateRecord = async (req, res) => {
   try {
     const { _id } = req.params;
-    const { recordName, type, belonging, IsSpecial, path } = req.body;
+    const { recordName,recordSource, type, belonging, IsSpecial, path } = req.body;
 
     const record = await Record.findById(_id);
     if (!record) {
@@ -73,6 +75,7 @@ const updateRecord = async (req, res) => {
     }
 
     record.recordName = recordName || record.recordName;
+    record.recordSource = recordSource || record.recordSource;
     record.type = type || record.type;
     record.belonging = belonging || record.belonging;
     record.IsSpecial = IsSpecial !== undefined ? IsSpecial : record.IsSpecial;

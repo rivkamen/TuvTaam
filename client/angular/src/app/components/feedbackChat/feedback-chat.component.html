@@ -1,4 +1,3 @@
-
 <div class="chat-layout">
 
   <!-- רשימת השיחות -->
@@ -30,17 +29,31 @@
       <div class="messages">
         <div *ngFor="let msg of messages"
              class="message-wrapper"
-             [ngClass]="msg.fromUser ? 'admin' : 'user'">
-          <div class="bubble">{{ msg.content }}</div>
+             [ngClass]="msg.fromUser ? 'user' : 'admin'">
+          <div class="bubble">
+            <ng-container [ngSwitch]="msg.type">
+              <ng-container *ngSwitchCase="'text'">{{ msg.content }}</ng-container>
+              <ng-container *ngSwitchCase="'audio'">
+                <audio [src]="getSafeUrl(msg.content)" controls></audio>
+              </ng-container>
+              <ng-container *ngSwitchDefault>{{ msg.content }}</ng-container>
+            </ng-container>
+          </div>
         </div>
       </div>
 
+      <!-- תיבת שליחת הודעה -->
       <div class="message-input">
         <input [(ngModel)]="newMessage" placeholder="הקלד הודעה..." (keydown.enter)="sendMessage()" />
         <button (click)="sendMessage()">שלח</button>
       </div>
-    </div>
 
+      <!-- הקלטה -->
+      <div class="audio-recorder">
+        <button (click)="startRecording()" [disabled]="isRecording">🎙️ התחל הקלטה</button>
+        <button (click)="stopRecording()" [disabled]="!isRecording">⏹️ עצור</button>
+        <button (click)="uploadRecording()" [disabled]="!recordedBlob">⬆️ שלח הקלטה</button>
+      </div>
+    </div>
   </div>
 </div>
-

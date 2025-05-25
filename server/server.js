@@ -13,6 +13,7 @@ app.use(express.static("public"))
 const routes = require("./service/routes");
 app.use('/api/users',require("./routes/UserRoute"))
 app.use('/api/session',require("./routes/SessionRoute"))
+app.use('/api/feedback',require("./routes/SessionFeedbackRoute"))
 app.use('/api/auth',require("./routes/AuthRoute"))
 app.use('/api/autha',require("./routes/AdminAuthRoute"))
 app.use('/api/functionToken',require("./middleware/verifyJWT"))

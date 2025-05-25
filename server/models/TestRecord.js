@@ -6,14 +6,12 @@ const testRecordSchema = new mongoose.Schema({
     content: { 
         type: String, 
     },
-    nameOfParsha:{
-        type:String,
-        required:true
+    fromUser:{
+        type: Boolean
     },
     path:
     {
         type: String, 
-        required:true
     }
 
 }, {

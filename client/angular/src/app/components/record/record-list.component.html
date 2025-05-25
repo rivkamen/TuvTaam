@@ -25,7 +25,10 @@
   <div *ngFor="let record of records" class="col-12 md:col-6 lg:col-4">
       <p-card header="{{ record.recordName }}" class="shadow-2 border-round mb-4">
         <div class="mb-2">
+          
           <p><strong>סוג:</strong> {{ getTypeLabel(record.type) }}</p>
+          <p><strong>מקור:</strong> {{ getTypeLabel(record.recordSource) }}</p>
+
           <p><strong>שייך ל:</strong> {{ getBelongingLabels(record.belonging) }}</p>
           <p><strong>מיוחד?</strong> {{ record.IsSpecial ? 'כן' : 'לא' }}</p>
         </div>

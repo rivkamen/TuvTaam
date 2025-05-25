@@ -10,10 +10,10 @@ const sessionSchema = new Schema({
         required: true
       }],
       
-    adminId:{
-          type: mongoose.Schema.Types.ObjectId, ref: 'Admin'//, required: true 
+    // adminId:{
+    //       type: mongoose.Schema.Types.ObjectId, ref: 'Admin'//, required: true 
         
-        },
+    //     },
         title: { 
           type: String 
            },

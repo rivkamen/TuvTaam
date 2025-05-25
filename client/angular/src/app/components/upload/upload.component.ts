@@ -26,15 +26,17 @@ import { belongingOptions } from '../../constants/belonging-options';
 })
 export class UploadComponent {
   recordName = '';
+  recordSource='';
   type: 't' | 'n' | 'c' = 't';
 belonging: string[] = [];
   isSpecial = false;
   selectedFile: File | null = null;
 
   types = [
-    { value: 't', label: 'תורה' },
-    { value: 'n', label: 'נביאים' },
-    { value: 'c', label: 'כתובים' }
+  { value: 't', label: 'קריאות התורה' },
+      { value: 'n', label: 'הפטרות' },
+      { value: 'c', label: 'מגילות' },
+      { value: 'm', label: 'מפטיר' }
   ];
 
   belongingOptions = belongingOptions;
@@ -49,7 +51,7 @@ belonging: string[] = [];
   }
 
   onSubmit() {
-    if (!this.selectedFile || !this.recordName || !this.type || !this.belonging) {
+    if (!this.selectedFile || !this.recordName ||!this.recordSource|| !this.type || !this.belonging) {
       alert('נא למלא את כל השדות ולהעלות קובץ');
       return;
     }
@@ -58,6 +60,7 @@ console.log("formData");
     const formData = new FormData();
     formData.append('file', this.selectedFile);
     formData.append('recordName', this.recordName);
+    formData.append('recordSource', this.recordSource);
     formData.append('type', this.type);
     // formData.append('belonging', this.belonging);
   this.belonging.forEach(val => formData.append('belonging', val));
