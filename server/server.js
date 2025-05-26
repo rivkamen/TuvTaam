@@ -11,6 +11,8 @@ app.use(cors(corsOptions))
 app.use(express.json())
 app.use(express.static("public"))
 const routes = require("./service/routes");
+
+app.use('/api/admin',require("./routes/AdminRoute"))
 app.use('/api/users',require("./routes/UserRoute"))
 app.use('/api/session',require("./routes/SessionRoute"))
 app.use('/api/feedback',require("./routes/SessionFeedbackRoute"))
@@ -23,7 +25,7 @@ app.use('/api/records', require('./routes/RecordRoute'));
 app.use("/api", routes);
 
 app.use((req,res)=>{
-    res.status(404).send("not defind")
+    res.status(404).send("404-not defind")
 })
 mongoose.connection.once("open",()=>{
     console.log("conect to mongoDB")
