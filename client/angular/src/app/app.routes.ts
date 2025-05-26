@@ -3,7 +3,7 @@ import { UploadComponent } from './components/upload/upload.component'; // וד�
 import { RecordListComponent  } from './components/record/record-list.component';
 import { TeacherChatComponent } from './components/session/teacherChat/teacher-chat.component';
 import { StudentChatComponent } from './components/session/studentChat/student-chat.component';
-import { FeedbackChatComponent } from './components/feedbackChat/feedback-chat.component';
+import { FeedbackChatComponent } from './components/feedbackChat/student/feedback-chat.component';
 
 export const routes: Routes = [
   { path: 'upload', component: UploadComponent },

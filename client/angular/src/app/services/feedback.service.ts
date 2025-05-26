@@ -38,10 +38,13 @@ createSession(userId: string, title: string, messages: any[] = []) {
   getSessionById(id: string): Observable<Session> {
     return this.http.get<Session>(`${this.apiUrl}/${id}`);
   }
+sendMessageWithAudio(sessionId: string, formData: FormData): Observable<any> {
+  return this.http.put(`${this.apiUrl}/${sessionId}/messages`, formData);
+}
+
 
   sendMessage(sessionId: string, message: { message: Message }): Observable<Session> {
     console.log("sendMessage");
-    console.log(sessionId); 
     console.log(message);
     
     return this.http.put<Session>(`${this.apiUrl}/${sessionId}/messages`, message);
