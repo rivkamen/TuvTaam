@@ -14,7 +14,7 @@ export class AuthService {
   private user!: User;
 
   login(email:string,password: string): Observable<User> {
-    let url = this.apiServerAddress + '/api/auth/login';
+    let url = this.apiServerAddress + '/auth/login';
     let  body = {
       email,
       password

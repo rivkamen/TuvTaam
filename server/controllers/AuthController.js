@@ -4,10 +4,13 @@ const jwt= require('jsonwebtoken')
 
 const login = async (req, res) => {
   const { email, password } = req.body;
+  console.log("login");
 
   if (!email || !password) {
     return res.status(400).json({ message: 'required field is missing' });
   }
+  console.log("login");
+  
   const adminEmail = process.env.ADMINEMAIL;
   const adminPassword = process.env.ADMIN;
   const adminUsername = process.env.ADMINUSERNAME;
@@ -18,6 +21,8 @@ const login = async (req, res) => {
       email: adminEmail,
       role: 'admin'
     };
+      console.log("login");
+
     const token = jwt.sign(adminInfo, process.env.ACCESS_TOKEN_SECRET);
     return res.json({ token , role: 'admin' });
   }
@@ -27,6 +32,8 @@ const login = async (req, res) => {
   if (!user) {
     return res.status(401).json({ message: "unauthorized" });
   }
+  console.log("login");
+
 
   const match = await bcrypt.compare(password, user.password);
   if (!match) {
@@ -39,6 +46,8 @@ const login = async (req, res) => {
     email: user.email,
     role: 'user'
   };
+  console.log(userInfo);
+  
   const token = jwt.sign(userInfo, process.env.ACCESS_TOKEN_SECRET);
   return res.json({ token, role: 'user' });
 };
@@ -47,7 +56,7 @@ const login = async (req, res) => {
 const register=async(req,res)=>{
     console.log("register")
     const {username,password,email} = req.body
-    if (!email || !username || !password) {
+    if (!email || !password) {
         return res.status(400).json({message:'required field is missing'})
         }
      const duplicate=await User.findOne({email}).lean()

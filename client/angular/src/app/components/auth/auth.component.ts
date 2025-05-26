@@ -72,44 +72,107 @@ export class AuthComponent {
   //     })
   //   }
   // }
-  login(): void {
-    if (this.emailFormControl.invalid || this.passwordFormControl.invalid) {
-      alert("יש למלא את כל השדות כראוי");
-      return;
-    }
 
-    const email = this.emailFormControl.value ?? '';
-    const password = this.passwordFormControl.value ?? '';
+login(): void {
+  console.log("📥 התחלת תהליך התחברות");
 
-    this.#authService.login(email, password).subscribe({
-      next: (res: any) => {
-        if (res?.token) {
-          localStorage.setItem('token', res.token);
-          localStorage.setItem('role', res.role);
-
-          this.role = res.role;
-
-          if (this.role === 'admin') {
-            alert("מנהל נכנס בהצלחה");
-            this.#router.navigateByUrl('/admin');
-          } if (this.role === 'user') {
-            alert("התחברות משתמש הצליחה");
-            const username = res.username || email;
-            setTimeout(() => {
-              this.#router.navigate(['/user']);
-            }, 100);
-          }
-        } else {
-          alert("שגיאה בהתחברות");
-        }
-      },
-      error: (err) => {
-        console.error("שגיאה בהתחברות", err);
-        alert("שגיאה בהתחברות");
-      }
+  if (this.emailFormControl.invalid || this.passwordFormControl.invalid) {
+    console.warn("⚠️ שדות לא תקינים", {
+      emailValid: this.emailFormControl.valid,
+      passwordValid: this.passwordFormControl.valid
     });
+    alert("יש למלא את כל השדות כראוי");
+    return;
   }
 
+  const email = this.emailFormControl.value ?? '';
+  const password = this.passwordFormControl.value ?? '';
+  console.log("📨 נשלח אימייל וסיסמה לשרת", { email });
+  alert("נשלח אימייל: " + email);
+
+  this.#authService.login(email, password).subscribe({
+    next: (res: any) => {
+      console.log("✅ קיבלנו תגובה מהשרת", res);
+      alert("קיבלנו תגובה מהשרת: " + JSON.stringify(res));
+
+      if (res?.token) {
+        console.log("🔑 שמירת טוקן", res.token);
+        sessionStorage.setItem('token', res.token);
+        sessionStorage.setItem('role', res.role);
+
+        this.role = res.role;
+        console.log("🧭 סוג משתמש שזוהה:", this.role);
+
+        if (this.role === 'admin') {
+          alert("מנהל נכנס בהצלחה - מעבר ל־/admin");
+          this.#router.navigateByUrl('/admin');
+        }
+
+        if (this.role === 'user') {
+          alert("משתמש נכנס בהצלחה - מעבר ל־/user");
+          const username = res.username || email;
+          console.log("👤 שם משתמש:", username);
+          setTimeout(() => {
+            this.#router.navigate(['/user']);
+          }, 100);
+        }
+
+      } else {
+        console.error("❌ אין טוקן בתגובה");
+        alert("שגיאה: אין טוקן בתגובה");
+      }
+    },
+
+    error: (err) => {
+      console.error("🚫 שגיאה מהשרת", err);
+      alert("שגיאה מהשרת: " + (err?.message || JSON.stringify(err)));
+    }
+  });
+}
 
 }
+//   login(): void {
+//     if (this.emailFormControl.invalid || this.passwordFormControl.invalid) {
+//       alert("יש למלא את כל השדות כראוי");
+//       return;
+//     }
+
+//     const email = this.emailFormControl.value ?? '';
+//     const password = this.passwordFormControl.value ?? '';
+
+//     this.#authService.login(email, password).subscribe({
+      
+//       next: (res: any) => {
+//         if (res?.token) {
+//           console.log("email", email);
+
+//           localStorage.setItem('token', res.token);
+//           localStorage.setItem('role', res.role);
+// console.log(this);
+
+//           this.role = res.role;
+
+//           if (this.role === 'admin') {
+//             alert("מנהל נכנס בהצלחה");
+//             this.#router.navigateByUrl('/admin');
+//           } if (this.role === 'user') {
+//             alert("התחברות משתמש הצליחה");
+//             const username = res.username || email;
+//             setTimeout(() => {
+//               this.#router.navigate(['/user']);
+//             }, 100);
+//           }
+//         } else {
+//           alert("שגיאה בהתחברות");
+//         }
+//       },
+//       error: (err) => {
+//         console.error("שגיאה בהתחברות", err);
+//         alert("שגיאה בהתחברות");
+//       }
+//     });
+//   }
+
+
+// }
 
