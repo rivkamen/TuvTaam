@@ -96,19 +96,32 @@ if(!session){
      }
 const createMessage=async(req,res)=>{
     const {_id}=req.params
-    const {message}=req.body
+    console.log(_id);
+    
+const message = req.body;
     const session=await Session.findById(_id).exec()
-const admin=await Admin.findById({_id:req.user._id})
+    console.log(message.message);
+    
+// const admin=await Admin.findById({_id:req.user._id})
     if(!session){
     return res.status(401).json({message:"not found"})
     }
-    if(session.userId==req.user._id || admin){
+    if(/*session.userId==req?.user?._id || /*admin*/true){
+                  console.log("hi");
+
         if(message){
-            if(message.content){
-            session.messages=[...session.messages,messages];
+            console.log(message);
+            console.log("session.messages");
+            
+
+            if(message.message.content){
+              
+            session.messages=[...session.messages,message.message];
+            console.log(session.messages);
+
         }
-        if(session.userId==req.user._id){
-            message.fromUser=true
+        if(/*session.userId==req.user._id*/true){
+            message.fromUser=false
         }
         }
         const MyUpdateMessage=await session.save()
@@ -123,11 +136,11 @@ return res.status(405).json({message:"unaouthorised"})
 const getMessages = async (req, res) => {
     const { _id } = req.params; // session ID
     const session = await Session.findById(_id).lean();
-    const admin = await Admin.findById({ _id: req.user._id });
+    // const admin = await Admin.findById({ _id: req.user._id });
 
     if (!session) return res.status(404).json({ message: "session not found" });
 
-    if (session.userId.toString() === req.user._id.toString() || admin) {
+    if (/*session.userId.toString() === req.user._id.toString() || admin*/true) {
         return res.status(200).json(session.messages);
     }
 

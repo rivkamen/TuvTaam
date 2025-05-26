@@ -1,2 +1,48 @@
-<input type="file" (change)="onFileSelected($event)" />
-<h1>hiiiiii</h1>
+
+<form (ngSubmit)="onSubmit()" class="p-fluid p-4 surface-100 border-round shadow-2">
+  <div class="field">
+    <label for="recordName">שם ההקלטה</label>
+    <input id="recordName" type="text" pInputText [(ngModel)]="recordName" name="recordName" required />
+  </div>
+  <div class="field">
+    <label for="recordSource">מקור ההקלטה </label>
+    <input id="recordSource" type="text" pInputText [(ngModel)]="recordSource" name="recordSource" required />
+  </div>
+  <div class="field">
+    <label for="type">סוג הקלטה</label>
+   <p-dropdown
+  [options]="types"
+  [(ngModel)]="type"
+  optionLabel="label"
+  placeholder="בחר סוג"
+  class="w-full"
+></p-dropdown>
+  </div>
+
+  <div class="field">
+    <label for="belonging">שייך לפרשה/חג</label>
+    <p-multiselect
+      [options]="belongingOptions"
+      [(ngModel)]="belonging"
+      name="belonging"
+      optionLabel="label"
+      optionValue="value"
+      placeholder="בחר פרשה/חג"
+      [filter]="true"
+      required
+    ></p-multiselect>
+  </div>
+
+  <div class="field-checkbox">
+    <p-checkbox inputId="isSpecial" [(ngModel)]="isSpecial" name="isSpecial" binary="true">
+    </p-checkbox>
+    <label for="isSpecial">מיוחד</label>
+  </div>
+
+  <div class="field">
+    <label for="fileUpload">העלאת קובץ</label>
+    <input type="file" id="fileUpload" (change)="onFileSelected($event)" class="w-full" required />
+  </div>
+
+  <p-button type="submit" label="שמור הקלטה" icon="pi pi-save" class="w-full p-button-success"></p-button>
+</form>

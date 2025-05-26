@@ -1,0 +1,81 @@
+<!--  
+<div *ngIf="!newSessionMode" class="session-bar">
+  <select [(ngModel)]="selectedSessionId" (change)="selectSession(selectedSessionId)">
+
+    <option *ngFor="let s of sessions" [value]="s._id">
+  {{ s.title || (s._id ? 'שיחה #' + s._id.slice(-4) : 'שיחה ללא מזהה') }}
+   
+</option>
+
+  </select>
+  <button (click)="startNewSession()">+ שיחה חדשה</button>
+</div>
+<h1>hiii</h1>
+<div *ngIf="newSessionMode" class="new-session-box">
+  <input type="text" [(ngModel)]="newSessionTitle" placeholder="שם השיחה (לא חובה)" />
+  <textarea [(ngModel)]="newSessionMessage" placeholder="כתוב את ההודעה הראשונה..."></textarea>
+  <button (click)="createNewSession()">שלח</button>
+  <button (click)="cancelNewSession()">ביטול</button>
+</div>
+<div class="chat-container" *ngIf="selectedSessionId">
+  <div *ngIf="loading">טוען הודעות...</div>
+
+  <div class="messages">
+    <div *ngFor="let msg of messages"
+         class="message-wrapper"
+         [ngClass]="msg.fromUser ? 'user' : 'admin'">
+      <div class="bubble">{{ msg.content }}</div>
+    </div>
+  </div>
+
+  <div class="message-input">
+    <input [(ngModel)]="newMessage" placeholder="הקלד הודעה..." (keydown.enter)="sendMessage()" />
+    <button (click)="sendMessage()">שלח</button>
+  </div>
+</div> -->
+
+<div class="chat-layout">
+
+  <!-- רשימת השיחות -->
+  <div class="session-list">
+    <button *ngFor="let s of sessions"
+            class="session-item"
+            [class.selected]="s._id === selectedSessionId"
+            (click)="selectSession(s._id)">
+      {{ s.title || (s._id ? 'שיחה #' + s._id.slice(-4) : 'שיחה ללא מזהה') }}
+    </button>
+    <button class="new-session-btn" (click)="startNewSession()">+ שיחה חדשה</button>
+  </div>
+
+  <!-- תיבת צ'אט -->
+  <div class="chat-container">
+
+    <!-- תיבת יצירת שיחה חדשה -->
+    <div *ngIf="newSessionMode" class="new-session-box">
+      <input type="text" [(ngModel)]="newSessionTitle" placeholder="שם השיחה (לא חובה)" />
+      <textarea [(ngModel)]="newSessionMessage" placeholder="כתוב את ההודעה הראשונה..."></textarea>
+      <button (click)="createNewSession()">שלח</button>
+      <button (click)="cancelNewSession()">ביטול</button>
+    </div>
+
+    <!-- הודעות קיימות -->
+    <div *ngIf="!newSessionMode && selectedSessionId">
+      <div *ngIf="loading">טוען הודעות...</div>
+
+      <div class="messages">
+        <div *ngFor="let msg of messages"
+             class="message-wrapper"
+             [ngClass]="msg.fromUser ? 'user' : 'admin'">
+          <div class="bubble">{{ msg.content }}</div>
+        </div>
+      </div>
+
+      <div class="message-input">
+        <input [(ngModel)]="newMessage" placeholder="הקלד הודעה..." (keydown.enter)="sendMessage()" />
+        <button (click)="sendMessage()">שלח</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+

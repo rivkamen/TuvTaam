@@ -1,0 +1,104 @@
+
+
+<!-- סינון במסך גדול -->
+<div *ngIf="!isMobile"
+     class="filter-sidebar"
+     style="position: fixed; right: 0; width: 22rem; z-index: 100; height: 100vh; overflow-y: auto; background: #fff; box-shadow: -2px 0 8px #0001; padding: 1.5rem;">
+  <ng-container *ngTemplateOutlet="filters"></ng-container>
+</div>
+
+<!-- עוטף את כל התוכן הראשי כדי להרחיק מהפילטר -->
+<div [ngStyle]="!isMobile ? {'margin-right': '24rem'} : {}">
+
+  <!-- הודעת פתיחה ממורכזת -->
+  <div *ngIf="showInitialMessage && !loading"
+       style="display: flex; justify-content: center; align-items: center; min-height: 60vh;">
+    <p-message
+      severity="info"
+      text="בחר או חפש את הפרשה / ההפטרה הרצויה">
+    </p-message>
+  </div>
+
+  <!-- הצגת ההקלטות -->
+ <div *ngIf="!loading && records.length > 0 && !showInitialMessage"
+     class="grid p-2">
+  <div *ngFor="let record of records" class="col-12 md:col-6 lg:col-4">
+      <p-card header="{{ record.recordName }}" class="shadow-2 border-round mb-4">
+        <div class="mb-2">
+          
+          <p><strong>סוג:</strong> {{ getTypeLabel(record.type) }}</p>
+          <p><strong>מקור:</strong> {{ getTypeLabel(record.recordSource) }}</p>
+
+          <p><strong>שייך ל:</strong> {{ getBelongingLabels(record.belonging) }}</p>
+          <p><strong>מיוחד?</strong> {{ record.IsSpecial ? 'כן' : 'לא' }}</p>
+        </div>
+
+        <audio [src]="record.signedUrl" controls class="w-full my-2"></audio>
+
+        <button pButton icon="pi pi-trash"
+                label="מחק"
+                (click)="deleteRecord(record._id)"
+                severity="danger"
+                class="w-full mt-2">
+        </button>
+      </p-card>
+    </div>
+  </div>
+
+  <!-- ספינר בזמן טעינה -->
+  <p-progressSpinner *ngIf="loading" styleClass="custom-spinner"></p-progressSpinner>
+
+  <!-- הודעה אם אין הקלטות -->
+  <p-message *ngIf="!loading && records.length === 0 && !showInitialMessage"
+             severity="info"
+             text="אין הקלטות להצגה.">
+  </p-message>
+
+</div>
+
+<!-- סינון ב-sidebar במסך קטן -->
+  <!-- <p-sidebar [(visible)]="sidebarVisible"
+           position="right"
+           [modal]="true"
+           [showCloseIcon]="true"
+           [baseZIndex]="10000"
+           styleClass="w-18rem sm:w-25rem"
+           >
+  <ng-container *ngTemplateOutlet="filters"></ng-container>
+</p-sidebar> -->
+
+<!-- במקום ה-sidebar במסך קטן -->
+<div class="card flex justify-center">
+    <p-drawer [(visible)]="visible" position="right" header="בחר קריאה">
+        <p>
+           
+
+
+<!-- תבנית סינון משותפת -->
+<ng-template #filters>
+  <div class="p-fluid p-grid p-3" style="gap: 1rem;">
+    <div class="p-inputgroup">
+      <input type="text"
+             pInputText
+             [(ngModel)]="searchName"
+             (ngModelChange)="applyFilters()"
+             placeholder="חיפוש לפי שם הקלטה" />
+    </div>
+    <div >
+    <p-tree   
+      [value]="treeSelectOptions"
+      selectionMode="single"
+      [(selection)]="selectedParasha"
+      (onNodeSelect)="applyFilters()"
+      display="chip"
+      styleClass="w-full md:w-[30rem]">
+    </p-tree></div>
+  </div>
+</ng-template>
+        </p>
+          <ng-container *ngTemplateOutlet="filters"></ng-container>
+          
+    </p-drawer>
+    <p-button *ngIf="isMobile" (click)="visible = true" icon="pi pi-arrow-right" label="פתח סינון"></p-button>
+</div>
+

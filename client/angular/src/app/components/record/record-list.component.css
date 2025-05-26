@@ -1,0 +1,132 @@
+/* עיצוב עבור טופס הקלטת נתונים */
+form {
+  background-color: #f4f7fb;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* עיצוב שדות טופס */
+.field {
+  margin-bottom: 1.5rem;
+}
+
+.field label {
+  font-size: 1.1rem;
+  color: #333;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.field input,
+.field select,
+.field .p-dropdown {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 4px;
+  border: 1px solid #d1d1d1;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+/* עיצוב לסלקט ו-File Input */
+.field .p-dropdown,
+.field input[type="file"] {
+  border-color: #87cefa;
+}
+
+/* עיצוב לכפתור */
+.p-button {
+  font-weight: bold;
+  border-radius: 6px;
+  padding: 0.75rem;
+  background-color: #007bff;
+  color: white;
+  width: 100%;
+  transition: background-color 0.3s;
+}
+
+.p-button:hover {
+  background-color: #0056b3;
+}
+
+/* עיצוב עבור תיבת סימון (Checkbox) */
+.field-checkbox {
+  display: flex;
+  align-items: center;
+}
+
+.field-checkbox p-checkbox {
+  margin-right: 0.5rem;
+}
+
+.field-checkbox label {
+  font-size: 1rem;
+  color: #333;
+}
+
+/* עיצוב עבור קובץ */
+.field input[type="file"] {
+  border: none;
+  padding: 0.75rem;
+  background-color: #e9ecef;
+  font-size: 1rem;
+  margin-top: 0.5rem;
+}
+
+.field input[type="file"]:focus {
+  border: 1px solid #87cefa;
+}
+
+/* עיצוב עבור שדות טקסט */
+.field input[type="text"] {
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  padding: 0.75rem;
+  border-radius: 6px;
+  background-color: #fff;
+}
+
+.field input[type="text"]:focus {
+  border-color: #87cefa;
+}
+
+/* עיצוב כללי לגוף הדף */
+body {
+  background-color: #f8f9fa;
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+/* כאשר הסלקט או השדה לא ממולא */
+.ng-invalid.ng-touched {
+  border-color: red;
+}
+
+.ng-valid.ng-touched {
+  border-color: green;
+}
+.initial-message-container {
+  height: calc(100vh - 200px); /* גובה מותאם (פחות ההדרים וכו') */
+  display: flex;
+  justify-content: center; /* מרכז אופקית */
+  align-items: center;     /* מרכז אנכית */
+  text-align: center;
+}
+
+.initial-message-box {
+  font-size: 1.5rem;
+  padding: 2rem;
+  width: 80%;
+  max-width: 600px;
+  border-radius: 1rem;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+.rtl-tree .p-treenode-content {
+  direction: rtl;
+  text-align: right;
+}

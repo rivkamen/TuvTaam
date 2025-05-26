@@ -15,10 +15,12 @@ const routes = require("./service/routes");
 app.use('/api/admin',require("./routes/AdminRoute"))
 app.use('/api/users',require("./routes/UserRoute"))
 app.use('/api/session',require("./routes/SessionRoute"))
+app.use('/api/feedback',require("./routes/SessionFeedbackRoute"))
 app.use('/api/auth',require("./routes/AuthRoute"))
 app.use('/api/autha',require("./routes/AdminAuthRoute"))
 app.use('/api/functionToken',require("./middleware/verifyJWT"))
 app.use('/api/files', require('./routes/UploadRoute'));
+app.use('/api/records', require('./routes/RecordRoute'));
 
 app.use("/api", routes);
 
