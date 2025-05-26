@@ -1,25 +1,51 @@
 const User=require("../models/User")
 const bcrypt=require("bcrypt")
 const jwt= require('jsonwebtoken')
-const login=async(req,res)=>{
-    const {email, password} = req.body
-    if (!email || !password) 
-        return res.status(400).json({message:'required field is missing'})
-    const user=await User.findOne({email}).lean()
-    if(user){
-        const match = await bcrypt.compare(password,user.password)
-        if(match){
-            const userInfo= {_id:user._id,username:user.username,email:user.email}
-            const token = jwt.sign(userInfo,process.env.ACCESS_TOKEN_SECRET)
-            return res.json({token:token})
-        }
-        else
-            return res.status(401).json({message:"unauthorized"})
-    }
-    else
-        res.status(401).json({message:"unauthorized"})
-}
+
+const login = async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ message: 'required field is missing' });
+  }
+  const adminEmail = process.env.ADMINEMAIL;
+  const adminPassword = process.env.ADMIN;
+  const adminUsername = process.env.ADMINUSERNAME;
+
+  if (email === adminEmail && password === adminPassword) {
+    const adminInfo = {
+      username: adminUsername,
+      email: adminEmail,
+      role: 'admin'
+    };
+    const token = jwt.sign(adminInfo, process.env.ACCESS_TOKEN_SECRET);
+    return res.json({ token , role: 'admin' });
+  }
+
+  // בדיקת משתמש רגיל ממסד הנתונים
+  const user = await User.findOne({ email }).lean();
+  if (!user) {
+    return res.status(401).json({ message: "unauthorized" });
+  }
+
+  const match = await bcrypt.compare(password, user.password);
+  if (!match) {
+    return res.status(401).json({ message: "unauthorized" });
+  }
+
+  const userInfo = {
+    _id: user._id,
+    username: user.username,
+    email: user.email,
+    role: 'user'
+  };
+  const token = jwt.sign(userInfo, process.env.ACCESS_TOKEN_SECRET);
+  return res.json({ token, role: 'user' });
+};
+
+
 const register=async(req,res)=>{
+    console.log("register")
     const {username,password,email} = req.body
     if (!email || !username || !password) {
         return res.status(400).json({message:'required field is missing'})
