@@ -23,7 +23,7 @@ export class SessionService {
   private apiUrl = `${environment.apiUrl}/session`; // Update this to your actual API URL
   constructor(private http: HttpClient) {}
 getSessions(): Observable<any[]> {
-  return this.http.get<any[]>(`${this.apiUrl}`); // ���� ������������ ���� ������������/��
+  return this.http.get<any[]>(`${this.apiUrl}`); 
 }
 
 createSession(userId: string, /*title: string,*/ messages: any[] = []) {

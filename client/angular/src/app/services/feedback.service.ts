@@ -56,5 +56,13 @@ sendMessageWithAudio(sessionId: string, formData: FormData): Observable<any> {
 uploadAudioWithBackup(formData: FormData) {
   return this.http.post(`${this.apiUrl}/upload-with-backup`, formData);
 }
+updateMessage(id: string,messageId:string, data: { content: string }) {
+  return this.http.put(`${this.apiUrl}/${id}/messages/${messageId}`, data);
+}
 
+deleteMessage(id: string,messageId:string) {
+  console.log(`Deleting message with ID ${messageId} from session ${id}`);
+  
+  return this.http.put(`${this.apiUrl}/${id}/messages/${messageId}/delete`,{});
+}
 }

@@ -1,20 +1,26 @@
 <div class="chat-layout">
 
-  <!-- רשימת השיחות -->
+  <!-- רשימת שיחות -->
   <div class="session-list">
     <button *ngFor="let s of sessions"
             class="session-item"
             [class.selected]="s._id === selectedSessionId"
             (click)="selectSession(s._id)">
-      {{ s.title || (s._id ? 'שיחה #' + s._id.slice(-4) : 'שיחה ללא מזהה') }}
+      {{ s.createdAt || (s._id ? 'שיחה #' + s._id.slice(-4) : 'שיחה ללא מזהה') }}
     </button>
     <button class="new-session-btn" (click)="startNewSession()">+ שיחה חדשה</button>
   </div>
 
-  <!-- תיבת צ'אט -->
+  <!-- צ'אט -->
   <div class="chat-container">
+    
+    <!-- פרופיל -->
+    <div class="user-profile-bar" *ngIf="userEmail">
+      <img *ngIf="userPhotoUrl" [src]="roleService.isAdmin() ? adminPhotoUrl : userPhotoUrl" class="profile-img" />
+      <span class="email">{{ userEmail }}</span>
+    </div>
 
-    <!-- תיבת יצירת שיחה חדשה -->
+    <!-- יצירת שיחה חדשה -->
     <div *ngIf="newSessionMode" class="new-session-box">
       <input type="text" [(ngModel)]="newSessionTitle" placeholder="שם השיחה (לא חובה)" />
       <textarea [(ngModel)]="newSessionMessage" placeholder="כתוב את ההודעה הראשונה..."></textarea>
@@ -22,69 +28,76 @@
       <button (click)="cancelNewSession()">ביטול</button>
     </div>
 
-    <!-- הודעות קיימות -->
+    <!-- תצוגת שיחה קיימת -->
     <div *ngIf="!newSessionMode && selectedSessionId">
       <div *ngIf="loading">טוען הודעות...</div>
 
-      <div class="messages">
-        <div *ngFor="let msg of messages"
-        
-             class="message-wrapper"
-             [ngClass]="msg.fromUser ? 'user' : 'admin'">
+      <div *ngFor="let msg of messages" class="message-wrapper" [ngClass]="msg.fromUser ? 'user' : 'admin'">
 
-<div class="bubble">
-  <div *ngIf="msg.content">{{ msg.content }}</div>
-  <audio *ngIf="msg.signedUrl" [src]="getSafeUrl(msg.signedUrl)" controls></audio>
-</div>
-
-
-          </div>
+        <!-- הודעה -->
+        <div *ngIf="editMessageId === msg._id; else showMessage">
+          <textarea [(ngModel)]="editedMessageContent"></textarea>
+          <button (click)="saveEdit(msg._id)">שמירה</button>
+          <button (click)="cancelEdit()">ביטול</button>
         </div>
+
+        <ng-template #showMessage>
+          <div class="bubble">
+            <div *ngIf="msg.content">{{ msg.content }}</div>
+            <audio *ngIf="msg.signedUrl" [src]="getSafeUrl(msg.signedUrl)" controls></audio>
+          </div>
+
+          <div class="message-profile">
+            <img [src]="msg.fromUser ? userPhotoUrl : adminPhotoUrl" class="profile-img-small" />
+          </div>
+
+          <div class="msg-menu-wrapper" *ngIf="msg.fromUser">
+            <button class="menu-toggle-btn" (click)="toggleMenu(msg._id)">⋮</button>
+            <div class="msg-menu" *ngIf="openedMenuId === msg._id">
+              <button (click)="startEdit(msg)">
+                <i class="pi pi-pencil"></i> עריכה
+              </button>
+              <button (click)="deleteMessage(msg._id)">
+                <i class="pi pi-trash"></i> מחיקה
+              </button>
+            </div>
+          </div>
+        </ng-template>
       </div>
 
-    
-<div class="message-input-bar">
-  <!-- הודעה -->
-  <input
-    type="text"
-    [(ngModel)]="newMessage"
-    placeholder="כתוב הודעה..."
-    (keydown.enter)="sendMessage()"
-  />
+      <!-- שדה הזנת הודעה -->
+      <div class="message-input">
+        <input [(ngModel)]="newMessage" placeholder="הקלד הודעה..." (keydown.enter)="sendMessage()" />
+        <button (click)="sendMessage()">שלח</button>
+      </div>
 
-  <!-- אזור הקלטה -->
-  <div class="recording-controls">
+      <!-- אזור הקלטה -->
+      <div class="recording-controls">
+        <ng-container *ngIf="isRecording; else micButton">
+          <span class="recording-indicator">🔴 {{ recordingTime | date:'mm:ss' }}</span>
+          <button type="button" class="stop-btn" (click)="stopRecording()">
+            <i class="pi pi-stop"></i>
+          </button>
+        </ng-container>
+        <ng-template #micButton>
+          <button type="button" class="mic-btn" (click)="startRecording()">
+            <i class="pi pi-microphone"></i>
+          </button>
+        </ng-template>
+      </div>
 
-    <!-- אם מקליטים -->
-    <ng-container *ngIf="isRecording; else micButton">
-      <span class="recording-indicator">🔴 {{ recordingTime | date:'mm:ss' }}</span>
-      <button type="button" class="stop-btn" (click)="stopRecording()">
-        <i class="pi pi-stop"></i>
+      <!-- תצוגת הקלטה -->
+      <div *ngIf="recordedBlob" class="audio-preview">
+        <audio [src]="getSafeUrlFromBlob(recordedBlob)" controls></audio>
+        <button type="button" (click)="removeRecording()">
+          <i class="pi pi-times"></i>
+        </button>
+      </div>
+
+      <!-- שליחת הודעה (כולל הקלטה) -->
+      <button type="button" class="send-btn" (click)="sendMessage()">
+        <i class="pi pi-send"></i>
       </button>
-    </ng-container>
-
-    <!-- כפתור הקלטה (כאשר לא מקליטים) -->
-    <ng-template #micButton>
-      <button type="button" class="mic-btn" (click)="startRecording()">
-        <i class="pi pi-microphone"></i>
-      </button>
-    </ng-template>
-  </div>
-
-  <!-- תצוגת ההקלטה (אם קיימת) -->
-  <div *ngIf="recordedBlob" class="audio-preview">
-    <audio [src]="getSafeUrlFromBlob(recordedBlob)" controls></audio>
-    <button type="button" (click)="removeRecording()">
-      <i class="pi pi-times"></i>
-    </button>
-  </div>
-
-  <!-- כפתור שליחה -->
-  <button type="button" class="send-btn" (click)="sendMessage()">
-    <i class="pi pi-send"></i>
-  </button>
-</div>
-
     </div>
   </div>
-<!-- </div> -->
+</div>

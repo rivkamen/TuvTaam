@@ -22,17 +22,23 @@ export class FeedbackChatComponent implements OnInit {
   newSessionTitle = '';
   newSessionMessage = '';
   isTeacher: boolean = false;
+userEmail: string = '';
+editMessageId: string | null = null;
+editedMessageContent: string = '';
 
   // הקלטה
   isRecording = false;
   mediaRecorder!: MediaRecorder;
   recordedChunks: Blob[] = [];
   recordedBlob: Blob | null = null;
-
+userPhotoUrl: string = '';
+adminPhotoUrl: string = '';
+userRole: string | null = null;
+openedMenuId: string | null = null;
   constructor(
     private feedbackService: FeedbackService,
     private sanitizer: DomSanitizer,
-    private roleService: RoleService
+    public roleService: RoleService
   ) {}
 
   ngOnInit() {
@@ -52,6 +58,7 @@ export class FeedbackChatComponent implements OnInit {
   selectSession(sessionId: string) {
     this.selectedSessionId = sessionId;
     this.loadMessages();
+    this.loadUserProfile();
   }
 
   loadMessages() {
@@ -296,6 +303,52 @@ startTimer() {
     this.recordingTime = new Date(elapsed);
   }, 500);
 }
+startEdit(msg: any) {
+  this.editMessageId = msg._id;
+  this.editedMessageContent = msg.content;
+}
+cancelEdit() {
+  this.editMessageId = null;
+  this.editedMessageContent = '';
+}
+saveEdit(messageId:string) {
+  // כאן תקראי לפונקציה בשרת לעדכון ההודעה
+  this.feedbackService.updateMessage(this.selectedSessionId
+,messageId, { content: this.editedMessageContent }).subscribe(() => {
+    const msg = this.messages.find(m => m._id === messageId);
+    if (msg) msg.content = this.editedMessageContent;
+    this.cancelEdit();
+  });
+}
+deleteMessage(messageId: string) {
+  if (!confirm('האם למחוק את ההודעה?')) return;
+  this.feedbackService.deleteMessage(this.selectedSessionId,messageId).subscribe(() => {
+    this.messages = this.messages.filter(m => m._id !== messageId);
+  });
+}
+toggleMenu(id: string) {
+  this.openedMenuId = this.openedMenuId === id ? null : id;
+}
+loadUserProfile() {
+  // אם יש אימייל מהתחברות גוגל
+  const googleEmail = sessionStorage.getItem('userEmail');
+  const googlePhoto = sessionStorage.getItem('userPhoto');
 
+  if (googleEmail) {
+    this.userEmail = googleEmail ;
+    this.userPhotoUrl = googlePhoto || '';
+  } else {
+    // קבלת אימייל מהשרת דרך סשן נוכחי
+    const userSession = this.sessions.find(s => s._id === this.selectedSessionId);
+    console.log('userSession:', userSession.userId);
+    
+    if (userSession && userSession.userId[0]?.email) {
+      console.log("hi");
+      
+      this.userEmail = userSession.userId[0].email;
+      this.userPhotoUrl = 'assets/vivid-blurred-colorful-wallpaper-background.jpg'; 
+      this.adminPhotoUrl = 'assets/DSCN0107.JPG';
+    }}
+  }
 
 }

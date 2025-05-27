@@ -30,7 +30,7 @@ const createSession = async (req, res) => {
   }
 };
 const getSessions=async(req,res)=>{
-  const session=await SessionFeedback.find().lean()
+  const session = await SessionFeedback.find().populate('userId', 'email').lean();
   if(!session)
   {
     res.status(500).json({ error: error.message });
@@ -42,7 +42,8 @@ const getSessions=async(req,res)=>{
 
 const getSessionById=async(req,res)=>{
 const {_id}=req.params
-const session=await SessionFeedback.findById(_id).lean()
+  const session = await SessionFeedback.find().populate('userId', 'email').lean();
+
 const admin=await Admin.findById({_id:req.user._id})
 if(!session)
 {
@@ -307,7 +308,7 @@ const deleteMessage = async (req, res) => {
     
     try {
       const userId = req.user._id;
-      const sessions = await SessionFeedback.find({ userId }).lean();
+    const sessions = await SessionFeedback.find({ userId }).populate('userId', 'email').lean();
   
       return res.status(200).json(sessions);
     } catch (error) {

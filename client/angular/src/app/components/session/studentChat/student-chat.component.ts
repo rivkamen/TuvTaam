@@ -30,11 +30,10 @@ userPhotoUrl: string = '';
 adminPhotoUrl: string = '';
 userRole: string | null = null;
 openedMenuId: string | null = null;
-
+newSessionMessage = '';
 toggleMenu(id: string) {
   this.openedMenuId = this.openedMenuId === id ? null : id;
 }
-
 loadUserRole() {
     const token = sessionStorage.getItem('token');
     if (token) {
@@ -42,29 +41,24 @@ loadUserRole() {
       this.userRole = payload.role;
     }
   }
-
   ngOnInit() {
     this.loadSessions();
     this.loadUserRole();
   }
-
 isOwnMessage(msg: Message): boolean {
   return this.isTeacher ? !msg.fromUser : msg.fromUser;
 }
-
   loadSessions() {
     this.sessionService.getUserSessions().subscribe((sessions) => {
       this.sessions = sessions;
     });
   }
-
   selectSession(sessionId: string) {
     this.selectedSessionId = sessionId;
     this.loadMessages();
     this.loadUserProfile();
 
   }
-
   loadMessages() {
     if (!this.selectedSessionId) return;
     this.loading = true;
@@ -73,7 +67,6 @@ isOwnMessage(msg: Message): boolean {
       this.loading = false;
     });
   }
-
   sendMessage() {
     if (!this.newMessage.trim() || !this.selectedSessionId) return;
     this.loading = true;
@@ -83,25 +76,17 @@ isOwnMessage(msg: Message): boolean {
       this.loadMessages();
     });
   }
-
-
-
-
-newSessionMessage = '';
-
 startNewSession() {
   this.newSessionMode = true;
   this.newSessionTitle = '';
   this.newSessionMessage = '';
 }
-
 cancelNewSession() {
   this.newSessionMode = false;
 }
 logSession(s: any) {
   console.log('session:', s);
 }
-
 createNewSession() {
     const userId = this.roleService.getUserId() || 'undefined'; // Default user ID if not found
   const title = this.newSessionTitle || 'ללא שם';
@@ -115,17 +100,14 @@ createNewSession() {
     this.newMessage = '';
   });
 }
-
 startEdit(msg: any) {
   this.editMessageId = msg._id;
   this.editedMessageContent = msg.content;
 }
-
 cancelEdit() {
   this.editMessageId = null;
   this.editedMessageContent = '';
 }
-
 saveEdit(messageId:string) {
   // כאן תקראי לפונקציה בשרת לעדכון ההודעה
   this.sessionService.updateMessage(this.selectedSessionId
@@ -135,7 +117,6 @@ saveEdit(messageId:string) {
     this.cancelEdit();
   });
 }
-
 deleteMessage(messageId: string) {
   if (!confirm('האם למחוק את ההודעה?')) return;
   this.sessionService.deleteMessage(this.selectedSessionId,messageId).subscribe(() => {
@@ -146,7 +127,6 @@ loadUserProfile() {
   // אם יש אימייל מהתחברות גוגל
   const googleEmail = sessionStorage.getItem('userEmail');
   const googlePhoto = sessionStorage.getItem('userPhoto');
-
 
   if (googleEmail) {
     this.userEmail = googleEmail ;
