@@ -21,11 +21,14 @@
             ],
             "tsConfig": "tsconfig.app.json",
             "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              }
-            ],
+  {
+    "glob": "**/*",
+    "input": "public"
+  },
+  "src/favicon.ico",
+  "src/assets"
+],
+
         "styles": [
   "node_modules/primeicons/primeicons.css",
   "src/styles.css"
@@ -81,12 +84,14 @@
               "zone.js/testing"
             ],
             "tsConfig": "tsconfig.spec.json",
-            "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              }
-            ],
+                    "assets": [
+  {
+    "glob": "**/*",
+    "input": "public"
+  },
+  "src/favicon.ico",
+  "src/assets"
+],
           
         "styles": [
 

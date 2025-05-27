@@ -1,4 +1,4 @@
-.session-bar {
+/* .session-bar {
   display: flex;
   gap: 1rem;
   margin-bottom: 1rem;
@@ -32,7 +32,7 @@
 }
 
 .sent {
-  align-self: flex-start; /* ההודעות של המשתמש */
+  align-self: flex-start; 
   background-color: #dcf8c6;
   border-radius: 10px;
   padding: 10px;
@@ -40,7 +40,7 @@
 }
 
 .received {
-  align-self: flex-end; /* ההודעות של הצד השני */
+  align-self: flex-end; 
   background-color: #ffffff;
   border-radius: 10px;
   padding: 10px;
@@ -59,7 +59,6 @@
   font-family: Arial;
 }
 
-/* רשימת שיחות */
 .session-list {
   width: 250px;
   background: #f5f5f5;
@@ -95,7 +94,6 @@
   cursor: pointer;
 }
 
-/* צד הודעות */
 .chat-container {
   flex: 1;
   display: flex;
@@ -104,17 +102,7 @@
   position: relative;
 }
 
-/* תיבת הודעות */
-/* .messages {
-  flex: 1;
-  overflow-y: auto;
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-} */
 
-/* עיצוב בועות */
 .message-wrapper {
   display: flex;
 }
@@ -136,7 +124,6 @@
   color: white;
 }
 
-/* תיבת הקלדה */
 .message-input {
   display: flex;
   gap: 10px;
@@ -169,7 +156,6 @@
   height: 100vh;
 }
 
-/* רשימת שיחות בצד */
 .session-list {
   width: 250px;
   background-color: #f4f4f4;
@@ -205,7 +191,6 @@
   cursor: pointer;
 }
 
-/* אזור הצ'אט */
 .chat-container {
   flex: 1;
   padding: 1rem;
@@ -215,7 +200,6 @@
   max-height: 100vh;
 }
 
-/* הודעות */
 .messages {
   flex: 1;
   overflow-y: auto;
@@ -251,7 +235,6 @@
   text-align: right;
 }
 
-/* תיבת הקלדה */
 .message-input {
   display: flex;
   gap: 0.5rem;
@@ -281,10 +264,229 @@
   background-color: #1976d2;
 }
 
-/* יצירת שיחה חדשה */
 .new-session-box {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   margin-bottom: 1rem;
+}
+.user-profile-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  background-color: #f0f0f0;
+  border-bottom: 1px solid #ccc;
+}
+
+.profile-img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.email {
+  font-size: 14px;
+  color: #333;
+} */
+/* עיצוב כללי */
+/* עיצוב כללי */
+.chat-layout {
+  display: flex;
+  height: 100vh;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  direction: rtl;
+  background: #f9f9fb;
+  color: #333;
+}
+
+/* סרגל צד שמכיל את רשימת השיחות */
+.session-list {
+  width: 250px;
+  background-color: #ffffff;
+  border-left: 1px solid #ddd;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  box-shadow: -2px 0 5px rgba(0,0,0,0.05);
+  overflow-y: auto;
+}
+
+.session-item {
+  padding: 10px;
+  background-color: #f0f0f0;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: right;
+  transition: background-color 0.2s ease;
+}
+
+.session-item:hover {
+  background-color: #e0e0e0;
+}
+
+.session-item.selected {
+  background-color: #d0eaff;
+  font-weight: bold;
+}
+
+.new-session-btn {
+  margin-top: auto;
+  padding: 10px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.new-session-btn:hover {
+  background-color: #45a049;
+}
+
+/* אזור הצ'אט */
+.chat-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+/* שורת פרופיל */
+.user-profile-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+.user-profile-bar .profile-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-profile-bar .email {
+  font-weight: bold;
+}
+
+/* הודעות */
+.message-wrapper {
+  display: flex;
+  align-items: flex-end;
+  margin-bottom: 10px;
+  gap: 10px;
+}
+
+.message-wrapper.user {
+  flex-direction: row-reverse;
+}
+
+.message-wrapper.admin {
+  flex-direction: row;
+}
+
+.bubble {
+  max-width: 60%;
+  padding: 10px 15px;
+  border-radius: 18px;
+  background-color: #e0f7fa;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  word-break: break-word;
+}
+
+.message-wrapper.admin .bubble {
+  background-color: #f1f0f0;
+}
+
+/* פעולות הודעה */
+.msg-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 5px;
+}
+
+.msg-actions button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #555;
+  font-size: 0.9em;
+}
+
+.msg-actions button:hover {
+  text-decoration: underline;
+}
+
+/* עיצוב תמונת פרופיל קטנה */
+.profile-img-small {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* תיבת שיחה חדשה */
+.new-session-box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.new-session-box input,
+.new-session-box textarea {
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-family: inherit;
+}
+
+.new-session-box button {
+  padding: 8px;
+  background-color: #2196f3;
+  border: none;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.new-session-box button:hover {
+  background-color: #1976d2;
+}
+
+/* שורת הקלדת הודעה */
+.message-input {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid #ddd;
+}
+
+.message-input input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #bbb;
+  border-radius: 6px;
+}
+
+.message-input button {
+  padding: 10px 15px;
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.message-input button:hover {
+  background-color: #1976d2;
 }

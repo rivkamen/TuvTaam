@@ -22,7 +22,9 @@ const createSession=async(req,res)=>{
 }
 
 const getSessions=async(req,res)=>{
-  const session=await Session.find().lean()
+  // const session=await Session.find().lean()
+  const session = await Session.find().populate('userId', 'email').lean();
+
   if(!session)
   {
     res.status(500).json({ error: error.message });
@@ -34,13 +36,14 @@ const getSessions=async(req,res)=>{
 
 const getSessionById=async(req,res)=>{
 const {_id}=req.params
-const session=await Session.findById(_id).lean()
-const admin=await Admin.findById({_id:req.user._id})
+// const session=await Session.findById(_id).lean()
+const session = await Session.findById(_id).populate('userId', 'email').lean();
+
 if(!session)
 {
   return  res.status(401).json({message:"not found"})
 }
-if(session.userId==req.user._id || admin){
+if(session.userId==req.user._id || req.user.role === 'admin'){
   
     return res.json(session)
 }
@@ -187,10 +190,6 @@ const updateMessage = async (req, res) => {
     // const admin = await Admin.findById(req.user._id );
   
     if (!session) return res.status(404).json({ message: "session not found" });
-  console.log(req.user._id);
-    console.log(req.user.role);
-console.log("hiiiiiiiiiiiiiiiiiiiii");
-
 const isUser = session.userId.toString() === req.user._id.toString();
     if (!isUser && !req.user.role==='admin') return res.status(403).json({ message: "unauthorized" });
   
@@ -206,12 +205,12 @@ session.messages.pull({ _id: messageId });
     });
   };
   const getUserSessions = async (req, res) => {
-    console.log("hi");
-    
+   
     try {
       const userId = req.user._id;
-      const sessions = await Session.find({ userId }).lean();
-  
+      // const sessions = await Session.find({ userId }).lean();
+  const sessions = await Session.find({ userId }).populate('userId', 'email').lean();
+
       return res.status(200).json(sessions);
     } catch (error) {
       return res.status(500).json({ message: "Server error", error: error.message });

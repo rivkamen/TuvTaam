@@ -13,7 +13,6 @@ export interface Message {
 export interface Session {
   _id?: string;
   userId: string[];
-  adminId?: string;
   // title?: string;
   messages?: Message[];
   createdAt?: string;
