@@ -14,7 +14,7 @@ export interface Session {
   _id?: string;
   userId: string[];
   adminId?: string;
-  title?: string;
+  // title?: string;
   messages?: Message[];
   createdAt?: string;
 }
@@ -27,8 +27,8 @@ getSessions(): Observable<any[]> {
   return this.http.get<any[]>(`${this.apiUrl}`); // ���� ������������ ���� ������������/��
 }
 
-createSession(userId: string, title: string, messages: any[] = []) {
-  return this.http.post<any>(`${this.apiUrl}`, { userId, messages,title });
+createSession(userId: string, /*title: string,*/ messages: any[] = []) {
+  return this.http.post<any>(`${this.apiUrl}`, { userId, messages/*,title*/ });
 }
 
   getUserSessions(): Observable<Session[]> {
@@ -49,5 +49,13 @@ createSession(userId: string, title: string, messages: any[] = []) {
   getMessages(sessionId: string): Observable<Message[]> {
     return this.http.get<Message[]>(`${this.apiUrl}/${sessionId}/messages`);
   }
+updateMessage(id: string,messageId:string, data: { content: string }) {
+  return this.http.put(`${this.apiUrl}/${id}/messages/${messageId}`, data);
+}
 
+deleteMessage(id: string,messageId:string) {
+  console.log(`Deleting message with ID ${messageId} from session ${id}`);
+  
+  return this.http.put(`${this.apiUrl}/${id}/messages/${messageId}/delete`,{});
+}
 }

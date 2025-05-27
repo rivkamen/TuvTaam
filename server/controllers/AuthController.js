@@ -44,12 +44,12 @@ const login = async (req, res) => {
     _id: user._id,
     username: user.username,
     email: user.email,
-    role: 'user'
+    role: user.role 
   };
   console.log(userInfo);
   
   const token = jwt.sign(userInfo, process.env.ACCESS_TOKEN_SECRET);
-  return res.json({ token, role: 'user' });
+  return res.json({ token});
 };
 
 

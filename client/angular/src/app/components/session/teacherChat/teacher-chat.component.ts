@@ -83,7 +83,7 @@ createNewSession() {
   const title = this.newSessionTitle || 'ללא שם';
   const initialMessage = this.newSessionMessage.trim();
 
-  this.sessionService.createSession(userId, title, initialMessage ? [{ content: initialMessage, fromUser: false }] : []).subscribe(session => {
+  this.sessionService.createSession(userId, initialMessage ? [{ content: initialMessage, fromUser: false }] : []).subscribe(session => {
     this.sessions.push(session);
     this.selectedSessionId = session._id;
     this.messages = session.messages || [];

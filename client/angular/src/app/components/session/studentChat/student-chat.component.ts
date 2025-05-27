@@ -16,6 +16,8 @@ export class StudentChatComponent implements OnInit {
   messages: any[] = [];
   newMessage = '';
   loading = false;
+editMessageId: string | null = null;
+editedMessageContent: string = '';
 
   constructor(private sessionService: SessionService) {}
 newSessionMode = false;
@@ -83,7 +85,7 @@ createNewSession() {
   const title = this.newSessionTitle || 'ללא שם';
   const initialMessage = this.newSessionMessage.trim();
 
-  this.sessionService.createSession(userId, title, initialMessage ? [{ content: initialMessage, fromUser: true }] : []).subscribe(session => {
+  this.sessionService.createSession(userId, initialMessage ? [{ content: initialMessage, fromUser: true }] : []).subscribe(session => {
     this.sessions.push(session);
     this.selectedSessionId = session._id;
     this.messages = session.messages || [];
@@ -92,6 +94,32 @@ createNewSession() {
   });
 }
 
+startEdit(msg: any) {
+  this.editMessageId = msg._id;
+  this.editedMessageContent = msg.content;
+}
+
+cancelEdit() {
+  this.editMessageId = null;
+  this.editedMessageContent = '';
+}
+
+saveEdit(messageId:string) {
+  // כאן תקראי לפונקציה בשרת לעדכון ההודעה
+  this.sessionService.updateMessage(this.selectedSessionId
+,messageId, { content: this.editedMessageContent }).subscribe(() => {
+    const msg = this.messages.find(m => m._id === messageId);
+    if (msg) msg.content = this.editedMessageContent;
+    this.cancelEdit();
+  });
+}
+
+deleteMessage(messageId: string) {
+  if (!confirm('האם למחוק את ההודעה?')) return;
+  this.sessionService.deleteMessage(this.selectedSessionId,messageId).subscribe(() => {
+    this.messages = this.messages.filter(m => m._id !== messageId);
+  });
+}
 
 
 }

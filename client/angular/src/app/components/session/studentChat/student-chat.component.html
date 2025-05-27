@@ -42,7 +42,7 @@
             class="session-item"
             [class.selected]="s._id === selectedSessionId"
             (click)="selectSession(s._id)">
-      {{ s.title || (s._id ? 'שיחה #' + s._id.slice(-4) : 'שיחה ללא מזהה') }}
+      {{ s.createdAt || (s._id ? 'שיחה #' + s._id.slice(-4) : 'שיחה ללא מזהה') }}
     </button>
     <button class="new-session-btn" (click)="startNewSession()">+ שיחה חדשה</button>
   </div>
@@ -62,13 +62,33 @@
     <div *ngIf="!newSessionMode && selectedSessionId">
       <div *ngIf="loading">טוען הודעות...</div>
 
-      <div class="messages">
+      <!-- <div class="messages">
         <div *ngFor="let msg of messages"
              class="message-wrapper"
              [ngClass]="msg.fromUser ? 'user' : 'admin'">
           <div class="bubble">{{ msg.content }}</div>
         </div>
-      </div>
+      </div> -->
+<div *ngFor="let msg of messages"
+     class="message-wrapper"
+     [ngClass]="msg.fromUser ? 'user' : 'admin'">
+
+  <!-- אם זו הודעה בעריכה -->
+  <div *ngIf="editMessageId === msg._id; else showMessage">
+    <textarea [(ngModel)]="editedMessageContent"></textarea>
+    <button (click)="saveEdit(msg._id)">שמירה</button>
+    <button (click)="cancelEdit()">ביטול</button>
+  </div>
+
+  <!-- תצוגה רגילה של ההודעה -->
+  <ng-template #showMessage>
+    <div class="bubble">{{ msg.content }}</div>
+    <div class="msg-actions">
+      <button *ngIf="msg.fromUser" (click)="startEdit(msg)">✏️ עריכה</button>
+      <button *ngIf="msg.fromUser" (click)="deleteMessage(msg._id)">🗑️ מחיקה</button>
+    </div>
+  </ng-template>
+</div>
 
       <div class="message-input">
         <input [(ngModel)]="newMessage" placeholder="הקלד הודעה..." (keydown.enter)="sendMessage()" />

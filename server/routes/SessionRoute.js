@@ -16,6 +16,6 @@ router.get("/:_id/messages/:messageId", /*verifyJWT,*/ sessionController.getMess
 
 router.put("/:_id/messages"/*, verifyJWT*/, sessionController.createMessage); 
 router.put("/:_id/messages/:messageId", /*verifyJWT,verifyAdmin,*/ sessionController.updateMessage);
-router.put("/:_id/messages/:messageId/delete", /*verifyJWT,verifyAdmin,*/ sessionController.deleteMessage);
+router.put("/:_id/messages/:messageId/delete", verifyJWT/*,verifyAdmin*/, sessionController.deleteMessage);
 
 module.exports = router;

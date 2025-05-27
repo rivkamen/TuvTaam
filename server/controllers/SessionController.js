@@ -2,18 +2,18 @@ const Session = require("../models/Session");
 const Admin = require("../models/Admin");
 const createSession=async(req,res)=>{
 
-    const {userId,adminId,messages,title} = req.body
+    const {userId,adminId,messages/*,title*/} = req.body
     if (!userId ||!messages) {
         return res.status(400).json({message:'required field is missing'})
         }
     
-    const sessionObject= {userId,adminId,messages,title}
+    const sessionObject= {userId,adminId,messages/*,title*/}
     const session = await Session.create(sessionObject)
     if(session){
 
       return res.status(201).json({
         success: true,
-        message: `Session ${session.title} created successfully`,
+        message: `Session created successfully`,
     });
     }
     else
@@ -49,7 +49,7 @@ return res.status(405).json({message:"unaouthorisedid"})
 }
 const updateSession=async(req,res)=>{
   const {_id}=req.params
-    const {messages,title}=req.body
+    const {messages/*,title*/}=req.body 
     const session=await Session.findById(_id).exec()
     console.log(req.user._id);
     
@@ -63,13 +63,13 @@ console.log(admin);
         if(messages){
             session.messages=messages;
         }
-        if(title)
-        {
-            session.title=title;
-        }
+        // if(title)
+        // {
+        //     session.title=title;
+        // }
         const MyUpdateSession=await session.save()
         return res.status(201).json({success:true,
-            message:`session ${session.title} updated successfuly`,
+            message:`session updated successfuly`,
             })
     }
 
@@ -109,11 +109,7 @@ const message = req.body;
     if(/*session.userId==req?.user?._id || /*admin*/true){
                   console.log("hi");
 
-        if(message){
-            console.log(message);
-            console.log("session.messages");
-            
-
+        if(message){          
             if(message.message.content){
               
             session.messages=[...session.messages,message.message];
@@ -126,7 +122,7 @@ const message = req.body;
         }
         const MyUpdateMessage=await session.save()
         return res.status(201).json({success:true,
-            message:`message ${session.title} updated successfuly`,
+            message:`message updated successfuly`,
             })
     }
 
@@ -188,17 +184,20 @@ const updateMessage = async (req, res) => {
   const deleteMessage = async (req, res) => {
     const { _id, messageId } = req.params; // session ID, message ID
     const session = await Session.findById(_id).exec();
-    const admin = await Admin.findById({ _id: req.user._id });
+    // const admin = await Admin.findById(req.user._id );
   
     if (!session) return res.status(404).json({ message: "session not found" });
-  
-    const isUser = session.userId.find(id => id.toString() === req.user._id.toString());
-    if (!isUser && !admin) return res.status(403).json({ message: "unauthorized" });
+  console.log(req.user._id);
+    console.log(req.user.role);
+console.log("hiiiiiiiiiiiiiiiiiiiii");
+
+const isUser = session.userId.toString() === req.user._id.toString();
+    if (!isUser && !req.user.role==='admin') return res.status(403).json({ message: "unauthorized" });
   
     const msg = session.messages.id(messageId);
     if (!msg) return res.status(404).json({ message: "message not found" });
   
-    msg.remove();
+session.messages.pull({ _id: messageId });
     await session.save();
   
     return res.status(200).json({

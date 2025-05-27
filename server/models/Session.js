@@ -14,9 +14,9 @@ const sessionSchema = new Schema({
     //       type: mongoose.Schema.Types.ObjectId, ref: 'Admin'//, required: true 
         
     //     },
-        title: { 
-          type: String 
-           },
+        // title: { 
+        //   type: String 
+        //    },
     messages: [messageSchema],     
     
  
