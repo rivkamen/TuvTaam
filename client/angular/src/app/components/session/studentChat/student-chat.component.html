@@ -31,37 +31,6 @@
     <div *ngIf="!newSessionMode && selectedSessionId">
       <div *ngIf="loading">טוען הודעות...</div>
 
-      <!-- <div class="messages">
-        <div *ngFor="let msg of messages"
-             class="message-wrapper"
-             [ngClass]="msg.fromUser ? 'user' : 'admin'">
-          <div class="bubble">{{ msg.content }}</div>
-        </div>
-      </div> -->
-<!-- <div *ngFor="let msg of messages"
-     class="message-wrapper"
-     [ngClass]="msg.fromUser ? 'user' : 'admin'">
-
-  <div *ngIf="editMessageId === msg._id; else showMessage">
-    <textarea [(ngModel)]="editedMessageContent"></textarea>
-    <button (click)="saveEdit(msg._id)">שמירה</button>
-    <button (click)="cancelEdit()">ביטול</button>
-  </div>
-
-  <ng-template #showMessage>
-    <div class="bubble">{{ msg.content }}</div>
-    <div class="msg-actions">
-      <button *ngIf="msg.fromUser" (click)="startEdit(msg)">✏️ עריכה</button>
-      <button *ngIf="msg.fromUser" (click)="deleteMessage(msg._id)">🗑️ מחיקה</button>
-    </div>
-  </ng-template>
-</div>
-
-      <div class="message-input">
-        <input [(ngModel)]="newMessage" placeholder="הקלד הודעה..." (keydown.enter)="sendMessage()" />
-        <button (click)="sendMessage()">שלח</button>
-      </div>
-    </div> -->
 <div *ngFor="let msg of messages"
      class="message-wrapper"
      [ngClass]="msg.fromUser ? 'user' : 'admin'">
@@ -83,13 +52,29 @@
   <!-- תצוגה רגילה של ההודעה -->
   <ng-template #showMessage>
     <div class="bubble">{{ msg.content }}</div>
-    <div class="msg-actions">
+    <!-- <div class="msg-actions">
       <button *ngIf="msg.fromUser" (click)="startEdit(msg)">✏️ עריכה</button>
       <button *ngIf="msg.fromUser" (click)="deleteMessage(msg._id)">🗑️ מחיקה</button>
-    </div>
-  </ng-template>
+    </div> -->
+    <div class="msg-menu-wrapper" *ngIf="msg.fromUser">
+  <button class="menu-toggle-btn" (click)="toggleMenu(msg._id)">⋮</button>
+
+  <div class="msg-menu" *ngIf="openedMenuId === msg._id">
+    <button (click)="startEdit(msg)">
+      <i class="pi pi-pencil"></i> עריכה
+    </button>
+    <button (click)="deleteMessage(msg._id)">
+      <i class="pi pi-trash"></i> מחיקה
+    </button>
+  </div>
 </div>
 
+  </ng-template>
+</div>
+    <div class="message-input">
+        <input [(ngModel)]="newMessage" placeholder="הקלד הודעה..." (keydown.enter)="sendMessage()" />
+        <button (click)="sendMessage()">שלח</button>
+      </div>
   </div>
 </div>
 

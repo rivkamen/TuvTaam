@@ -29,6 +29,11 @@ userEmail: string = '';
 userPhotoUrl: string = '';
 adminPhotoUrl: string = '';
 userRole: string | null = null;
+openedMenuId: string | null = null;
+
+toggleMenu(id: string) {
+  this.openedMenuId = this.openedMenuId === id ? null : id;
+}
 
 loadUserRole() {
     const token = sessionStorage.getItem('token');
@@ -48,7 +53,7 @@ isOwnMessage(msg: Message): boolean {
 }
 
   loadSessions() {
-    this.sessionService.getSessions().subscribe((sessions) => {
+    this.sessionService.getUserSessions().subscribe((sessions) => {
       this.sessions = sessions;
     });
   }
@@ -98,7 +103,7 @@ logSession(s: any) {
 }
 
 createNewSession() {
-  const userId = sessionStorage.getItem('userId') || '68167ca59d97489bab54878a';
+    const userId = this.roleService.getUserId() || 'undefined'; // Default user ID if not found
   const title = this.newSessionTitle || 'ללא שם';
   const initialMessage = this.newSessionMessage.trim();
 

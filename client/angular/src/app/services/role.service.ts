@@ -5,6 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class RoleService {
   private _userRole: string | null = null;
+  private _userId: string | null = null;
 
   constructor() {
     this.loadRoleFromToken();
@@ -21,17 +22,51 @@ export class RoleService {
   get userRole(): string | null {
     return this._userRole;
   }
+  get userId(): string | null {
+    return this._userId;
+  }
 
-
-    isAdmin(): boolean {
-        return this._userRole === 'admin';
-    }
-    
-    isUser(): boolean {
-        return this._userRole === 'user';
-    }
     
     isGuest(): boolean {
         return this._userRole === null;
     }
+
+
+
+
+    private getToken(): string | null {
+    return sessionStorage.getItem('token');
+  }
+
+  getUserId(): string | null {
+    const token = this.getToken();
+    if (!token) return null;
+
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload._id || null;
+  }
+
+  getRole(): string | null {
+    const token = this.getToken();
+    if (!token) return null;
+
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload.role || null;
+  }
+
+  isAdmin(): boolean {
+    return this.getRole() === 'admin';
+  } 
+   isUser(): boolean {
+    return this.getRole() === 'user';
+  }
+
+  isLoggedIn(): boolean {
+    return !!this.getToken();
+  }
+
+  logout(): void {
+    sessionStorage.removeItem('token');
+    // ניווט או פעולות נוספות
+  }
   }

@@ -21,7 +21,6 @@ const getAdmin = async (req, res) => {
   // }
   // return res.status(200).json(admin);
 }
-
 const getAdminByMailAndPassword = async (req, res) => {
   try {
     const { email, password } = req.body;

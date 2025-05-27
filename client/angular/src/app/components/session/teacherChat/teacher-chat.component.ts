@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Message, SessionService } from '../../../services/session.service';
+import { RoleService } from '../../../services/role.service';
 
 @Component({
   selector: 'app-teacher-chat',
@@ -17,7 +18,7 @@ export class TeacherChatComponent implements OnInit {
   newMessage = '';
   loading = false;
 
-  constructor(private sessionService: SessionService) {}
+  constructor(private sessionService: SessionService,    private roleService: RoleService) {}
 newSessionMode = false;
 newSessionTitle = '';
 isTeacher: boolean = false;
@@ -79,7 +80,7 @@ logSession(s: any) {
 }
 
 createNewSession() {
-  const userId = sessionStorage.getItem('userId') || '68167ca59d97489bab54878a';
+    const userId = this.roleService.getUserId() || 'undefined'; // Default user ID if not found
   const title = this.newSessionTitle || 'ללא שם';
   const initialMessage = this.newSessionMessage.trim();
 

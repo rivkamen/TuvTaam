@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Message, FeedbackService } from '../../../services/feedback.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { RoleService } from '../../../services/role.service';
 
 @Component({
   selector: 'app-teacher-chat',
@@ -30,7 +31,8 @@ export class FeedbackChatComponent implements OnInit {
 
   constructor(
     private feedbackService: FeedbackService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private roleService: RoleService
   ) {}
 
   ngOnInit() {
@@ -159,7 +161,7 @@ toggleRecording() {
   }
 
   createNewSession() {
-    const userId = sessionStorage.getItem('userId') || '68167ca59d97489bab54878a';
+    const userId = this.roleService.getUserId() || 'undefined'; // Default user ID if not found
     const title = this.newSessionTitle || 'ללא שם';
     const initialMessage = this.newSessionMessage.trim();
 

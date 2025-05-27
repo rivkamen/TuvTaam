@@ -3,6 +3,8 @@ const Admin = require("../models/Admin");
 const createSession=async(req,res)=>{
 
     const {userId,adminId,messages/*,title*/} = req.body
+    console.log("hi");
+    
     if (!userId ||!messages) {
         return res.status(400).json({message:'required field is missing'})
         }
@@ -10,6 +12,7 @@ const createSession=async(req,res)=>{
     const sessionObject= {userId,adminId,messages/*,title*/}
     const session = await Session.create(sessionObject)
     if(session){
+console.log('success');
 
       return res.status(201).json({
         success: true,
@@ -17,6 +20,8 @@ const createSession=async(req,res)=>{
     });
     }
     else
+    console.log('success');
+
         return res.status(400).json({message:"failed"})
       
 }
@@ -205,11 +210,15 @@ session.messages.pull({ _id: messageId });
     });
   };
   const getUserSessions = async (req, res) => {
-   
+
     try {
+      
       const userId = req.user._id;
+      console.log(userId);
+      
       // const sessions = await Session.find({ userId }).lean();
   const sessions = await Session.find({ userId }).populate('userId', 'email').lean();
+console.log(sessions);
 
       return res.status(200).json(sessions);
     } catch (error) {
