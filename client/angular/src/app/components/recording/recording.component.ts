@@ -81,6 +81,9 @@ this.intervalId = setInterval(() => this.recordingTime.set(this.recordingTime() 
   }
 
   stopRecording() {
+         if (this.audioUrl) {
+            fetch(this.audioUrl)
+        .then(res => res.blob())}
     if (this.mediaRecorder && this.mediaRecorder.state === 'recording') {
       this.isRecording.set(false);
       this.mediaRecorder.stop();
@@ -110,21 +113,37 @@ this.intervalId = setInterval(() => this.recordingTime.set(this.recordingTime() 
 
   }
 
-  sendRecording() {
-    console.log('hii');
+  // sendRecording() {
+  //   console.log("Sending recording...");
     
-    if (this.audioUrl) {
-      console.log("yeii");
-      
-      fetch(this.audioUrl)
-        .then(res => res.blob())
-        .then(blob => this.audioRecorded.emit(blob));
-        console.log("bii");
-        
-      this.deleteRecording();
-    }
+  //     if (this.audioUrl) {
+  //           fetch(this.audioUrl)
+  //       .then(res => res.blob())
+  //       .then(blob => this.audioRecorded.emit(blob));      
+  //     this.deleteRecording();
+  //   }
+  // }
+sendRecording() {
 
+  if (!this.audioUrl) {
+    return;
   }
+
+  fetch(this.audioUrl)
+    .then(res => {
+      if (!res.ok) {
+        throw new Error(`Fetch failed with status ${res.status}`);
+      }
+      return res.blob();
+    })
+    .then(blob => {
+      this.audioRecorded.emit(blob);
+      this.deleteRecording();
+    })
+    .catch(err => {
+      console.error("Error while sending recording:", err);
+    });
+}
 
   private resetRecording() {
     this.audioChunks = [];

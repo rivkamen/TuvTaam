@@ -106,21 +106,15 @@
   </button>
 </div>
 
-      <button type="button" class="send-btn" (audioRecorded)="sendMessage()">
+      <button type="button" class="send-btn">
         <i class="pi pi-send"></i>
       </button>  </div>    
-<app-recording *ngIf="isDialogOpen" (closed)="closeDialog()"></app-recording>
-
-      <div *ngIf="isDialogOpen">בדיקה</div>
-
-    <div class="recording-panel" *ngIf="isRecording || recordedBlob">
-  <div class="recording-content">
-<button (click)="openDialog()">פתח הקלטה</button>
-
+<app-recording
+  *ngIf="isDialogOpen"
+  (closed)="closeDialog()"
+  (audioRecorded)="handleRecordedAudio($event)"
+  class="recording-dialog-overlay"
+></app-recording>
 
 
-<app-recording (sendRecording)="sendMessage()"></app-recording>
 
-
-  </div>
-</div>

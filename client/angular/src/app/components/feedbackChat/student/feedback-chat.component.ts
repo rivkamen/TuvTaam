@@ -145,7 +145,9 @@ loadMessages() {
 //   });
 // }
 
+
 sendMessage() {
+
   if (!this.newMessage.trim() && !this.recordedBlob) return;
   if (!this.selectedSessionId) return;
 
@@ -163,24 +165,21 @@ sendMessage() {
       this.newMessage = '';
       this.recordedBlob = null;
       this.loading = false;
+if (newMessage) {
+  const processedMessage = {
+    ...newMessage,
+    isAudio: !!newMessage.signedUrl,
+    isText: !!newMessage.content,
+    safeAudioUrl: newMessage.signedUrl
+      ? this.sanitizer.bypassSecurityTrustResourceUrl(newMessage.signedUrl)
+      : null
+  };
 
-      if (newMessage) {
-        const processedMessage = {
-          ...newMessage,
-          isAudio: !!newMessage.signedUrl,
-          isText: !!newMessage.content,
-          safeAudioUrl: newMessage.signedUrl
-            ? this.sanitizer.bypassSecurityTrustResourceUrl(newMessage.signedUrl)
-            : null
-        };
+  this.messages = [...this.messages, processedMessage];
 
-        // this.messages.push(processedMessage);
-        console.log('new message', newMessage);
+  setTimeout(() => this.scrollToBottom(), 300);
+}
 
-this.messages = [...this.messages, newMessage.data];
-
-    setTimeout(() => this.scrollToBottom(),300);
-      }
     },
     error: (err) => {
       console.error('Send message error:', err);
@@ -190,42 +189,13 @@ this.messages = [...this.messages, newMessage.data];
   });
 }
 
+handleRecordedAudio(blob: Blob) {
+  this.recordedBlob = blob;
+  this.sendMessage();
+}
 
 
-// sendMessage() {
-//   console.log("lllllllll");
-//   alert("sendMessage");
-//   if (!this.newMessage.trim() && !this.recordedBlob) return;
-//   if (!this.selectedSessionId) return;
 
-//   this.loading = true;
-
-//   const formData = new FormData();
-//   formData.append('content', this.newMessage.trim());
-//   if (this.recordedBlob) {
-//     const fileName = `recording-${Date.now()}.webm`;
-//     formData.append('file', this.recordedBlob, fileName);
-//   }
-
-//   this.feedbackService.sendMessageWithAudio(this.selectedSessionId, formData).subscribe({
-//     next: (newMessage) => {
-//       this.newMessage = '';
-//       this.recordedBlob = null;
-//       this.loading = false;
-
-//       // הוספה ישירה לרשימת ההודעות
-//       if (newMessage) {
-//         this.messages.push(newMessage);
-//         // setTimeout(() => this.scrollToBottom(), 100);
-//       }
-//     },
-//     error: (err) => {
-//       console.error('Send message error:', err);
-//       alert('שגיאה בשליחת ההודעה');
-//       this.loading = false;
-//     }
-//   });
-// }
 
 toggleRecording() {
   if (!this.isRecording) {
