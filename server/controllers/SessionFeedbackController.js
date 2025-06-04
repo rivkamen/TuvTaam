@@ -211,69 +211,126 @@ const deleteSession = async (req, res) => {
 //   });
 // };
 
+// const createMessage = async (req, res) => {
+//   console.log("🚀 התחלת createMessage");
+
+//   const { _id } = req.params;
+//   console.log("📌 מזהה סשן:", _id);
+
+//   const message  = req.body;
+//   console.log(req.body);
+  
+//   console.log("📩 הודעה מהגוף:", message);
+
+//   const file = req.file;
+//   if (file) {
+//     console.log("📁 קובץ מצורף:", file.originalname);
+//   } else {
+//     console.log("🚫 אין קובץ מצורף");
+//   }
+
+//   let session;
+//   try {
+//     session = await SessionFeedback.findById(_id).exec();
+//     console.log("🔍 מצאתי סשן:", session ? session.title : "לא נמצא");
+//   } catch (err) {
+//     console.error("❌ שגיאה באיתור סשן:", err);
+//     return res.status(500).json({ message: "Error finding session", error: err.message });
+//   }
+
+//   if (!session) {
+//     console.warn("⚠️ סשן לא נמצא");
+//     return res.status(404).json({ message: "session not found" });
+//   }
+
+//   if (file) {
+//     try {
+//       console.log("☁️ מתחיל העלאה ל-GCS...");
+//       const uploadResult = await uploadToGCSWithBackup(file);
+//       console.log("✅ העלאה ל-GCS הושלמה:", uploadResult.publicUrl);
+//       console.log(uploadResult);
+      
+//       message.path = uploadResult.name;
+//     } catch (err) {
+//       console.error("❌ שגיאה בהעלאת הקובץ ל-GCS:", err);
+//       return res.status(500).json({ message: "File upload failed", error: err.message });
+//     }
+//   }
+
+//   if (message.fromUser === undefined) {
+//     message.fromUser = false;
+//     console.log("ℹ️ fromUser לא היה מוגדר, מגדיר ל-false");
+//   }
+
+//   console.log("➕ מוסיף הודעה למערך ההודעות של הסשן");
+//   session.messages = [...session.messages, message];
+
+//   try {
+//     await session.save();
+//     console.log("💾 שמרתי את הסשן עם ההודעה החדשה");
+//   } catch (err) {
+//     console.error("❌ שגיאה בשמירת הסשן:", err);
+//     return res.status(500).json({ message: "Error saving session", error: err.message });
+//   }
+// console.log(message);
+
+//   console.log("✅ מחזיר תשובה עם סטטוס 201");
+//   return res.status(201).json({
+//     success: true,
+//     message: `Message added to session "${session.title}"`,
+//     data: message,
+//   });
+// };
 const createMessage = async (req, res) => {
   console.log("🚀 התחלת createMessage");
 
   const { _id } = req.params;
-  console.log("📌 מזהה סשן:", _id);
-
-  const message  = req.body;
-  console.log(req.body);
-  
-  console.log("📩 הודעה מהגוף:", message);
-
+  const message = req.body;
   const file = req.file;
-  if (file) {
-    console.log("📁 קובץ מצורף:", file.originalname);
-  } else {
-    console.log("🚫 אין קובץ מצורף");
-  }
 
   let session;
   try {
     session = await SessionFeedback.findById(_id).exec();
-    console.log("🔍 מצאתי סשן:", session ? session.title : "לא נמצא");
+    if (!session) {
+      return res.status(404).json({ message: "session not found" });
+    }
   } catch (err) {
-    console.error("❌ שגיאה באיתור סשן:", err);
     return res.status(500).json({ message: "Error finding session", error: err.message });
-  }
-
-  if (!session) {
-    console.warn("⚠️ סשן לא נמצא");
-    return res.status(404).json({ message: "session not found" });
   }
 
   if (file) {
     try {
-      console.log("☁️ מתחיל העלאה ל-GCS...");
       const uploadResult = await uploadToGCSWithBackup(file);
-      console.log("✅ העלאה ל-GCS הושלמה:", uploadResult.publicUrl);
-      console.log(uploadResult);
-      
       message.path = uploadResult.name;
+
+      // 🧠 כאן תוספת חדשה: יצירת signed URL
+      try {
+        const signedUrlData = await gcs.generateSignedUrl(message.path);
+        message.signedUrl = signedUrlData.signedUrl;
+        message.expiresAt = signedUrlData.expiresAt;
+      } catch (error) {
+        console.error("⚠️ שגיאה ביצירת signed URL:", error.message);
+        // ממשיכים בלי signedUrl
+      }
+
     } catch (err) {
-      console.error("❌ שגיאה בהעלאת הקובץ ל-GCS:", err);
       return res.status(500).json({ message: "File upload failed", error: err.message });
     }
   }
 
   if (message.fromUser === undefined) {
     message.fromUser = false;
-    console.log("ℹ️ fromUser לא היה מוגדר, מגדיר ל-false");
   }
 
-  console.log("➕ מוסיף הודעה למערך ההודעות של הסשן");
-  session.messages = [...session.messages, message];
+  session.messages.push(message);
 
   try {
     await session.save();
-    console.log("💾 שמרתי את הסשן עם ההודעה החדשה");
   } catch (err) {
-    console.error("❌ שגיאה בשמירת הסשן:", err);
     return res.status(500).json({ message: "Error saving session", error: err.message });
   }
 
-  console.log("✅ מחזיר תשובה עם סטטוס 201");
+  // ✔️ מחזירים את ההודעה עם signedUrl אם יש
   return res.status(201).json({
     success: true,
     message: `Message added to session "${session.title}"`,

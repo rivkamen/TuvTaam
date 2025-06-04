@@ -72,19 +72,6 @@ isDialogOpen = false;
     this.loadMessages();
     this.loadUserProfile();
   }
-
-  // loadMessages() {
-  //   if (!this.selectedSessionId) return;
-  //   this.loading = true;
-  //   this.feedbackService.getMessages(this.selectedSessionId).subscribe((msgs) => {
-  //     this.messages = msgs;
-  //     console.log('messages:', this.messages); // כאן הודפסה כל רשימת ההודעות
-  //   msgs.forEach(msg => {
-  //     console.log('msg:', msg); // כאן הודפס כל msg בנפרד
-  //   });
-  //     this.loading = false;
-  //   });
-  // }
 loadMessages() {
   if (!this.selectedSessionId) return;
   this.loading = true;
@@ -97,55 +84,6 @@ loadMessages() {
     this.loading = false;
   });
 }
-
-// loadMessages() {
-//   if (!this.selectedSessionId) return;
-//   this.loading = true;
-//   this.feedbackService.getMessages(this.selectedSessionId).subscribe((msgs) => {
-//     this.messages = msgs.map(msg => ({
-//       ...msg,
-      
-//       safeAudioUrl: msg.audioUrl ? this.sanitizer.bypassSecurityTrustUrl(msg.audioUrl) : null
-//     }));
-
-//     console.log('messages:', this.messages);
-//     this.messages.forEach(msg => {
-//       console.log('msg:', msg);
-//     });
-
-//     this.loading = false;
-//   });
-// }
-
-
-//   sendMessage() {
-//   if (!this.newMessage.trim() && !this.recordedBlob) return;
-//   if (!this.selectedSessionId) return;
-
-//   this.loading = true;
-
-//   const formData = new FormData();
-//   formData.append('content', this.newMessage.trim());
-//   if (this.recordedBlob) {
-//     const fileName = `recording-${Date.now()}.webm`;
-//     formData.append('file', this.recordedBlob, fileName); // שימי לב: "file"
-//   }
-
-//   this.feedbackService.sendMessageWithAudio(this.selectedSessionId, formData).subscribe({
-//     next: () => {
-//       this.newMessage = '';
-//       this.recordedBlob = null;
-//       this.loadMessages();
-//     },
-//     error: (err) => {
-//       console.error('Send message error:', err);
-//       alert('שגיאה בשליחת ההודעה');
-//       this.loading = false;
-//     }
-//   });
-// }
-
-
 sendMessage() {
 
   if (!this.newMessage.trim() && !this.recordedBlob) return;
@@ -161,26 +99,54 @@ sendMessage() {
   }
 
   this.feedbackService.sendMessageWithAudio(this.selectedSessionId, formData).subscribe({
-    next: (newMessage) => {
-      this.newMessage = '';
-      this.recordedBlob = null;
-      this.loading = false;
-if (newMessage) {
-  const processedMessage = {
-    ...newMessage,
-    isAudio: !!newMessage.signedUrl,
-    isText: !!newMessage.content,
-    safeAudioUrl: newMessage.signedUrl
-      ? this.sanitizer.bypassSecurityTrustResourceUrl(newMessage.signedUrl)
-      : null
-  };
+//     next: (newMessage) => {
+//       this.newMessage = '';
+//       this.recordedBlob = null;
+//       this.loading = false;
+// if (newMessage) {
+//   const processedMessage = {
+//     ...newMessage,
+//     isAudio: !!newMessage.signedUrl,
+//     isText: !!newMessage.content,
+//     safeAudioUrl: newMessage.signedUrl
+//       ? this.sanitizer.bypassSecurityTrustResourceUrl(newMessage.signedUrl)
+//       : null
+//   };
 
-  this.messages = [...this.messages, processedMessage];
+//   this.messages = [...this.messages, processedMessage];
 
-  setTimeout(() => this.scrollToBottom(), 300);
-}
+//   setTimeout(() => this.scrollToBottom(), 300);
+//   console.log('processedMessage', processedMessage);
+
+// }
+next: (newMessage) => {
+  this.newMessage = '';
+  this.recordedBlob = null;
+  this.loading = false;
+
+  if (newMessage?.data) {
+    const data = newMessage.data;
+
+    const processedMessage = {
+      ...data,
+      isAudio: !!data.signedUrl,
+      isText: !!data.content,
+      safeAudioUrl: data.signedUrl
+        ? this.sanitizer.bypassSecurityTrustResourceUrl(data.signedUrl)
+        : null
+    };
+
+    this.messages = [...this.messages, processedMessage];
+
+    setTimeout(() => this.scrollToBottom(), 300);
+  } else {
+    console.warn('⚠️ newMessage לא הכיל שדה data:', newMessage);
+  }
+
 
     },
+    
+
     error: (err) => {
       console.error('Send message error:', err);
       alert('שגיאה בשליחת ההודעה');
