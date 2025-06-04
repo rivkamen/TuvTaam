@@ -1,0 +1,115 @@
+<!-- <!-- <div class="flex items-center gap-3">
+  <button
+    pButton
+    type="button"
+    (click)="isRecording ? stopRecording() : startRecording()"
+    [label]="isRecording ? 'עצור הקלטה' : 'התחל הקלטה'"
+    [icon]="isRecording ? 'pi pi-stop' : 'pi pi-microphone'"
+    [severity]="isRecording ? 'danger' : 'info'"
+    class="p-button-rounded"
+  ></button>
+
+  <button
+    *ngIf="isRecording"
+    pButton
+    type="button"
+    label="ביטול"
+    icon="pi pi-times"
+    (click)="cancel()"
+    class="p-button-rounded p-button-secondary"
+  ></button>
+<audio *ngIf="recordedBlob" [src]="getAudioURL()" controls></audio>
+
+  <span *ngIf="isRecording" class="text-red-500 font-bold animate-pulse">● מקליט...</span>
+</div> 
+<p-dialog header="הקלטה" [(visible)]="showDialog" [modal]="true" class="dark-dialog">
+  <div class="recorder-container">
+    <div class="waveform" *ngIf="isRecording"></div>
+
+    <button pButton 
+            class="round-button" 
+            [ngClass]="{'recording': isRecording}" 
+            (click)="toggleRecording()">
+      <i class="pi" [ngClass]="isRecording ? 'pi-stop' : 'pi-microphone'"></i>
+    </button>
+
+    <div *ngIf="audioURL && !isRecording" class="actions">
+      <button pButton icon="pi pi-play" label="האזן" (click)="play()"></button>
+      <button pButton icon="pi pi-send" label="שלח" (click)="send()"></button>
+      <button pButton icon="pi pi-trash" label="מחק" severity="danger" (click)="clear()"></button>
+    </div>
+  </div>
+</p-dialog> -->
+<!-- <dialog open class="p-6 bg-gray-800 rounded-lg w-[400px] text-white shadow-lg">
+  <div class="flex flex-col items-center gap-4">
+    <button
+      class="w-16 h-16 rounded-full border-4 border-red-500 bg-red-600 hover:bg-red-700 transition"
+      (click)="toggleRecording()"
+    >
+      <span *ngIf="!isRecording">🎤</span>
+      <span *ngIf="isRecording">⏹️</span>
+    </button>
+
+    <div *ngIf="isRecording" class="text-sm">הקלטה: {{ duration }} שניות</div>
+
+    <canvas #canvas width="300" height="100" class="bg-gray-700 rounded-md"></canvas>
+
+    <div *ngIf="showControls" class="flex gap-4 items-center mt-2">
+      <audio *ngIf="recordedAudioUrl" [src]="recordedAudioUrl" controls class="w-full"></audio>
+    </div>
+
+    <div *ngIf="showControls" class="flex gap-4 items-center">
+      <button class="px-4 py-2 bg-green-600 rounded hover:bg-green-700">שלח</button>
+      <button class="px-4 py-2 bg-red-600 rounded hover:bg-red-700" (click)="deleteRecording()">מחק</button>
+    </div>
+  </div>
+</dialog> -->
+<!-- <div class="recorder-container">
+  <button pButton class="record-btn"
+          [icon]="isRecording() ? 'pi pi-stop' : isRecorded() ? 'pi pi-volume-up' : 'pi pi-microphone'"
+          [class.recording]="isRecording()"
+          [class.ready]="isRecorded() && !isRecording()"
+          (click)="isRecording() ? stopRecording() : isRecorded() ? playAudio() : startRecording()"
+          aria-label="Record">
+  </button>
+
+  <span class="time" *ngIf="isRecording()">{{ recordingTime() }}s</span>
+
+  <canvas #canvas *ngIf="isRecording()" width="300" height="60"></canvas>
+
+  <audio #audioPlayer *ngIf="isRecorded()" [src]="audioUrl" controls class="audio-player"></audio>
+
+  <div class="controls" *ngIf="showControls()">
+    <button pButton icon="pi pi-send" label="שלח" class="p-button-success" (click)="sendRecording()"></button>
+    <button pButton icon="pi pi-trash" label="מחק" class="p-button-danger" (click)="deleteRecording()"></button>
+  </div>
+</div> -->
+
+<div class="dialog-box">
+    <p>Recording component loaded</p>
+
+     <button class="close-button" (click)="closeRecording()">
+    <i class="pi pi-times"></i>
+  </button>
+  <button
+    pButton
+    class="record-button"
+    [icon]="isRecording() ? 'pi pi-stop' : isRecorded() ? 'pi pi-volume-up' : 'pi pi-microphone'"
+    [class.recording]="isRecording()"
+    [class.ready]="isRecorded() && !isRecording()"
+    (click)="isRecording() ? stopRecording() : isRecorded() ? playAudio() : startRecording()"
+    aria-label="Record"
+  >
+  </button>
+
+  <span class="time-display" *ngIf="isRecording()">{{ recordingTime() }}s</span>
+
+  <canvas #canvas *ngIf="isRecording()" width="300" height="60" class="waveform-canvas"></canvas>
+
+  <audio #audioPlayer *ngIf="isRecorded()" [src]="audioUrl" controls class="audio-player"></audio>
+
+  <div class="actions" *ngIf="showControls()">
+    <button pButton icon="pi pi-send" label="שלח" class="send-button" (click)="sendRecording()"></button>
+    <button pButton icon="pi pi-trash" label="מחק" class="delete-button" (click)="deleteRecording()"></button>
+  </div>
+</div>

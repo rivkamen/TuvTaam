@@ -8,6 +8,8 @@ export interface Message {
   content: string;
   fromUser: boolean;
   createdAt?: string;
+
+
 }
 
 export interface Session {

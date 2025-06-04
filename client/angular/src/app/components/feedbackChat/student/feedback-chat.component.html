@@ -29,11 +29,22 @@
     </div>
 
     <!-- תצוגת שיחה קיימת -->
+
     <div *ngIf="!newSessionMode && selectedSessionId">
       <div *ngIf="loading">טוען הודעות...</div>
+     <p-scrollPanel #scrollPanel styleClass="messages-container" [style]="{height: '400px'}">
 
-      <div *ngFor="let msg of messages" class="message-wrapper" [ngClass]="msg.fromUser ? 'user' : 'admin'">
+      <!-- <div *ngFor="let msg of messages" class="message-wrapper" [ngClass]="msg.fromUser ? 'user' : 'admin'"> -->
+<div *ngFor="let msg of messages; trackBy: trackByMessageId"
+     class="message-wrapper"
+     [ngClass]="msg.fromUser ? 'user' : 'admin'">
 
+  <!-- 🧑‍💼 תצוגת פרופיל -->
+  <div class="message-profile">
+    <img [src]="msg.fromUser ? userPhotoUrl : adminPhotoUrl"
+         alt="תמונת פרופיל"
+         class="profile-img-small" />
+  </div>
         <!-- הודעה -->
         <div *ngIf="editMessageId === msg._id; else showMessage">
           <textarea [(ngModel)]="editedMessageContent"></textarea>
@@ -43,13 +54,33 @@
 
         <ng-template #showMessage>
           <div class="bubble">
-            <div *ngIf="msg.content">{{ msg.content }}</div>
+            <!-- <div *ngIf="msg.content">{{ msg.content }}</div>
+            
             <audio *ngIf="msg.signedUrl" [src]="getSafeUrl(msg.signedUrl)" controls></audio>
-          </div>
+           -->
 
-          <div class="message-profile">
-            <img [src]="msg.fromUser ? userPhotoUrl : adminPhotoUrl" class="profile-img-small" />
-          </div>
+<div #messagesContainer style="max-height: 400px; overflow-y: auto;">
+
+<div *ngIf="msg.content">{{ msg.content }}</div>
+</div>
+ <!-- <audio
+   [hidden]="!msg.signedUrl"
+  [src]="getSafeUrl(msg.signedUrl)"
+  controls
+  preload="none"
+  (error)="onAudioError(msg)"
+></audio>  -->
+<audio
+  *ngIf="msg.safeAudioUrl"
+  [src]="msg.safeAudioUrl"
+  controls
+  preload="none"
+  (error)="onAudioError(msg)"
+></audio>
+
+<!-- <audio *ngIf="msg.safeAudioUrl" [src]="msg.safeAudioUrl" controls></audio> -->
+
+</div>
 
           <div class="msg-menu-wrapper" *ngIf="msg.fromUser">
             <button class="menu-toggle-btn" (click)="toggleMenu(msg._id)">⋮</button>
@@ -64,40 +95,35 @@
           </div>
         </ng-template>
       </div>
+</p-scrollPanel>
 
       <!-- שדה הזנת הודעה -->
       <div class="message-input">
         <input [(ngModel)]="newMessage" placeholder="הקלד הודעה..." (keydown.enter)="sendMessage()" />
-        <button (click)="sendMessage()">שלח</button>
-      </div>
+        <!-- כפתור התחלת הקלטה -->
+<div class="start-recording" *ngIf="!isRecording && !recordedBlob">
+  <!-- <button class="icon-btn record" (click)="startRecording()" title="התחל הקלטה"> -->
+    <button class="icon-btn record" (click)="openRecordingDialog()" title="התחל הקלטה">
 
-      <!-- אזור הקלטה -->
-      <div class="recording-controls">
-        <ng-container *ngIf="isRecording; else micButton">
-          <span class="recording-indicator">🔴 {{ recordingTime | date:'mm:ss' }}</span>
-          <button type="button" class="stop-btn" (click)="stopRecording()">
-            <i class="pi pi-stop"></i>
-          </button>
-        </ng-container>
-        <ng-template #micButton>
-          <button type="button" class="mic-btn" (click)="startRecording()">
-            <i class="pi pi-microphone"></i>
-          </button>
-        </ng-template>
-      </div>
+    <i class="pi pi-microphone"></i>
+  </button>
+</div>
 
-      <!-- תצוגת הקלטה -->
-      <div *ngIf="recordedBlob" class="audio-preview">
-        <audio [src]="getSafeUrlFromBlob(recordedBlob)" controls></audio>
-        <button type="button" (click)="removeRecording()">
-          <i class="pi pi-times"></i>
-        </button>
-      </div>
-
-      <!-- שליחת הודעה (כולל הקלטה) -->
-      <button type="button" class="send-btn" (click)="sendMessage()">
+      <button type="button" class="send-btn" (audioRecorded)="sendMessage()">
         <i class="pi pi-send"></i>
-      </button>
-    </div>
+      </button>  </div>    
+<app-recording *ngIf="isDialogOpen" (closed)="closeDialog()"></app-recording>
+
+      <div *ngIf="isDialogOpen">בדיקה</div>
+
+    <div class="recording-panel" *ngIf="isRecording || recordedBlob">
+  <div class="recording-content">
+<button (click)="openDialog()">פתח הקלטה</button>
+
+
+
+<app-recording (sendRecording)="sendMessage()"></app-recording>
+
+
   </div>
 </div>

@@ -1,0 +1,168 @@
+.recorder-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  background: #f7f7f7;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.record-btn {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  font-size: 1.5rem;
+}
+
+.record-btn.recording {
+  background-color: #d32f2f !important;
+  color: white;
+}
+
+.record-btn.ready {
+  background-color: #388e3c !important;
+  color: white;
+}
+
+.time {
+  font-size: 1.2rem;
+  color: #444;
+}
+
+.audio-player {
+  width: 100%;
+}
+
+.controls {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+
+
+
+/* דיאלוג רקע */
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(30, 30, 30, 0.9); /* אפור כהה שקוף */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* תיבת ההקלטה */
+.dialog-box {
+  background-color: #2d2d2d; /* אפור כהה */
+  color: #f0f0f0; /* טקסט בהיר */
+  border-radius: 1rem;
+  padding: 2rem;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+  position: relative;
+}
+
+/* כפתור ההקלטה */
+.record-button {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+}
+
+.record-button.recording {
+  background-color: #e53935; /* אדום */
+  animation: pulse 1.2s infinite;
+}
+
+.record-button.idle {
+  background-color: #555;
+}
+
+/* אנימציית "פועם" */
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(229, 57, 53, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(229, 57, 53, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(229, 57, 53, 0);
+  }
+}
+
+/* תצוגת זמן */
+.time-display {
+  text-align: center;
+  color: #ccc;
+  font-size: 1.1rem;
+  margin-top: 1rem;
+}
+
+/* כפתורי פעולה */
+.actions {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 1.5rem;
+}
+
+.send-button {
+  background-color: #e53935;
+  color: white;
+  border: none;
+  padding: 0.5rem 1.2rem;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.send-button:hover {
+  background-color: #c62828;
+}
+
+.delete-button {
+  background-color: #666;
+  color: white;
+  border: none;
+  padding: 0.5rem 1.2rem;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.delete-button:hover {
+  background-color: #444;
+}
+
+/* נגן אודיו */
+audio {
+  width: 100%;
+  margin-top: 1rem;
+}
+.close-button {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  color: #aaa;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.close-button:hover {
+  color: #f44336; /* אדום */
+}

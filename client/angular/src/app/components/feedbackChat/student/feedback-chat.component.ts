@@ -1,18 +1,23 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Message, FeedbackService } from '../../../services/feedback.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { RoleService } from '../../../services/role.service';
-
+import {RecordingComponent} from '../../recording/recording.component';
+import { ViewChild } from '@angular/core';
+import { ScrollPanel } from 'primeng/scrollpanel';
+import { ScrollPanelModule } from 'primeng/scrollpanel';
 @Component({
   selector: 'app-teacher-chat',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RecordingComponent,ScrollPanelModule],
   templateUrl: './feedback-chat.component.html',
   styleUrls: ['./feedback-chat.component.css']
 })
 export class FeedbackChatComponent implements OnInit {
+  @ViewChild('scrollPanel') scrollPanel!: ScrollPanel;
+
   sessions: any[] = [];
   selectedSessionId: string = '';
   messages: any[] = [];
@@ -40,7 +45,15 @@ openedMenuId: string | null = null;
     private sanitizer: DomSanitizer,
     public roleService: RoleService
   ) {}
+isDialogOpen = false;
 
+  openDialog() {
+    this.isDialogOpen = true;
+  }
+
+  closeDialog() {
+    this.isDialogOpen = false;
+  }
   ngOnInit() {
     this.loadSessions();
   }
@@ -61,79 +74,65 @@ openedMenuId: string | null = null;
     this.loadUserProfile();
   }
 
-  loadMessages() {
-    if (!this.selectedSessionId) return;
-    this.loading = true;
-    this.feedbackService.getMessages(this.selectedSessionId).subscribe((msgs) => {
-      this.messages = msgs;
-      console.log('messages:', this.messages); // כאן הודפסה כל רשימת ההודעות
-    msgs.forEach(msg => {
-      console.log('msg:', msg); // כאן הודפס כל msg בנפרד
-    });
-      this.loading = false;
-    });
-  }
-
-  // sendMessage() {
-  //   if (!this.newMessage.trim() || !this.selectedSessionId) return;
+  // loadMessages() {
+  //   if (!this.selectedSessionId) return;
   //   this.loading = true;
-  //   console.log(this.newMessage);
-  //   console.log("this.newMessage");
-    
-  //   const messageData = {
-  //     message: { content: this.newMessage, fromUser: true}
-  //   };
-  //   this.feedbackService.sendMessage(this.selectedSessionId, messageData).subscribe(() => {
-  //     this.newMessage = '';
-  //     this.loadMessages();
+  //   this.feedbackService.getMessages(this.selectedSessionId).subscribe((msgs) => {
+  //     this.messages = msgs;
+  //     console.log('messages:', this.messages); // כאן הודפסה כל רשימת ההודעות
+  //   msgs.forEach(msg => {
+  //     console.log('msg:', msg); // כאן הודפס כל msg בנפרד
+  //   });
+  //     this.loading = false;
   //   });
   // }
-  sendMessage() {
-  if (!this.newMessage.trim() && !this.recordedBlob) return;
+loadMessages() {
   if (!this.selectedSessionId) return;
-
   this.loading = true;
 
-  const formData = new FormData();
-  formData.append('content', this.newMessage.trim());
-  if (this.recordedBlob) {
-    const fileName = `recording-${Date.now()}.webm`;
-    formData.append('file', this.recordedBlob, fileName); // שימי לב: "file"
-  }
-
-  this.feedbackService.sendMessageWithAudio(this.selectedSessionId, formData).subscribe({
-    next: () => {
-      this.newMessage = '';
-      this.recordedBlob = null;
-      this.loadMessages();
-    },
-    error: (err) => {
-      console.error('Send message error:', err);
-      alert('שגיאה בשליחת ההודעה');
-      this.loading = false;
-    }
+  this.feedbackService.getMessages(this.selectedSessionId).subscribe((msgs) => {
+    this.messages = msgs.map((msg) => ({
+      ...msg,
+      safeAudioUrl: msg.signedUrl ? this.sanitizer.bypassSecurityTrustResourceUrl(msg.signedUrl) : null
+    }));
+    this.loading = false;
   });
 }
 
-// sendMessage() {
+// loadMessages() {
+//   if (!this.selectedSessionId) return;
+//   this.loading = true;
+//   this.feedbackService.getMessages(this.selectedSessionId).subscribe((msgs) => {
+//     this.messages = msgs.map(msg => ({
+//       ...msg,
+      
+//       safeAudioUrl: msg.audioUrl ? this.sanitizer.bypassSecurityTrustUrl(msg.audioUrl) : null
+//     }));
+
+//     console.log('messages:', this.messages);
+//     this.messages.forEach(msg => {
+//       console.log('msg:', msg);
+//     });
+
+//     this.loading = false;
+//   });
+// }
+
+
+//   sendMessage() {
 //   if (!this.newMessage.trim() && !this.recordedBlob) return;
 //   if (!this.selectedSessionId) return;
 
 //   this.loading = true;
 
 //   const formData = new FormData();
-//   formData.append('sessionId', this.selectedSessionId);
-
-//   if (this.newMessage.trim()) {
-//     formData.append('text', this.newMessage.trim());
-//   }
-
+//   formData.append('content', this.newMessage.trim());
 //   if (this.recordedBlob) {
 //     const fileName = `recording-${Date.now()}.webm`;
-//     formData.append('audio', this.recordedBlob, fileName);
+//     formData.append('file', this.recordedBlob, fileName); // שימי לב: "file"
 //   }
 
-//   this.feedbackService.sendMessageWithAudio(formData).subscribe({
+//   this.feedbackService.sendMessageWithAudio(this.selectedSessionId, formData).subscribe({
 //     next: () => {
 //       this.newMessage = '';
 //       this.recordedBlob = null;
@@ -146,8 +145,87 @@ openedMenuId: string | null = null;
 //     }
 //   });
 // }
-// removeRecording() {
-//   this.recordedBlob = null;
+
+sendMessage() {
+  if (!this.newMessage.trim() && !this.recordedBlob) return;
+  if (!this.selectedSessionId) return;
+
+  this.loading = true;
+
+  const formData = new FormData();
+  formData.append('content', this.newMessage.trim());
+  if (this.recordedBlob) {
+    const fileName = `recording-${Date.now()}.webm`;
+    formData.append('file', this.recordedBlob, fileName);
+  }
+
+  this.feedbackService.sendMessageWithAudio(this.selectedSessionId, formData).subscribe({
+    next: (newMessage) => {
+      this.newMessage = '';
+      this.recordedBlob = null;
+      this.loading = false;
+
+      if (newMessage) {
+        const processedMessage = {
+          ...newMessage,
+          isAudio: !!newMessage.signedUrl,
+          isText: !!newMessage.content,
+          safeAudioUrl: newMessage.signedUrl
+            ? this.sanitizer.bypassSecurityTrustResourceUrl(newMessage.signedUrl)
+            : null
+        };
+
+        // this.messages.push(processedMessage);
+        console.log('new message', newMessage);
+
+this.messages = [...this.messages, newMessage.data];
+
+    setTimeout(() => this.scrollToBottom(), 100);
+      }
+    },
+    error: (err) => {
+      console.error('Send message error:', err);
+      alert('שגיאה בשליחת ההודעה');
+      this.loading = false;
+    }
+  });
+}
+
+
+
+// sendMessage() {
+//   console.log("lllllllll");
+//   alert("sendMessage");
+//   if (!this.newMessage.trim() && !this.recordedBlob) return;
+//   if (!this.selectedSessionId) return;
+
+//   this.loading = true;
+
+//   const formData = new FormData();
+//   formData.append('content', this.newMessage.trim());
+//   if (this.recordedBlob) {
+//     const fileName = `recording-${Date.now()}.webm`;
+//     formData.append('file', this.recordedBlob, fileName);
+//   }
+
+//   this.feedbackService.sendMessageWithAudio(this.selectedSessionId, formData).subscribe({
+//     next: (newMessage) => {
+//       this.newMessage = '';
+//       this.recordedBlob = null;
+//       this.loading = false;
+
+//       // הוספה ישירה לרשימת ההודעות
+//       if (newMessage) {
+//         this.messages.push(newMessage);
+//         // setTimeout(() => this.scrollToBottom(), 100);
+//       }
+//     },
+//     error: (err) => {
+//       console.error('Send message error:', err);
+//       alert('שגיאה בשליחת ההודעה');
+//       this.loading = false;
+//     }
+//   });
 // }
 
 toggleRecording() {
@@ -183,27 +261,6 @@ toggleRecording() {
     });
   }
 
-  // startRecording() {
-  //   navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-  //     this.recordedChunks = [];
-  //     this.mediaRecorder = new MediaRecorder(stream);
-  //     this.mediaRecorder.ondataavailable = e => this.recordedChunks.push(e.data);
-  //     this.mediaRecorder.onstop = () => {
-  //       this.recordedBlob = new Blob(this.recordedChunks, { type: 'audio/webm' });
-  //     };
-  //     this.mediaRecorder.start();
-  //     this.isRecording = true;
-  //   }).catch(err => {
-  //     console.error('Microphone access error:', err);
-  //   });
-  // }
-
-  // stopRecording() {
-  //   if (this.mediaRecorder && this.isRecording) {
-  //     this.mediaRecorder.stop();
-  //     this.isRecording = false;
-  //   }
-  // }
 
   uploadRecording() {
     if (!this.recordedBlob || !this.selectedSessionId) return;
@@ -225,6 +282,10 @@ toggleRecording() {
       }
     });
   }
+onAudioError(msg: any) {
+  console.warn('בעיה בטעינת ההקלטה:', msg);
+  // אפשר גם לשלוח את זה לשרת לצורכי ניטור
+}
 
   getSafeUrl(url: string): SafeResourceUrl {
     return this.sanitizer.bypassSecurityTrustResourceUrl(url);
@@ -234,30 +295,30 @@ toggleRecording() {
   return this.sanitizer.bypassSecurityTrustResourceUrl(url);
 }
 
-sendRecordingWithOptionalText() {
-  if (!this.recordedBlob || !this.selectedSessionId) return;
+// sendRecordingWithOptionalText() {
+//   if (!this.recordedBlob || !this.selectedSessionId) return;
 
-  const formData = new FormData();
-  const fileName = `recording-${Date.now()}.webm`;
-  formData.append('audio', this.recordedBlob, fileName);
-  formData.append('sessionId', this.selectedSessionId);
+//   const formData = new FormData();
+//   const fileName = `recording-${Date.now()}.webm`;
+//   formData.append('audio', this.recordedBlob, fileName);
+//   formData.append('sessionId', this.selectedSessionId);
 
-  if (this.newMessage.trim()) {
-    formData.append('content', this.newMessage.trim());
-  }
+//   if (this.newMessage.trim()) {
+//     formData.append('content', this.newMessage.trim());
+//   }
 
-  this.feedbackService.uploadAudioWithBackup(formData).subscribe({
-    next: () => {
-      this.recordedBlob = null;
-      this.newMessage = '';
-      this.loadMessages();
-    },
-    error: (err) => {
-      console.error('Upload error:', err);
-      alert('שגיאה בהעלאה');
-    }
-  });
-}
+//   this.feedbackService.uploadAudioWithBackup(formData).subscribe({
+//     next: () => {
+//       this.recordedBlob = null;
+//       this.newMessage = '';
+//       this.loadMessages();
+//     },
+//     error: (err) => {
+//       console.error('Upload error:', err);
+//       alert('שגיאה בהעלאה');
+//     }
+//   });
+// }
 
 
 chunks: BlobPart[] = [];
@@ -266,11 +327,11 @@ recordingTime: Date = new Date(0);
 recordingInterval: any;
 
 startRecording() {
+  this.isRecording = true;
+  this.recordedBlob = null;
   navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
     this.mediaRecorder = new MediaRecorder(stream);
     this.chunks = [];
-    this.isRecording = true;
-
     this.mediaRecorder.ondataavailable = e => {
       this.chunks.push(e.data);
     };
@@ -349,6 +410,23 @@ loadUserProfile() {
       this.userPhotoUrl = 'assets/vivid-blurred-colorful-wallpaper-background.jpg'; 
       this.adminPhotoUrl = 'assets/DSCN0107.JPG';
     }}
+  }
+
+trackByMessageId(index: number, msg: any): string {
+  return msg._id;
+}
+openRecordingDialog() {
+  this.isDialogOpen = true;
+  console.log('Recording dialog opened');
+}
+
+closeRecordingDialog() {
+  this.isDialogOpen = false;
+}
+@ViewChild('messagesContainer') private messagesContainer!: ElementRef;
+
+  scrollToBottom() {
+    this.scrollPanel.moveBarToBottom();
   }
 
 }
