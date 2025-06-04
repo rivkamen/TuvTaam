@@ -16,7 +16,6 @@ import { ScrollPanelModule } from 'primeng/scrollpanel';
   styleUrls: ['./feedback-chat.component.css']
 })
 export class FeedbackChatComponent implements OnInit {
-  @ViewChild('scrollPanel') scrollPanel!: ScrollPanel;
 
   sessions: any[] = [];
   selectedSessionId: string = '';
@@ -180,7 +179,7 @@ sendMessage() {
 
 this.messages = [...this.messages, newMessage.data];
 
-    setTimeout(() => this.scrollToBottom(), 100);
+    setTimeout(() => this.scrollToBottom(),300);
       }
     },
     error: (err) => {
@@ -425,8 +424,19 @@ closeRecordingDialog() {
 }
 @ViewChild('messagesContainer') private messagesContainer!: ElementRef;
 
-  scrollToBottom() {
-    this.scrollPanel.moveBarToBottom();
-  }
+@ViewChild('scrollContainer') scrollContainer!: ElementRef;
+@ViewChild('scrollPanel') scrollPanelRef!: ScrollPanel;
+
+scrollToBottom() {
+  setTimeout(() => {
+    const scrollContentEl = this.scrollPanelRef?.el?.nativeElement?.querySelector('.p-scrollpanel-content');
+    if (scrollContentEl) {
+      scrollContentEl.scrollTop = scrollContentEl.scrollHeight;
+    }
+  }, 100);
+}
+
+
+
 
 }

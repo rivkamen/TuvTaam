@@ -36,7 +36,7 @@
 
       <!-- <div *ngFor="let msg of messages" class="message-wrapper" [ngClass]="msg.fromUser ? 'user' : 'admin'"> -->
 <div *ngFor="let msg of messages; trackBy: trackByMessageId"
-     class="message-wrapper"
+     class="message-wrapper" 
      [ngClass]="msg.fromUser ? 'user' : 'admin'">
 
   <!-- 🧑‍💼 תצוגת פרופיל -->
@@ -59,10 +59,7 @@
             <audio *ngIf="msg.signedUrl" [src]="getSafeUrl(msg.signedUrl)" controls></audio>
            -->
 
-<div #messagesContainer style="max-height: 400px; overflow-y: auto;">
-
 <div *ngIf="msg.content">{{ msg.content }}</div>
-</div>
  <!-- <audio
    [hidden]="!msg.signedUrl"
   [src]="getSafeUrl(msg.signedUrl)"
