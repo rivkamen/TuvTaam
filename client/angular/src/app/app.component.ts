@@ -15,11 +15,12 @@
 
 
 import { Component } from '@angular/core';
-import { RouterOutlet, RouterLink,RouterModule  } from '@angular/router'; // 👈 חשוב מאוד!
+import { RouterOutlet, RouterModule  } from '@angular/router';
+import { AppbarComponent } from "./components/appbar/appbar.component"; // 👈 חשוב מאוד!
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterLink,RouterModule ], // 👈 לוודא שזה נמצא כאן
+  imports: [RouterOutlet, RouterModule, AppbarComponent], // 👈 לוודא שזה נמצא כאן
   templateUrl:'./app.component.html',
 })
 export class AppComponent {

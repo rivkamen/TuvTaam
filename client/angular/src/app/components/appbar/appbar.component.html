@@ -1,0 +1,24 @@
+<div class="card mb-10">
+  <p-menubar [model]="routes">
+    <ng-template #item let-item>
+      <a [routerLink]="item.path" class="p-menubar-item-link">
+        <span [class]="item.icon"></span>
+        <span class="ml-2">{{ item.label }}</span>
+      </a>
+    </ng-template>
+    <ng-template #end>
+      <div class="flex items-center gap-2">
+        @if (roleService.isLoggedIn()) {
+        <p-button
+          (click)="roleService.logout()"
+          variant="outlined"
+          severity="danger"
+          >Sign Out</p-button
+        >
+        } @else {
+        <p-button (click)="router.navigateByUrl('/login')">Sign In</p-button>
+        }
+      </div>
+    </ng-template>
+  </p-menubar>
+</div>
