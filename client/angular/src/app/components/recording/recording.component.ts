@@ -3,11 +3,12 @@ import { Component, Output, EventEmitter, ViewChild, ElementRef, signal } from '
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
+import { AudioPlayerComponent } from '../audioPlayer/audio-player.component';
 
 @Component({
   selector: 'app-recording',
   standalone: true,
-  imports: [CommonModule, ButtonModule,DialogModule],
+  imports: [CommonModule, ButtonModule,DialogModule, AudioPlayerComponent],
   templateUrl: './recording.component.html',
   styleUrl: './recording.component.css'
 })

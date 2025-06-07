@@ -106,8 +106,8 @@
 
   <canvas #canvas *ngIf="isRecording()" width="300" height="60" class="waveform-canvas"></canvas>
 
-  <audio #audioPlayer *ngIf="isRecorded()" [src]="audioUrl" controls class="audio-player"></audio>
-
+  <!-- <audio #audioPlayer *ngIf="isRecorded()" [src]="audioUrl" controls class="audio-player"></audio> -->
+<app-audio-player #audioPlayer *ngIf="isRecorded()" [src]="audioUrl!" controls class="audio-player"></app-audio-player>
   <div class="actions" *ngIf="showControls()">
     <button pButton icon="pi pi-send" label="שלח" class="send-button" (click)="sendRecording()"></button>
     <button pButton icon="pi pi-trash" label="מחק" class="delete-button" (click)="deleteRecording()"></button>

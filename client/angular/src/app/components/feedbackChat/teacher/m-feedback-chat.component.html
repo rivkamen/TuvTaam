@@ -34,6 +34,7 @@
       <div *ngIf="loading">טוען הודעות...</div>
      <p-scrollPanel #scrollPanel styleClass="messages-container" [style]="{height: '400px'}">
 
+      <!-- <div *ngFor="let msg of messages" class="message-wrapper" [ngClass]="msg.fromUser ? 'user' : 'admin'"> -->
 <div *ngFor="let msg of messages; trackBy: trackByMessageId"
      class="message-wrapper" 
      [ngClass]="msg.fromUser ? 'user' : 'admin'">
@@ -73,9 +74,9 @@
   preload="none"
   (error)="onAudioError(msg)"
 ></audio>
- <app-audio-player *ngIf="msg.safeAudioUrl" [src]="msg.safeAudioUrl" controls
+ <app-m-audio-player *ngIf="msg.safeAudioUrl" [src]="msg.safeAudioUrl" controls
   preload="none"
-  (error)="onAudioError(msg)"></app-audio-player>
+  (error)="onAudioError(msg)"></app-m-audio-player>
 <!-- <audio *ngIf="msg.safeAudioUrl" [src]="msg.safeAudioUrl" controls></audio> -->
 
 </div>
