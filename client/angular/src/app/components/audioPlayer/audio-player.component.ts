@@ -29,10 +29,20 @@ export class AudioPlayerComponent {
       this.isPlaying = false;
     }
   }
+onMetadataLoaded() {
+  const audio = this.audioRef.nativeElement;
+  this.duration = audio.duration;
+}
+isDurationFinite(): boolean {
+  return isFinite(this.duration);
+}
+
 
   onTimeUpdate() {
     const audio = this.audioRef.nativeElement;
     this.currentTime = audio.currentTime;
+    console.log(audio.duration);
+    
     this.duration = audio.duration;
   }
 

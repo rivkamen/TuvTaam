@@ -1,11 +1,16 @@
 <div class="audio-container">
-  <audio #audio [src]="src" (timeupdate)="onTimeUpdate()"></audio>
+  <audio #audio [src]="src" (timeupdate)="onTimeUpdate()"  (loadedmetadata)="onMetadataLoaded()"></audio>
 
   <div class="controls">
     <button class="circle-btn" (click)="togglePlay()">
       <i class="pi" [ngClass]="isPlaying ? 'pi-pause' : 'pi-play'"></i>
     </button>
-    <span class="time-label">{{ formatTime(currentTime) }} / {{ formatTime(duration) }}</span>
+    <!-- <span class="time-label">{{ formatTime(currentTime) }} / {{ formatTime(duration) }}</span> -->
+     <span class="time-label">
+  {{ formatTime(currentTime) }}
+  <ng-container *ngIf="isDurationFinite()"> / {{ formatTime(duration) }}</ng-container>
+</span>
+
   </div>
 
   <input
