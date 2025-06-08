@@ -9,6 +9,7 @@ const login = async (req, res) => {
   if (!user) {
     return res.status(401).json({ message: "unauthorized" });
   } const match = await bcrypt.compare(password, user.password);
+
   if (!match) {
     return res.status(401).json({ message: "unauthorized" });
   }
@@ -34,13 +35,12 @@ const login = async (req, res) => {
   }
 
 };
-
-
 async function register(req, res) {
   try {
     const { username, email, password } = req.body;
     if (!username || !email || !password) {
       return res.status(400).json({ message: 'חסרים פרטים נדרשים' });
+
     }
     const existingUser = await User.findOne({ email });
     if (existingUser) {

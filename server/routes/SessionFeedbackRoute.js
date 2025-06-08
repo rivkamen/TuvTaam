@@ -6,18 +6,18 @@ const verifyAdmin = require("../middleware/verifyAdmin");
 const multer = require("multer");
 const upload = multer(); // שומר את הקובץ בזיכרון
 
-router.post("/", /*verifyJWT,*/ sessionFeedbackController.createSession);
-router.get("/", /*verifyJWT, verifyAdmin,*/ sessionFeedbackController.getSessions);
-router.get("/:_id", /*verifyJWT,verifyAdmin,*/ sessionFeedbackController.getSessionById);
-router.put("/:_id", /*verifyJWT,verifyAdmin,*/ sessionFeedbackController.updateSession);
-router.delete("/:_id", /*verifyJWT,verifyAdmin,*/ sessionFeedbackController.deleteSession);
-router.get("/user/mysessions"/*, verifyJWT*/, sessionFeedbackController.getUserSessions);
+router.post("/", verifyJWT,sessionFeedbackController.createSession);
+router.get("/", verifyJWT, /*verifyAdmin,*/ sessionFeedbackController.getSessions);
+router.get("/:_id", verifyJWT,/*verifyAdmin,*/ sessionFeedbackController.getSessionById);
+router.put("/:_id", verifyJWT,/*verifyAdmin,*/ sessionFeedbackController.updateSession);
+router.delete("/:_id", verifyJWT,/*verifyAdmin,*/ sessionFeedbackController.deleteSession);
+router.get("/user/mysessions", verifyJWT, sessionFeedbackController.getUserSessions);
 
-router.get("/:_id/messages", /*verifyJWT,verifyAdmin,*/ sessionFeedbackController.getMessages);
-router.get("/:_id/messages/:messageId", /*verifyJWT,*/ sessionFeedbackController.getMessageById);
+router.get("/:_id/messages", verifyJWT,/*verifyAdmin,*/ sessionFeedbackController.getMessages);
+router.get("/:_id/messages/:messageId", verifyJWT, sessionFeedbackController.getMessageById);
 
-router.put("/:_id/messages"/*, verifyJWT*/,upload.single("file"), sessionFeedbackController.createMessage); 
-router.put("/:_id/messages/:messageId", /*verifyJWT,verifyAdmin,*/ sessionFeedbackController.updateMessage);
-router.put("/:_id/messages/:messageId/delete", /*verifyJWT,verifyAdmin,*/ sessionFeedbackController.deleteMessage);
+router.put("/:_id/messages", verifyJWT, upload.single("file"), sessionFeedbackController.createMessage);
+router.put("/:_id/messages/:messageId", verifyJWT/*,verifyAdmin*/, sessionFeedbackController.updateMessage);
+router.put("/:_id/messages/:messageId/delete", verifyJWT,/*verifyAdmin,*/ sessionFeedbackController.deleteMessage);
 
 module.exports = router;

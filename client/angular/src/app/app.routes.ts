@@ -8,6 +8,7 @@ import { TeacherChatComponent } from './components/session/teacherChat/teacher-c
 import { StudentChatComponent } from './components/session/studentChat/student-chat.component';
 import { FeedbackChatComponent } from './components/feedbackChat/feedback-chat.component';
 import { RegisterComponent } from './components/register/register.component';
+// import { FeedbackChatComponent } from './components/feedbackChat/student/feedback-chat.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },

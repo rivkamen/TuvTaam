@@ -1,38 +1,3 @@
-<!--  
-<div *ngIf="!newSessionMode" class="session-bar">
-  <select [(ngModel)]="selectedSessionId" (change)="selectSession(selectedSessionId)">
-
-    <option *ngFor="let s of sessions" [value]="s._id">
-  {{ s.title || (s._id ? 'שיחה #' + s._id.slice(-4) : 'שיחה ללא מזהה') }}
-   
-</option>
-
-  </select>
-  <button (click)="startNewSession()">+ שיחה חדשה</button>
-</div>
-<h1>hiii</h1>
-<div *ngIf="newSessionMode" class="new-session-box">
-  <input type="text" [(ngModel)]="newSessionTitle" placeholder="שם השיחה (לא חובה)" />
-  <textarea [(ngModel)]="newSessionMessage" placeholder="כתוב את ההודעה הראשונה..."></textarea>
-  <button (click)="createNewSession()">שלח</button>
-  <button (click)="cancelNewSession()">ביטול</button>
-</div>
-<div class="chat-container" *ngIf="selectedSessionId">
-  <div *ngIf="loading">טוען הודעות...</div>
-
-  <div class="messages">
-    <div *ngFor="let msg of messages"
-         class="message-wrapper"
-         [ngClass]="msg.fromUser ? 'user' : 'admin'">
-      <div class="bubble">{{ msg.content }}</div>
-    </div>
-  </div>
-
-  <div class="message-input">
-    <input [(ngModel)]="newMessage" placeholder="הקלד הודעה..." (keydown.enter)="sendMessage()" />
-    <button (click)="sendMessage()">שלח</button>
-  </div>
-</div> -->
 
 <div class="chat-layout">
 
@@ -42,13 +7,17 @@
             class="session-item"
             [class.selected]="s._id === selectedSessionId"
             (click)="selectSession(s._id)">
-      {{ s.title || (s._id ? 'שיחה #' + s._id.slice(-4) : 'שיחה ללא מזהה') }}
+      {{ s.createdAt || (s._id ? 'שיחה #' + s._id.slice(-4) : 'שיחה ללא מזהה') }}
     </button>
     <button class="new-session-btn" (click)="startNewSession()">+ שיחה חדשה</button>
   </div>
 
   <!-- תיבת צ'אט -->
   <div class="chat-container">
+<div class="user-profile-bar" *ngIf="userEmail">
+  <img *ngIf="userPhotoUrl" [src]="roleService.isAdmin() ? adminPhotoUrl : userPhotoUrl" alt="תמונה" class="profile-img" />
+  <span class="email">{{ userEmail }}</span>
+</div>
 
     <!-- תיבת יצירת שיחה חדשה -->
     <div *ngIf="newSessionMode" class="new-session-box">
@@ -62,20 +31,50 @@
     <div *ngIf="!newSessionMode && selectedSessionId">
       <div *ngIf="loading">טוען הודעות...</div>
 
-      <div class="messages">
-        <div *ngFor="let msg of messages"
-             class="message-wrapper"
-             [ngClass]="msg.fromUser ? 'user' : 'admin'">
-          <div class="bubble">{{ msg.content }}</div>
-        </div>
-      </div>
+<div *ngFor="let msg of messages"
+     class="message-wrapper"
+     [ngClass]="msg.fromUser ? 'user' : 'admin'">
 
-      <div class="message-input">
+  <!-- 🧑‍💼 תצוגת פרופיל -->
+  <div class="message-profile">
+    <img [src]="msg.fromUser ? userPhotoUrl : adminPhotoUrl"
+         alt="תמונת פרופיל"
+         class="profile-img-small" />
+  </div>
+
+  <!-- אם זו הודעה בעריכה -->
+  <div *ngIf="editMessageId === msg._id; else showMessage">
+    <textarea [(ngModel)]="editedMessageContent"></textarea>
+    <button (click)="saveEdit(msg._id)">שמירה</button>
+    <button (click)="cancelEdit()">ביטול</button>
+  </div>
+
+  <!-- תצוגה רגילה של ההודעה -->
+  <ng-template #showMessage>
+    <div class="bubble">{{ msg.content }}</div>
+    <!-- <div class="msg-actions">
+      <button *ngIf="msg.fromUser" (click)="startEdit(msg)">✏️ עריכה</button>
+      <button *ngIf="msg.fromUser" (click)="deleteMessage(msg._id)">🗑️ מחיקה</button>
+    </div> -->
+    <div class="msg-menu-wrapper" *ngIf="msg.fromUser">
+  <button class="menu-toggle-btn" (click)="toggleMenu(msg._id)">⋮</button>
+
+  <div class="msg-menu" *ngIf="openedMenuId === msg._id">
+    <button (click)="startEdit(msg)">
+      <i class="pi pi-pencil"></i> עריכה
+    </button>
+    <button (click)="deleteMessage(msg._id)">
+      <i class="pi pi-trash"></i> מחיקה
+    </button>
+  </div>
+</div>
+
+  </ng-template>
+</div>
+    <div class="message-input">
         <input [(ngModel)]="newMessage" placeholder="הקלד הודעה..." (keydown.enter)="sendMessage()" />
         <button (click)="sendMessage()">שלח</button>
       </div>
-    </div>
-
   </div>
 </div>
 
