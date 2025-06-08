@@ -1,15 +1,17 @@
 import { Routes } from '@angular/router';
 import { UploadComponent } from './components/upload/upload.component'; // ודאי שהנתיב נכון
-import { AuthComponent } from './components/auth/auth.component';
+import {  LoginComponent } from './components/login/login.component';
 import { AdminComponent } from './components/admin/admin.component';
 import { UserComponent } from './components/user/user.component';
 import { RecordListComponent } from './components/record/record-list.component';
 import { TeacherChatComponent } from './components/session/teacherChat/teacher-chat.component';
 import { StudentChatComponent } from './components/session/studentChat/student-chat.component';
 import { FeedbackChatComponent } from './components/feedbackChat/feedback-chat.component';
+import { RegisterComponent } from './components/register/register.component';
+
 export const routes: Routes = [
-  { path: 'login', component: AuthComponent },
-  { path: 'register', component: AuthComponent },
+  { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
   { path: 'admin', component: AdminComponent },
   { path: 'user', component: UserComponent },
   { path: 'upload', component: UploadComponent },

@@ -28,32 +28,62 @@
 
       <div class="messages">
         <div *ngFor="let msg of messages"
+        
              class="message-wrapper"
              [ngClass]="msg.fromUser ? 'user' : 'admin'">
-          <div class="bubble">
-            <ng-container [ngSwitch]="msg.type">
-              <ng-container *ngSwitchCase="'text'">{{ msg.content }}</ng-container>
-              <ng-container *ngSwitchCase="'audio'">
-                <audio [src]="getSafeUrl(msg.content)" controls></audio>
-              </ng-container>
-              <ng-container *ngSwitchDefault>{{ msg.content }}</ng-container>
-            </ng-container>
+
+<div class="bubble">
+  <div *ngIf="msg.content">{{ msg.content }}</div>
+  <audio *ngIf="msg.signedUrl" [src]="getSafeUrl(msg.signedUrl)" controls></audio>
+</div>
+
+
           </div>
         </div>
       </div>
 
-      <!-- תיבת שליחת הודעה -->
-      <div class="message-input">
-        <input [(ngModel)]="newMessage" placeholder="הקלד הודעה..." (keydown.enter)="sendMessage()" />
-        <button (click)="sendMessage()">שלח</button>
-      </div>
+    
+<div class="message-input-bar">
+  <!-- הודעה -->
+  <input
+    type="text"
+    [(ngModel)]="newMessage"
+    placeholder="כתוב הודעה..."
+    (keydown.enter)="sendMessage()"
+  />
 
-      <!-- הקלטה -->
-      <div class="audio-recorder">
-        <button (click)="startRecording()" [disabled]="isRecording">🎙️ התחל הקלטה</button>
-        <button (click)="stopRecording()" [disabled]="!isRecording">⏹️ עצור</button>
-        <button (click)="uploadRecording()" [disabled]="!recordedBlob">⬆️ שלח הקלטה</button>
-      </div>
+  <!-- אזור הקלטה -->
+  <div class="recording-controls">
+
+    <!-- אם מקליטים -->
+    <ng-container *ngIf="isRecording; else micButton">
+      <span class="recording-indicator">🔴 {{ recordingTime | date:'mm:ss' }}</span>
+      <button type="button" class="stop-btn" (click)="stopRecording()">
+        <i class="pi pi-stop"></i>
+      </button>
+    </ng-container>
+
+    <!-- כפתור הקלטה (כאשר לא מקליטים) -->
+    <ng-template #micButton>
+      <button type="button" class="mic-btn" (click)="startRecording()">
+        <i class="pi pi-microphone"></i>
+      </button>
+    </ng-template>
+  </div>
+
+  <!-- תצוגת ההקלטה (אם קיימת) -->
+  <div *ngIf="recordedBlob" class="audio-preview">
+    <audio [src]="getSafeUrlFromBlob(recordedBlob)" controls></audio>
+    <button type="button" (click)="removeRecording()">
+      <i class="pi pi-times"></i>
+    </button>
+  </div>
+
+  <!-- כפתור שליחה -->
+  <button type="button" class="send-btn" (click)="sendMessage()">
+    <i class="pi pi-send"></i>
+  </button>
+</div>
+
     </div>
   </div>
-</div>

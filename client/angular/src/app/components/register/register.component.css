@@ -1,4 +1,4 @@
-body {
+/* body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background-color: #f3f4f6;
   margin: 0;
@@ -9,14 +9,12 @@ body {
   direction: rtl;
 }
 
-/* מיכל כולל */
 .container {
   width: 100%;
   max-width: 400px;
   padding: 20px;
 }
 
-/* כותרת */
 .header {
   font-size: 1.8rem;
   font-weight: bold;
@@ -25,7 +23,6 @@ body {
   color: #333;
 }
 
-/* קופסת צל */
 .shadow-box {
   background-color: #ffffff;
   border-radius: 12px;
@@ -33,14 +30,12 @@ body {
   padding: 30px 25px;
 }
 
-/* טופס */
 .form {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-/* שדות */
 .form-group {
   display: flex;
   flex-direction: column;
@@ -65,7 +60,6 @@ label {
   outline: none;
 }
 
-/* כפתור */
 .submit-button {
   background-color: #3f51b5;
   color: white;
@@ -80,4 +74,65 @@ label {
 
 .submit-button:hover {
   background-color: #303f9f;
+}
+ */
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  direction: rtl;
+  font-family: 'Varela Round', sans-serif;
+  background-color: #f0f2f5;
+}
+
+.register-card {
+  width: 100%;
+  max-width: 400px;
+  padding: 2rem;
+}
+
+.header-container {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.register-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 0;
+  color: #333;
+}
+
+.p-field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.25rem;
+}
+
+.p-field label {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  text-align: right;
+  color: #333;
+}
+
+input.p-inputtext {
+  border-radius: 8px;
+  padding: 0.75rem;
+  font-size: 1rem;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+.register-button {
+  width: 100%;
+  max-width: 200px;
+  font-size: 1.1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
 }

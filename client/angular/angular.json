@@ -26,12 +26,10 @@
                 "input": "public"
               }
             ],
-        "styles": [
-  "node_modules/primeicons/primeicons.css",
-  "src/styles.css"
-],
-
-
+            "styles": [
+              "node_modules/primeicons/primeicons.css",
+              "src/styles.css"
+            ],
             "scripts": []
           },
           "configurations": {
@@ -87,13 +85,10 @@
                 "input": "public"
               }
             ],
-          
-        "styles": [
-
-  "node_modules/primeicons/primeicons.css",
-  "src/styles.css"
-],
-           
+            "styles": [
+              "node_modules/primeicons/primeicons.css",
+              "src/styles.css"
+            ],
             "scripts": []
           }
         }

@@ -30,9 +30,9 @@ return res.status(405).json({message:"unaouthorisedid"})
 }
 const updateUser=async(req,res)=>{
   const {_id}=req.params
-    const {password,username,email}=req.body
+    const {password,username,email,role}=req.body
     const user=await User.findById(_id).exec()
-const admin=await Admin.findById({_id:req.user._id})
+  const admin=await Admin.findById({_id:req.user._id})
     if(!user){
     return res.status(401).json({message:"not found"})
     }
@@ -48,6 +48,9 @@ console.log(req.user._id);
         if(email)
         {
             user.email=email;
+        }
+        if(role){
+            user.role=role;
         }
         const MyUpdateUser=await user.save()
         return res.status(201).json({success:true,

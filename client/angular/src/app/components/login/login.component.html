@@ -1,0 +1,39 @@
+<!-- <div class="container">
+  <div class="header">כניסה</div>
+  <div class="shadow-box">
+    <form class="form">
+      <div class="form-group">
+        <label for="username">מייל</label>
+        <input id="username" type="text" [formControl]="emailFormControl" class="input-field" />
+      </div>
+      <div class="form-group">
+        <label for="password">סיסמה</label>
+        <input id="password" type="password" [formControl]="passwordFormControl" class="input-field" />
+      </div>
+       <button type="button" (click)="login()" class="submit-button">המשך</button>
+    </form>
+  </div>
+</div>
+ -->
+<p-card class="login-card">
+  <div class="header-container">
+    <h2 class="login-title">כניסה</h2>
+  </div>
+
+  <form class="p-fluid">
+    <div class="p-field">
+      <label for="email">מייל</label>
+      <input id="email" type="text" pInputText [formControl]="emailFormControl" />
+    </div>
+
+    <div class="p-field">
+      <label for="password">סיסמה</label>
+      <input id="password" type="password" pInputText [formControl]="passwordFormControl" />
+    </div>
+
+    <div class="button-container">
+      <p-button label="המשך" icon="pi pi-sign-in" (onClick)="login()" class="login-button"></p-button>
+    </div>
+  </form>
+</p-card>
+

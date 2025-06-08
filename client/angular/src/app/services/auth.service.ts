@@ -14,16 +14,21 @@ export class AuthService {
   private user!: User;
 
   login(email:string,password: string): Observable<User> {
-    let url = this.apiServerAddress + '/api/auth/login';
+    let url = this.apiServerAddress + '/auth/login';
     let  body = {
       email,
       password
       };
     return this.#http.post< User>(url, body);
   }
-
-  setUserData(user: User) {
-    this.user = user;
+ register(username:string,email:string,password: string): Observable<User> {
+    let url = this.apiServerAddress + '/auth/register';
+    let  body = {
+      username,
+      email,
+      password
+      };
+    return this.#http.post< User>(url, body);
   }
 }
 
