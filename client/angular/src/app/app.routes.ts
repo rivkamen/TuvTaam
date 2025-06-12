@@ -55,6 +55,6 @@ export const routes: Routes = [
     title: 'TuvTaam: Records',
     canActivate: [authGuard],
   },
-  { path: 'home', component: RecordListComponent, title: 'TuvTaam' }, // TODO: Change to HomeComponent when created
+  { path: 'home', component: AuthComponent, title: 'TuvTaam' }, // TODO: Change to HomeComponent when created
   { path: '', redirectTo: 'home', pathMatch: 'full' },
 ];

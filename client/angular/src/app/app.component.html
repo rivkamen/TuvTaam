@@ -1,4 +1,12 @@
-<nav>
-  <app-appbar></app-appbar>
-</nav>
+@if (roleService.isLoggedIn()) { 
+    <nav>
+    <app-appbar></app-appbar> 
+  </nav>
+  }
+@else {
+  <div>
+    <p-button (click)="router.navigateByUrl('/login')">Sign In</p-button>
+    <!-- here will be the land page -->
+  </div>
+}
 <router-outlet></router-outlet>

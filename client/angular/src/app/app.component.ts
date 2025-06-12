@@ -12,16 +12,18 @@
 //   title = 'angular';
 // }
 
-
-
-import { Component } from '@angular/core';
-import { RouterOutlet, RouterModule  } from '@angular/router';
-import { AppbarComponent } from "./components/appbar/appbar.component"; // 👈 חשוב מאוד!
+import { Component, inject } from '@angular/core';
+import { RouterOutlet, RouterModule, Router } from '@angular/router';
+import { AppbarComponent } from './components/appbar/appbar.component'; // 👈 חשוב מאוד!
+import { RoleService } from './services/role.service';
+import { ButtonModule } from 'primeng/button';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterModule, AppbarComponent], // 👈 לוודא שזה נמצא כאן
-  templateUrl:'./app.component.html',
+  imports: [RouterOutlet, RouterModule, AppbarComponent, ButtonModule], // 👈 לוודא שזה נמצא כאן
+  templateUrl: './app.component.html',
 })
 export class AppComponent {
-  }
+  router = inject(Router);
+  roleService = inject(RoleService);
+}
