@@ -9,16 +9,15 @@ import { StudentChatComponent } from './components/session/studentChat/student-c
 import { FeedbackChatComponent } from './components/feedbackChat/student/feedback-chat.component';
 
 export const routes: Routes = [
-  { path: 'login', component: AuthComponent },
-  { path: 'register', component: AuthComponent },
-  { path: 'admin', component: AdminComponent },
-  { path: 'user', component: UserComponent },
-  { path: 'upload', component: UploadComponent },
-  { path: 'teacherChat', component: TeacherChatComponent },
-  { path: 'studentChat', component: StudentChatComponent },
-  { path: 'feedbackChat', component: FeedbackChatComponent },
-  { path: 'home', component: RecordListComponent },
+  { path: 'login', component: AuthComponent, title: 'TuvTaam: Login' },
+  { path: 'register', component: AuthComponent, title: 'TuvTaam: Register' },
+  { path: 'admin', component: AdminComponent, title: 'TuvTaam: Personal Area: Admin' },
+  { path: 'user', component: UserComponent, title: 'TuvTaam: Personal Area: User' },
+  { path: 'upload', component: UploadComponent, title: 'TuvTaam: Upload Record' },
+  { path: 'teacherChat', component: TeacherChatComponent, title: 'TuvTaam: Chat' },
+  { path: 'studentChat', component: StudentChatComponent, title: 'TuvTaam: Chat' },
+  { path: 'feedbackChat', component: FeedbackChatComponent, title: 'TuvTaam: Feedback Chat' },
+  { path: 'records', component: RecordListComponent, title: 'TuvTaam: Records' },
+  { path: 'home', component: RecordListComponent, title: 'TuvTaam' }, // TODO: Change to HomeComponent when created
   { path: '', redirectTo: 'home', pathMatch: 'full' },
-  // {path:'admin'}
-
 ];

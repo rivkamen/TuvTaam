@@ -30,12 +30,12 @@ export class AppbarComponent implements OnInit {
         label: 'Chat',
       },
       {
-        path: '/upload',
-        label: 'Upload',
-      },
-      {
         path: '/feedbackChat',
         label: 'Feedback',
+      },
+      {
+        path: '/records',
+        label: 'Records',
       },
       {
         path: this.roleService.isAdmin() ? '/admin' : '/user',
@@ -54,6 +54,7 @@ export class AppbarComponent implements OnInit {
       Upload: 'pi pi-cloud-upload',
       Feedback: 'pi pi-thumbs-up',
       PersonalArea: 'pi pi-user',
+      Records: 'pi pi-list',
     };
     return (mapIcons as any)[label] || 'pi pi-circle';
   };
