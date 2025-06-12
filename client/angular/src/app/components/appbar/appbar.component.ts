@@ -19,7 +19,7 @@ export class AppbarComponent implements OnInit {
 
   ngOnInit() {
     this.username = sessionStorage.getItem('username');
-    this.routes = [
+    const routes = [
       {
         path: '/home',
         label: 'Home',
@@ -40,7 +40,15 @@ export class AppbarComponent implements OnInit {
         path: this.roleService.isAdmin() ? '/admin' : '/user',
         label: 'PersonalArea',
       },
-    ].map((route) => ({
+    ]
+    if(this.roleService.isUser()){
+      routes.splice(1, 0, {
+        path: '/my-parasha',
+        label: 'MyParasha',
+      })      
+    }
+    
+    this.routes = routes.map((route) => ({
       ...route,
       icon: this.getIcon(route.label),
     }));
@@ -54,6 +62,7 @@ export class AppbarComponent implements OnInit {
       Feedback: 'pi pi-thumbs-up',
       PersonalArea: 'pi pi-user',
       Records: 'pi pi-list',
+      MyParasha: 'pi pi-book',
     };
     return (mapIcons as any)[label] || 'pi pi-circle';
   };

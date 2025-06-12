@@ -55,6 +55,12 @@ export const routes: Routes = [
     title: 'TuvTaam: Records',
     canActivate: [authGuard],
   },
+  {
+    path: 'my-parasha',
+    component: RecordListComponent, // TODO: Change to MyParashaComponent when created
+    title: 'TuvTaam: My Parasha',
+    canActivate: [authGuard],
+  },
   { path: 'home', component: AuthComponent, title: 'TuvTaam' }, // TODO: Change to HomeComponent when created
   { path: '', redirectTo: 'home', pathMatch: 'full' },
 ];
