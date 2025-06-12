@@ -1,0 +1,24 @@
+<div class="audio-container">
+  <audio #audio [src]="src" (timeupdate)="onTimeUpdate()"></audio>
+
+  <div class="controls">
+    <button class="circle-btn" (click)="togglePlay()">
+      <i class="pi" [ngClass]="isPlaying ? 'pi-pause' : 'pi-play'"></i>
+    </button>
+    <span class="time-label">{{ formatTime(currentTime) }} / {{ formatTime(duration) }}</span>
+  </div>
+
+  <input
+    type="range"
+    class="seekbar"
+    [value]="currentTime"
+    [max]="duration"
+    (input)="onSeek($event)"
+  />
+
+  <div class="action-buttons">
+    <button class="action-btn" (click)="download()">
+      <i class="pi pi-download"></i>
+    </button>
+  </div>
+</div>

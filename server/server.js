@@ -6,6 +6,20 @@ const cors=require("cors")
 const corsOptions=require("./config/corsOptions")
 const PORT=process.env.PORT||2023
 const app=express()
+const rateLimit = require("express-rate-limit");
+
+// יצירת מגביל בקשות כללי
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 דקות
+  max: 100, // מגביל ל־100 בקשות לכל IP ב־15 דקות
+  message: 'Too many requests from this IP, please try again later.',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// להוסיף את זה לפני שאר המסלולים
+app.use(limiter);
+
 conectDB()
 app.use(cors(corsOptions))
 app.use(express.json())

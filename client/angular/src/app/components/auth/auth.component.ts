@@ -88,12 +88,10 @@ login(): void {
   const email = this.emailFormControl.value ?? '';
   const password = this.passwordFormControl.value ?? '';
   console.log("📨 נשלח אימייל וסיסמה לשרת", { email });
-  alert("נשלח אימייל: " + email);
 
   this.#authService.login(email, password).subscribe({
     next: (res: any) => {
       console.log("✅ קיבלנו תגובה מהשרת", res);
-      alert("קיבלנו תגובה מהשרת: " + JSON.stringify(res));
 
       if (res?.token) {
         console.log("🔑 שמירת טוקן", res.token);
@@ -105,12 +103,10 @@ login(): void {
         console.log("🧭 סוג משתמש שזוהה:", this.role);
 
         if (this.role === 'admin') {
-          alert("מנהל נכנס בהצלחה - מעבר ל־/admin");
           this.#router.navigateByUrl('/admin');
         }
 
         if (this.role === 'user') {
-          alert("משתמש נכנס בהצלחה - מעבר ל־/user");
           const username = res.username || email;
           console.log("👤 שם משתמש:", username);
           setTimeout(() => {

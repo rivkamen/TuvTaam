@@ -8,16 +8,16 @@ import {RecordingComponent} from '../../recording/recording.component';
 import { ViewChild } from '@angular/core';
 import { ScrollPanel } from 'primeng/scrollpanel';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
-import { AudioPlayerComponent } from '../../audioPlayer/audio-player.component';
+import { MAudioPlayerComponent } from '../../managerAudio/m-audio-player.component';
 
 @Component({
-  selector: 'app-feedback-chat',
+  selector: 'app-m-feedback-chat',
   standalone: true,
-  imports: [CommonModule, FormsModule, RecordingComponent,ScrollPanelModule,AudioPlayerComponent],
-  templateUrl: './feedback-chat.component.html',
-  styleUrls: ['./feedback-chat.component.css']
+  imports: [CommonModule, FormsModule, RecordingComponent,ScrollPanelModule,MAudioPlayerComponent],
+  templateUrl: './m-feedback-chat.component.html',
+  styleUrls: ['./m-feedback-chat.component.css']
 })
-export class FeedbackChatComponent implements OnInit {
+export class MFeedbackChatComponent implements OnInit {
 
   sessions: any[] = [];
   selectedSessionId: string = '';

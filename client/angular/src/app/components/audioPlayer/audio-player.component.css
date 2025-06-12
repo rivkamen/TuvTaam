@@ -1,0 +1,85 @@
+.audio-container {
+  background-color: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 500px;
+  margin: auto;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.circle-btn {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 56px;
+  height: 56px;
+  font-size: 20px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.circle-btn:hover {
+  background-color: #2563eb;
+}
+
+.time-label {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.seekbar {
+  width: 100%;
+  height: 6px;
+  background-color: #e5e7eb;
+  border-radius: 4px;
+  appearance: none;
+  outline: none;
+}
+
+.seekbar::-webkit-slider-thumb {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  background-color: #3b82f6;
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+}
+
+.seekbar::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  background-color: #3b82f6;
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 4px;
+}
+
+.action-btn {
+  background: none;
+  border: none;
+  color: #4b5563;
+  font-size: 20px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.action-btn:hover {
+  color: #111827;
+}
