@@ -9,6 +9,7 @@ import { StudentChatComponent } from './components/session/studentChat/student-c
 import { FeedbackChatComponent } from './components/feedbackChat/student/feedback-chat.component';
 import { authGuard } from './core/guards/auth.guard';
 import { adminGuard } from './core/guards/admin.guard';
+import { MyParashaComponent } from './components/my-parasha/my-parasha.component';
 
 export const routes: Routes = [
   { path: 'login', component: AuthComponent, title: 'TuvTaam: Login' },
@@ -45,7 +46,7 @@ export const routes: Routes = [
   },
   {
     path: 'my-parasha',
-    component: RecordListComponent, // TODO: Change to MyParashaComponent when created
+    component: MyParashaComponent,
     title: 'TuvTaam: My Parasha',
     canActivate: [authGuard],
   },

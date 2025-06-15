@@ -1,0 +1,11 @@
+<div dir="rtl">
+  <div>
+    @for (verse of verses; track $index) { @if (verse == '{ס}') {
+    <br />
+    } @else if (verse == '{פ}') {
+    <span style="width: 9ch; display: inline-block"></span>
+    } @else {
+    <span>{{ verse }} </span>
+    } }
+  </div>
+</div>
