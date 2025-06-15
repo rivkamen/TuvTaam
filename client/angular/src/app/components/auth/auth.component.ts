@@ -96,6 +96,7 @@ login(): void {
       if (res?.token) {
         console.log("🔑 שמירת טוקן", res.token);
         sessionStorage.setItem('token', res.token);
+        sessionStorage.setItem('username', res.username)
         // sessionStorage.setItem('role', res.role);
 
         this.role = res.role;

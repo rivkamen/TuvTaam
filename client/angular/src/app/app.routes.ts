@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { UploadComponent } from './components/upload/upload.component'; // ודאי שהנתיב נכון
+import { UploadComponent } from './components/upload/upload.component';
 import { AuthComponent } from './components/auth/auth.component';
 import { AdminComponent } from './components/admin/admin.component';
 import { UserComponent } from './components/user/user.component';
@@ -7,18 +7,48 @@ import { RecordListComponent } from './components/record/record-list.component';
 import { TeacherChatComponent } from './components/session/teacherChat/teacher-chat.component';
 import { StudentChatComponent } from './components/session/studentChat/student-chat.component';
 import { FeedbackChatComponent } from './components/feedbackChat/student/feedback-chat.component';
+import { authGuard } from './core/guards/auth.guard';
+import { adminGuard } from './core/guards/admin.guard';
 
 export const routes: Routes = [
-  { path: 'login', component: AuthComponent },
-  { path: 'register', component: AuthComponent },
-  { path: 'admin', component: AdminComponent },
-  { path: 'user', component: UserComponent },
-  { path: 'upload', component: UploadComponent },
-  { path: 'teacherChat', component: TeacherChatComponent },
-  { path: 'studentChat', component: StudentChatComponent },
-  { path: 'feedbackChat', component: FeedbackChatComponent },
-  { path: 'home', component: RecordListComponent },
+  { path: 'login', component: AuthComponent, title: 'TuvTaam: Login' },
+  { path: 'register', component: AuthComponent, title: 'TuvTaam: Register' },
+  {
+    path: 'admin',
+    component: AdminComponent,
+    title: 'TuvTaam: Personal Area: Admin',
+    canActivate: [adminGuard],
+  },
+  {
+    path: 'user',
+    component: UserComponent,
+    title: 'TuvTaam: Personal Area: User',
+    canActivate: [authGuard],
+  },
+  {
+    path: 'upload',
+    component: UploadComponent,
+    title: 'TuvTaam: Upload Record',
+    canActivate: [adminGuard],
+  },
+  {
+    path: 'feedbackChat',
+    component: FeedbackChatComponent,
+    title: 'TuvTaam: Feedback Chat',
+    canActivate: [authGuard],
+  },
+  {
+    path: 'records',
+    component: RecordListComponent,
+    title: 'TuvTaam: Records',
+    canActivate: [authGuard],
+  },
+  {
+    path: 'my-parasha',
+    component: RecordListComponent, // TODO: Change to MyParashaComponent when created
+    title: 'TuvTaam: My Parasha',
+    canActivate: [authGuard],
+  },
+  { path: 'home', component: AuthComponent, title: 'TuvTaam' }, // TODO: Change to HomeComponent when created
   { path: '', redirectTo: 'home', pathMatch: 'full' },
-  // {path:'admin'}
-
 ];

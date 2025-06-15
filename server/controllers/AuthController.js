@@ -24,7 +24,7 @@ const login = async (req, res) => {
       console.log("login");
 
     const token = jwt.sign(adminInfo, process.env.ACCESS_TOKEN_SECRET);
-    return res.json({ token , role: 'admin' });
+    return res.json({ token , role: 'admin', usernane: adminUsername });
   }
 
   // בדיקת משתמש רגיל ממסד הנתונים
@@ -49,7 +49,7 @@ const login = async (req, res) => {
   console.log(userInfo);
   
   const token = jwt.sign(userInfo, process.env.ACCESS_TOKEN_SECRET);
-  return res.json({ token});
+  return res.json({ token, username: user.username});
 };
 
 
