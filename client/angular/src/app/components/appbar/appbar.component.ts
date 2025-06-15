@@ -25,12 +25,8 @@ export class AppbarComponent implements OnInit {
         label: 'Home',
       },
       {
-        path: this.roleService.isAdmin() ? '/teacherChat' : '/studentChat',
-        label: 'Chat',
-      },
-      {
         path: '/feedbackChat',
-        label: 'Feedback',
+        label: 'Feedback Chat',
       },
       {
         path: '/records',
@@ -57,9 +53,8 @@ export class AppbarComponent implements OnInit {
   private getIcon = (label: string) => {
     const mapIcons = {
       Home: 'pi pi-home',
-      Chat: 'pi pi-comments',
+      'Feedback Chat': 'pi pi-comments',
       Upload: 'pi pi-cloud-upload',
-      Feedback: 'pi pi-thumbs-up',
       PersonalArea: 'pi pi-user',
       Records: 'pi pi-list',
       MyParasha: 'pi pi-book',

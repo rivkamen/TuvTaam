@@ -32,18 +32,6 @@ export const routes: Routes = [
     canActivate: [adminGuard],
   },
   {
-    path: 'teacherChat',
-    component: TeacherChatComponent,
-    title: 'TuvTaam: Chat',
-    canActivate: [adminGuard],
-  },
-  {
-    path: 'studentChat',
-    component: StudentChatComponent,
-    title: 'TuvTaam: Chat',
-    canActivate: [authGuard],
-  },
-  {
     path: 'feedbackChat',
     component: FeedbackChatComponent,
     title: 'TuvTaam: Feedback Chat',
