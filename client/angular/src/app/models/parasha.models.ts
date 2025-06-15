@@ -17,3 +17,9 @@ export interface Parasha {
   chapters: Record<string, Record<string, { text: string; parasha?: string }>>;
 }
 
+export interface TextSettings {
+  script: string;
+  display: 'no-nikud' | 'no-teamim' | 'regular';
+  fontSize: number;
+}
+

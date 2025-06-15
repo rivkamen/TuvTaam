@@ -1,11 +1,20 @@
 <div dir="rtl">
-  <div>
-    @for (verse of verses; track $index) { @if (verse == '{ס}') {
+  <app-font-selectors
+    (settingsChange)="onSettingsChange($event)"
+  ></app-font-selectors>
+  <div
+    class="parasha-view"
+    [ngStyle]="{
+         'font-family': textSettings.script || 'inherit',
+         'font-size': textSettings.fontSize + 'px',
+       }"
+  >
+    @for (verse of verses; track $index) { @if (verse == '{פ}') {
     <br />
-    } @else if (verse == '{פ}') {
+    } @else if (verse == '{ס}') {
     <span style="width: 9ch; display: inline-block"></span>
     } @else {
-    <span>{{ verse }} </span>
+    <span>{{ verse | hebrewSanitizer: textSettings.display }} </span>
     } }
   </div>
 </div>

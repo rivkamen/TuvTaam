@@ -1,0 +1,42 @@
+<div class="container">
+  <p-selectButton
+    [options]="scriptOptions"
+    [(ngModel)]="currentSettings.script"
+    (onChange)="onSettingsChange()"
+    optionValue="value"
+    size="large"
+  >
+    <ng-template let-item #item>
+      <span [ngStyle]="{ 'font-family': item.font || 'inherit' }">א</span>
+    </ng-template>
+  </p-selectButton>
+
+  <p-selectButton
+    [options]="displayOptions"
+    [(ngModel)]="currentSettings.display"
+    (onChange)="onSettingsChange()"
+    size="large"
+    optionValue="value"
+    optionLabel="label"
+  />
+
+  <p-button
+    [disabled]="currentSettings.fontSize >= maxFontSize"
+    (click)="increaseFontSize()"
+  >
+    א+
+  </p-button>
+  <p-button
+    [disabled]="currentSettings.fontSize <= minFontSize"
+    (click)="decreaseFontSize()"
+  >
+    א-
+  </p-button>
+
+  <p-button
+    severity="secondary"
+    label="איפוס"
+    icon="pi pi-refresh"
+    (click)="resetSettings()"
+  />
+</div>
