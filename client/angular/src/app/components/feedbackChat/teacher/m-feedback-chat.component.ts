@@ -9,11 +9,12 @@ import { ViewChild } from '@angular/core';
 import { ScrollPanel } from 'primeng/scrollpanel';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { MAudioPlayerComponent } from '../../managerAudio/m-audio-player.component';
-
+import { FancyAudioPlayerComponent } from '../../audioComponent/fancy-audio-player.component';
+import { AAudioPlayerComponent } from '../../audio/audio.component';
 @Component({
   selector: 'app-m-feedback-chat',
   standalone: true,
-  imports: [CommonModule, FormsModule, RecordingComponent,ScrollPanelModule,MAudioPlayerComponent],
+  imports: [CommonModule, FormsModule, RecordingComponent, ScrollPanelModule, FancyAudioPlayerComponent],
   templateUrl: './m-feedback-chat.component.html',
   styleUrls: ['./m-feedback-chat.component.css']
 })
@@ -81,6 +82,8 @@ loadMessages() {
   this.feedbackService.getMessages(this.selectedSessionId).subscribe((msgs) => {
     this.messages = msgs.map((msg) => ({
       ...msg,
+      signedUrl: msg.signedUrl || null,
+
       safeAudioUrl: msg.signedUrl ? this.sanitizer.bypassSecurityTrustResourceUrl(msg.signedUrl) : null
     }));
     this.loading = false;
@@ -133,6 +136,7 @@ next: (newMessage) => {
       ...data,
       isAudio: !!data.signedUrl,
       isText: !!data.content,
+      signedUrl: data.signedUrl || null, // הוספה
       safeAudioUrl: data.signedUrl
         ? this.sanitizer.bypassSecurityTrustResourceUrl(data.signedUrl)
         : null
@@ -374,7 +378,19 @@ scrollToBottom() {
   }, 100);
 }
 
+// ngAfterViewInit(): void {
+//   const audio = this.playerRef.nativeElement;
 
+//   if (this.src) {
+//     audio.src = this.src;
+
+//     audio.addEventListener('loadedmetadata', () => {
+//       new Plyr(audio, {
+//         controls: ['play', 'progress', 'current-time', 'duration', 'mute', 'volume', 'download'],
+//       });
+//     });
+//   }
+// }
 
 
 }

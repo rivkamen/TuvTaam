@@ -1,0 +1,10 @@
+<!-- <div class="audio-container">
+  <audio #player id="player" controls crossorigin>
+    <source [src]="src" type="audio/mp3" />
+    הדפדפן שלך לא תומך בנגן האודיו.
+  </audio>
+</div> -->
+<div class="audio-container">
+  <audio #player id="player" [src]="src" controls crossorigin></audio>
+  <a [href]="src" download class="download-button">הורד ⬇</a>
+</div>

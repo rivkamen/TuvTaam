@@ -67,17 +67,21 @@
   preload="none"
   (error)="onAudioError(msg)"
 ></audio>  -->
-<audio
+<!-- <audio
   *ngIf="msg.safeAudioUrl"
   [src]="msg.safeAudioUrl"
   controls
   preload="none"
   (error)="onAudioError(msg)"
-></audio>
- <app-m-audio-player *ngIf="msg.safeAudioUrl" [src]="msg.safeAudioUrl" controls
+></audio> -->
+ <!-- <app-m-audio-player *ngIf="msg.safeAudioUrl" [src]="msg.safeAudioUrl"
   preload="none"
-  (error)="onAudioError(msg)"></app-m-audio-player>
-<!-- <audio *ngIf="msg.safeAudioUrl" [src]="msg.safeAudioUrl" controls></audio> -->
+  (error)="onAudioError(msg)"></app-m-audio-player> -->
+  <app-fancy-audio-player
+  *ngIf="msg.signedUrl"
+  [src]="msg.safeAudioUrl"
+  [downloadUrl]="msg.signedUrl">
+</app-fancy-audio-player>
 
 </div>
 

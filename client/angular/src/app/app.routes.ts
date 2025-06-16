@@ -7,6 +7,7 @@ import { RecordListComponent } from './components/record/record-list.component';
 import { TeacherChatComponent } from './components/session/teacherChat/teacher-chat.component';
 import { StudentChatComponent } from './components/session/studentChat/student-chat.component';
 import { FeedbackChatComponent } from './components/feedbackChat/student/feedback-chat.component';
+import { MFeedbackChatComponent } from './components/feedbackChat/teacher/m-feedback-chat.component';
 
 export const routes: Routes = [
   { path: 'login', component: AuthComponent },
@@ -17,6 +18,8 @@ export const routes: Routes = [
   { path: 'teacherChat', component: TeacherChatComponent },
   { path: 'studentChat', component: StudentChatComponent },
   { path: 'feedbackChat', component: FeedbackChatComponent },
+    { path: 'mfeedbackChat', component: MFeedbackChatComponent },
+
   { path: 'home', component: RecordListComponent },
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   // {path:'admin'}

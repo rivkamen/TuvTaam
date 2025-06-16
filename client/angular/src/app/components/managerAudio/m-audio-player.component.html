@@ -1,6 +1,7 @@
 <div class="audio-container">
-  <audio #audio [src]="src" (timeupdate)="onTimeUpdate()"></audio>
-
+  <audio #audio [src]="src" (timeupdate)="onTimeUpdate()" controls></audio>
+  
+<!-- <audio #audio controls [src]="src" (timeupdate)="onTimeUpdate()" (loadedmetadata)="onTimeUpdate()" (error)="handleError()"></audio> -->
   <div class="controls">
     <button class="circle-btn" (click)="togglePlay()">
       <i class="pi" [ngClass]="isPlaying ? 'pi-pause' : 'pi-play'"></i>
@@ -17,8 +18,10 @@
   />
 
   <div class="action-buttons">
-    <button class="action-btn" (click)="download()">
+    <!-- <button class="action-btn" (click)="download()"> -->
+<a [href]="getSafeUrl(src)" download="recording.webm">
       <i class="pi pi-download"></i>
-    </button>
+    </a>
   </div>
 </div>
+
