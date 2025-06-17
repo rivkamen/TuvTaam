@@ -13,7 +13,8 @@ export class HebrewSanitizerPipe implements PipeTransform {
         return value
           .replaceAll('־', ' ')
           .replace(/[\u0591-\u05C7]/g, '')
-          .replace(/[\u05B0-\u05BD]/g, '');
+          .replace(/[\u05B0-\u05BD]/g, '')
+          .replace(/\s*\[.*?\]/g, '');
       default:
         return value;
     }
