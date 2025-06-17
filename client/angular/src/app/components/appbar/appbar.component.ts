@@ -15,15 +15,26 @@ import { DecimalPipe } from '@angular/common';
   styleUrl: './appbar.component.css',
 })
 export class AppbarComponent implements OnInit {
-  private authService = inject(AuthService);
   roleService = inject(RoleService);
   routes: MenuItem[] = [];
-  dueDate = this.authService.user?.dueDate ?? new Date('06-18-2025');
+  dueDate?: Date;
   days = this.dueDate
     ? Math.ceil(
         (this.dueDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)
       )
-    : 0;
+    : -1;
+
+  constructor(_authService: AuthService) {
+    _authService.user.subscribe((user) => {
+      if (user) {
+        this.dueDate = new Date(user.dueDate);
+        this.days = Math.ceil(
+          (this.dueDate.getTime() - new Date().getTime()) /
+            (1000 * 60 * 60 * 24)
+        );
+      }
+    });
+  }
 
   ngOnInit() {
     const routes = [

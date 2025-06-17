@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import {  LoginComponent } from './components/login/login.component';
 import { UploadComponent } from './components/upload/upload.component';
 import { AuthComponent } from './components/auth/auth.component';
 import { AdminComponent } from './components/admin/admin.component';
@@ -7,13 +8,14 @@ import { RecordListComponent } from './components/record/record-list.component';
 import { TeacherChatComponent } from './components/session/teacherChat/teacher-chat.component';
 import { StudentChatComponent } from './components/session/studentChat/student-chat.component';
 import { FeedbackChatComponent } from './components/feedbackChat/student/feedback-chat.component';
+import { RegisterComponent } from './components/register/register.component';
 import { authGuard } from './core/guards/auth.guard';
 import { adminGuard } from './core/guards/admin.guard';
 import { MyParashaComponent } from './components/my-parasha/my-parasha.component';
 
 export const routes: Routes = [
-  { path: 'login', component: AuthComponent, title: 'TuvTaam: Login' },
-  { path: 'register', component: AuthComponent, title: 'TuvTaam: Register' },
+  { path: 'login', component: LoginComponent, title: 'TuvTaam: Login' },
+  { path: 'register', component: RegisterComponent, title: 'TuvTaam: Register' },
   {
     path: 'admin',
     component: AdminComponent,

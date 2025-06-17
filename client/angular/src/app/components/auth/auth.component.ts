@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormControl } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
+import { User } from '../../models/user.model';
 
 
 @Component({
@@ -17,7 +18,6 @@ import { firstValueFrom } from 'rxjs';
 export class AuthComponent {
   #authService = inject(AuthService);
   //#adminService = inject(AdminService)
-  #router = inject(Router);
   passwordFormControl = new FormControl('');
   emailFormControl = new FormControl('');
 
@@ -89,42 +89,42 @@ login(): void {
   const password = this.passwordFormControl.value ?? '';
   console.log("📨 נשלח אימייל וסיסמה לשרת", { email });
 
-  this.#authService.login(email, password).subscribe({
-    next: (res: any) => {
-      console.log("✅ קיבלנו תגובה מהשרת", res);
+   this.#authService.login(email, password)//.subscribe({
+//     next: (res: any) => {
+//       console.log("✅ קיבלנו תגובה מהשרת", res);
 
-      if (res?.token) {
-        console.log("🔑 שמירת טוקן", res.token);
-        sessionStorage.setItem('token', res.token);
-        sessionStorage.setItem('username', res.username)
-        // sessionStorage.setItem('role', res.role);
+//       if (res?.token) {
+//         console.log("🔑 שמירת טוקן", res.token);
+//         sessionStorage.setItem('token', res.token);
+//         sessionStorage.setItem('username', res.username)
+//         // sessionStorage.setItem('role', res.role);
 
-        this.role = res.role;
-        console.log("🧭 סוג משתמש שזוהה:", this.role);
+//         this.role = res.role;
+//         console.log("🧭 סוג משתמש שזוהה:", this.role);
 
-        if (this.role === 'admin') {
-          this.#router.navigateByUrl('/admin');
-        }
+//         if (this.role === 'admin') {
+//           this.#router.navigateByUrl('/admin');
+//         }
 
-        if (this.role === 'user') {
-          const username = res.username || email;
-          console.log("👤 שם משתמש:", username);
-          setTimeout(() => {
-            this.#router.navigate(['/user']);
-          }, 100);
-        }
+//         if (this.role === 'user') {
+//           const username = res.username || email;
+//           console.log("👤 שם משתמש:", username);
+//           setTimeout(() => {
+//             this.#router.navigate(['/user']);
+//           }, 100);
+//         }
 
-      } else {
-        console.error("❌ אין טוקן בתגובה");
-        alert("שגיאה: אין טוקן בתגובה");
-      }
-    },
+//       } else {
+//         console.error("❌ אין טוקן בתגובה");
+//         alert("שגיאה: אין טוקן בתגובה");
+//       }
+//     },
 
-    error: (err) => {
-      console.error("🚫 שגיאה מהשרת", err);
-      alert("שגיאה מהשרת: " + (err?.message || JSON.stringify(err)));
-    }
-  });
+//     error: (err) => {
+//       console.error("🚫 שגיאה מהשרת", err);
+//       alert("שגיאה מהשרת: " + (err?.message || JSON.stringify(err)));
+//     }
+//   });
 }
 
 }

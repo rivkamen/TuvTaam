@@ -1,13 +1,13 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const TanakhRef = new Schema({
-	book: String,
+const TanakhRef = {
+	bookName: String,
 	startChapter: { type: String, required: true },
 	startVerse: { type: String, required: true },
 	endChapter: { type: String, required: true },
 	endVerse: { type: String, required: true }
-})
+}
 
 const userSchema = new Schema(
 	{

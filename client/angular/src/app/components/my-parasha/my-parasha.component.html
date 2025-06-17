@@ -1,4 +1,18 @@
-<div>
-    <app-parasha-view [verses]="verses"></app-parasha-view>
-    <!-- recording -->
+<div dir="rtl">
+  <!-- recording -->
+  <app-font-selectors
+    (settingsChange)="onSettingsChange($event)"
+  ></app-font-selectors>
+  <h3 class="subtitle">פרשה:</h3>
+  <app-parasha-view
+    [verses]="parashaVerses"
+    [textSettings]="textSettings"
+  ></app-parasha-view>
+  @if (haftara) {
+  <h3 class="subtitle">הפטרה:</h3>
+  <app-parasha-view
+    [verses]="haftaraVerses"
+    [textSettings]="textSettings"
+  ></app-parasha-view
+  >}
 </div>

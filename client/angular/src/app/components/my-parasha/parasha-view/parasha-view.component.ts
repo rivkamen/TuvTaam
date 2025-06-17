@@ -10,15 +10,11 @@ import { HebrewSanitizerPipe } from '../../../core/pipes/hebrew-sanitizer.pipe';
 @Component({
   selector: 'app-parasha-view',
   standalone: true,
-  imports: [FontSelectorsComponent, CommonModule, HebrewSanitizerPipe],
+  imports: [CommonModule, HebrewSanitizerPipe],
   templateUrl: './parasha-view.component.html',
   styleUrl: './parasha-view.component.css',
 })
 export class ParashaViewComponent {
   @Input() verses: string[] = [];
-  textSettings = defaultTextSettings;
-
-  onSettingsChange(newSettings: TextSettings): void {
-    this.textSettings = newSettings;
-  }
+  @Input() textSettings:TextSettings = defaultTextSettings
 }
