@@ -34,7 +34,11 @@
         </div>
 
         <audio [src]="record.signedUrl" controls class="w-full my-2"></audio>
-
+   <app-fancy-audio-player
+  *ngIf="record.signedUrl"
+  [src]="record.signedUrl"
+  [downloadUrl]="record.signedUrl">
+</app-fancy-audio-player>
         <button pButton icon="pi pi-trash"
                 label="מחק"
                 (click)="deleteRecord(record._id)"

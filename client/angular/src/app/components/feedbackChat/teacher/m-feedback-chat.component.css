@@ -1,19 +1,17 @@
-
-/* עיצוב כללי */
+/* 
 .chat-layout {
   display: flex;
   height: 100vh;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   direction: rtl;
-  background: #f9f9fb;
-  color: #333;
+  background: #F5F5F5;
+  color: #4A4A4A;
 }
 
-/* סרגל צד שמכיל את רשימת השיחות */
 .session-list {
   width: 250px;
   background-color: #ffffff;
-  border-left: 1px solid #ddd;
+  border-left: 1px solid #00509E;
   padding: 1rem;
   display: flex;
   flex-direction: column;
@@ -24,7 +22,7 @@
 
 .session-item {
   padding: 10px;
-  background-color: #f0f0f0;
+  background-color: #F5F5F5;
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -37,14 +35,14 @@
 }
 
 .session-item.selected {
-  background-color: #d0eaff;
+  background-color: #D0E6FF;
   font-weight: bold;
 }
 
 .new-session-btn {
   margin-top: auto;
   padding: 10px;
-  background-color: #4caf50;
+  background-color: #00509E;
   color: white;
   border: none;
   border-radius: 8px;
@@ -53,10 +51,9 @@
 }
 
 .new-session-btn:hover {
-  background-color: #45a049;
+  background-color: #003366;
 }
 
-/* אזור הצ'אט */
 .chat-container {
   flex: 1;
   display: flex;
@@ -65,7 +62,6 @@
   overflow-y: auto;
 }
 
-/* שורת פרופיל */
 .user-profile-bar {
   display: flex;
   align-items: center;
@@ -84,7 +80,6 @@
   font-weight: bold;
 }
 
-/* הודעות */
 .message-wrapper {
   display: flex;
   align-items: flex-end;
@@ -104,16 +99,15 @@
   max-width: 60%;
   padding: 10px 15px;
   border-radius: 18px;
-  background-color: #e0f7fa;
+  background-color: #D0E6FF;
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
   word-break: break-word;
 }
 
 .message-wrapper.admin .bubble {
-  background-color: #f1f0f0;
+  background-color: #F5F5F5;
 }
 
-/* פעולות הודעה */
 .msg-actions {
   display: flex;
   gap: 8px;
@@ -124,7 +118,7 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: #555;
+  color: #4A4A4A;
   font-size: 0.9em;
 }
 
@@ -132,7 +126,6 @@
   text-decoration: underline;
 }
 
-/* עיצוב תמונת פרופיל קטנה */
 .profile-img-small {
   width: 32px;
   height: 32px;
@@ -140,7 +133,6 @@
   object-fit: cover;
 }
 
-/* תיבת שיחה חדשה */
 .new-session-box {
   display: flex;
   flex-direction: column;
@@ -158,7 +150,7 @@
 
 .new-session-box button {
   padding: 8px;
-  background-color: #2196f3;
+  background-color: #00509E;
   border: none;
   color: white;
   border-radius: 6px;
@@ -167,16 +159,15 @@
 }
 
 .new-session-box button:hover {
-  background-color: #1976d2;
+  background-color: #003366;
 }
 
-/* שורת הקלדת הודעה */
 .message-input {
   display: flex;
   gap: 10px;
   margin-top: auto;
   padding-top: 10px;
-  border-top: 1px solid #ddd;
+  border-top: 1px solid #00509E;
 }
 
 .message-input input {
@@ -188,7 +179,7 @@
 
 .message-input button {
   padding: 10px 15px;
-  background-color: #2196f3;
+  background-color: #00509E;
   color: white;
   border: none;
   border-radius: 6px;
@@ -196,14 +187,15 @@
 }
 
 .message-input button:hover {
-  background-color: #1976d2;
+  background-color: #003366;
 }
-/* עוטף את כפתורי התפריט */
+
 .msg-menu-wrapper {
   position: relative;
   display: none;
   margin-right: auto;
 }
+
 .recording-dialog-overlay {
   position: fixed;
   top: 0;
@@ -211,7 +203,7 @@
   right: 0;
   bottom: 0;
   z-index: 9999;
-  background-color: rgba(0, 0, 0, 0.6); /* רקע שקוף כהה */
+  background-color: rgba(0, 0, 0, 0.6); 
   display: flex;
   justify-content: center;
   align-items: center;
@@ -222,7 +214,6 @@
   display: block;
 }
 
-/* כפתור ⋮ */
 .menu-toggle-btn {
   background: none;
   border: none;
@@ -236,7 +227,6 @@
   color: #555;
 }
 
-/* תפריט הכפתורים */
 .msg-menu {
   position: absolute;
   top: 100%;
@@ -261,11 +251,548 @@
   text-align: right;
   cursor: pointer;
   font-size: 0.95em;
-  color: #333;
+  color: #4A4A4A;
 }
 
 .msg-menu button:hover {
-  background-color: #f0f0f0;
+  background-color: #F5F5F5;
 }
 
+.edit-message-container {
+  background-color: #ffffff;
+  border: 1px solid #00509E;
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.07);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.edit-textarea {
+  width: 100%;
+  border: 1px solid #bbb;
+  border-radius: 8px;
+  padding: 0.75rem;
+  font-size: 1rem;
+  resize: vertical;
+  font-family: inherit;
+  color: #4A4A4A;
+  background-color: #F5F5F5;
+}
+
+.edit-textarea:focus {
+  outline: none;
+  border-color: #00509E;
+  box-shadow: 0 0 5px rgba(0, 80, 158, 0.3);
+}
+
+.edit-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.save-btn {
+  background-color: #00509E !important;
+  border: none;
+}
+
+.save-btn:hover {
+  background-color: #003366 !important;
+}
+
+.cancel-btn {
+  background-color: #D32F2F !important;
+  border: none;
+}
+
+.cancel-btn:hover {
+  background-color: #b71c1c !important;
+}
+
+.menu-toggle-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #888;
+  padding: 5px;
+  transition: color 0.2s ease;
+}
+
+.menu-toggle-btn:hover {
+  color: #003366; 
+}
+
+
+
+.msg-menu-modern button {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding: 8px 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: #4A4A4A;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.msg-menu-modern button:hover {
+  background-color: #F5F5F5; 
+  color: #00509E; 
+}
+
+.msg-menu-modern button i {
+  font-size: 1rem;
+}
+
+.msg-menu-modern button.delete:hover {
+  color: #D32F2F; 
+}
+::ng-deep .custom-speeddial-btn {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  color: #666;
+  font-size: 1.2rem;
+}
+
+::ng-deep .custom-speeddial-btn:hover {
+  color: #003366;
+  background-color: rgba(0, 0, 0, 0.05) !important;
+  border-radius: 50%;
+}
+
+
+
+.icon-btn {
+  background-color: #f0f0f0;
+  border-radius: 50%;
+  width: 2.5rem;
+  height: 2.5rem;
+  font-size: 1.2rem;
+  color: #444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.2s, color 0.2s;
+  cursor: pointer;
+}
+
+.icon-btn:hover {
+  background-color: #e0e0e0;
+  color: #222;
+
+}
+
+.icon-btn.delete:hover {
+  background-color: #ffe5e5;
+  color: #c00;
+}
+
+.msg-menu-modern {
+  right: 0.5rem; 
+}
+
+.msg-menu-wrapper {
+  position: relative;
+  display: inline-block;
+}
+.msg-menu-modern {
+  position: absolute;
+  bottom: 100%; 
+  right: 0; 
+  display: flex;
+  gap: 0.5rem;
+  background: transparent;
+  padding: 0;
+  margin-bottom: 0.25rem; 
+}
+.msg-menu-modern {
+  position: absolute;
+  bottom: 100%; 
+  right: 0;
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  background-color: #F5F5F5;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 5px; 
+  margin: 2px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+  z-index: 100;
+} */
+
+.chat-layout {
+  display: flex;
+  height: 100vh;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  direction: rtl;
+  background: var(--color-secondary);
+  color: var(--color-secondary-dark);
+}
+
+.session-list {
+  width: 250px;
+  background-color: var(--color-white);
+  border-left: 1px solid var(--color-primary);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  box-shadow: -2px 0 5px rgba(0,0,0,0.05);
+  overflow-y: auto;
+}
+
+.session-item {
+  padding: 10px;
+  background-color: var(--color-secondary);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: right;
+  transition: background-color 0.2s ease;
+}
+.session-item:hover {
+  background-color: #e0e0e0;
+}
+.session-item.selected {
+  background-color: #D0E6FF;
+  font-weight: bold;
+}
+
+.new-session-btn {
+  margin-top: auto;
+  padding: 10px;
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+.new-session-btn:hover {
+  background-color: var(--color-primary-dark);
+}
+
+.chat-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.user-profile-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+.user-profile-bar .profile-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.user-profile-bar .email {
+  font-weight: bold;
+}
+
+.message-wrapper {
+  display: flex;
+  align-items: flex-end;
+  margin-bottom: 10px;
+  gap: 10px;
+}
+.message-wrapper.user {
+  flex-direction: row-reverse;
+}
+.message-wrapper.admin {
+  flex-direction: row;
+}
+
+.bubble {
+  max-width: 60%;
+  padding: 10px 15px;
+  border-radius: 18px;
+  background-color: #D0E6FF;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  word-break: break-word;
+}
+.message-wrapper.admin .bubble {
+  background-color: var(--color-secondary);
+}
+
+.msg-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 5px;
+}
+.msg-actions button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-secondary-dark);
+  font-size: 0.9em;
+}
+.msg-actions button:hover {
+  text-decoration: underline;
+}
+
+.profile-img-small {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.new-session-box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.new-session-box input,
+.new-session-box textarea {
+  padding: 8px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font-family: inherit;
+}
+
+.new-session-box button {
+  padding: 8px;
+  background-color: var(--color-primary);
+  border: none;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+.new-session-box button:hover {
+  background-color: var(--color-primary-dark);
+}
+
+.message-input {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid var(--color-primary);
+}
+.message-input input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #bbb;
+  border-radius: 6px;
+}
+.message-input button {
+  padding: 10px 15px;
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.message-input button:hover {
+  background-color: var(--color-primary-dark);
+}
+
+.msg-menu-wrapper {
+  position: relative;
+  display: inline-block;
+  margin-right: auto;
+}
+
+.message-wrapper.user:hover .msg-menu-wrapper,
+.message-wrapper.admin:hover .msg-menu-wrapper {
+  display: block;
+}
+
+.menu-toggle-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: var(--color-muted);
+  padding: 5px;
+  transition: color 0.2s ease;
+}
+.menu-toggle-btn:hover {
+  color: var(--color-primary-dark);
+}
+
+.msg-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  min-width: 100px;
+}
+.msg-menu button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 10px;
+  background: none;
+  border: none;
+  text-align: right;
+  cursor: pointer;
+  font-size: 0.95em;
+  color: var(--color-secondary-dark);
+}
+.msg-menu button:hover {
+  background-color: var(--color-secondary);
+}
+
+.edit-message-container {
+  background-color: var(--color-white);
+  border: 1px solid var(--color-primary);
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.07);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.edit-textarea {
+  width: 100%;
+  border: 1px solid #bbb;
+  border-radius: 8px;
+  padding: 0.75rem;
+  font-size: 1rem;
+  resize: vertical;
+  font-family: inherit;
+  color: var(--color-secondary-dark);
+  background-color: var(--color-secondary);
+}
+.edit-textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 5px rgba(0, 80, 158, 0.3);
+}
+
+.edit-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.save-btn {
+  background-color: var(--color-primary) !important;
+  border: none;
+}
+.save-btn:hover {
+  background-color: var(--color-primary-dark) !important;
+}
+
+.cancel-btn {
+  background-color: var(--color-danger) !important;
+  border: none;
+}
+.cancel-btn:hover {
+  background-color: var(--color-danger-dark) !important;
+}
+
+
+.msg-menu-modern button:hover {
+  background-color: var(--color-secondary);
+  color: var(--color-primary);
+}
+.msg-menu-modern button.delete:hover {
+  color: var(--color-danger);
+}
+
+.icon-btn {
+  background-color: #f0f0f0;
+  border-radius: 50%;
+  width: 2.5rem;
+  height: 2.5rem;
+  font-size: 1.2rem;
+  color: #444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.2s, color 0.2s;
+  cursor: pointer;
+}
+.icon-btn:hover {
+  background-color: #e0e0e0;
+  color: #222;
+}
+.icon-btn.delete:hover {
+  background-color: #ffe5e5;
+  color: #c00;
+}
+.recording-dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6); 
+  display: flex;
+  justify-content: center; /* מרכז אופקית */
+  align-items: center;     /* מרכז אנכית */
+  z-index: 9999;
+}
+.msg-menu-modern {
+  position: absolute;
+  top: 50%;
+  left: 100%; /* פותח לצד שמאל של הכפתור */
+  transform: translateY(-50%); /* מרכז לגובה הכפתור */
+  
+  display: flex;
+  flex-direction: row; /* שורות – מאוזן */
+  gap: 0.5rem;
+
+  background-color: #F5F5F5;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 5px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+}
+.msg-menu-modern button {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding: 8px 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: var(--color-secondary-dark);
+  transition: background-color 0.2s, color 0.2s;
+}
+/* הסתרת כפתור התפריט כברירת מחדל */
+.menu-toggle-btn {
+  visibility: hidden;
+}
+
+/* הצגת כפתור התפריט כשמרחפים על ההודעה */
+.message-wrapper.admin:hover .menu-toggle-btn,
+.message-wrapper.user:hover .menu-toggle-btn {
+  visibility: visible;
+}
 

@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, HostListener, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Message, FeedbackService } from '../../../services/feedback.service';
@@ -11,10 +11,15 @@ import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { MAudioPlayerComponent } from '../../managerAudio/m-audio-player.component';
 import { FancyAudioPlayerComponent } from '../../audioComponent/fancy-audio-player.component';
 import { AAudioPlayerComponent } from '../../audio/audio.component';
+import { ButtonModule } from 'primeng/button';
+import { MenuItem } from 'primeng/api';
+import { SpeedDialModule } from 'primeng/speeddial';
+import { ViewChildren, QueryList } from '@angular/core';
+
 @Component({
   selector: 'app-m-feedback-chat',
   standalone: true,
-  imports: [CommonModule, FormsModule, RecordingComponent, ScrollPanelModule, FancyAudioPlayerComponent],
+  imports: [CommonModule, FormsModule, RecordingComponent, ScrollPanelModule, FancyAudioPlayerComponent, ButtonModule, SpeedDialModule],
   templateUrl: './m-feedback-chat.component.html',
   styleUrls: ['./m-feedback-chat.component.css']
 })
@@ -48,6 +53,29 @@ openedMenuId: string | null = null;
     public roleService: RoleService
   ) {}
 isDialogOpen = false;
+@ViewChild('messagesContainer') private messagesContainer!: ElementRef;
+@ViewChildren('menuWrapper') menuWrappers!: QueryList<ElementRef>;
+@ViewChild('scrollContainer') scrollContainer!: ElementRef;
+@ViewChild('scrollPanel') scrollPanelRef!: ScrollPanel;
+
+getMenuItems(msg: Message): MenuItem[] {
+  return [
+    {
+      label: 'עריכה',
+      icon: 'pi pi-pencil',
+      command: () => this.startEdit(msg)
+    },
+    {
+      label: 'מחיקה',
+      icon: 'pi pi-trash',
+      command: () => {this.deleteMessage(msg._id)}
+    }
+  ];
+}
+log(msg: any) {
+  console.log('Message:', msg);
+  return '';
+}
 
   openDialog() {
     this.isDialogOpen = true;
@@ -192,7 +220,7 @@ toggleRecording() {
     const initialMessage = this.newSessionMessage.trim();
 
     this.feedbackService.createSession(userId, title, initialMessage ? [
-      { content: initialMessage, fromUser: true}
+      { content: initialMessage, fromUser: false}
     ] : []).subscribe(session => {
       this.sessions.push(session);
       this.selectedSessionId = session._id;
@@ -266,6 +294,7 @@ chunks: BlobPart[] = [];
 recordingStartTime: number = 0;
 recordingTime: Date = new Date(0);
 recordingInterval: any;
+isDropdownOpen = false;
 
 startRecording() {
   this.isRecording = true;
@@ -322,7 +351,8 @@ saveEdit(messageId:string) {
     this.cancelEdit();
   });
 }
-deleteMessage(messageId: string) {
+deleteMessage(messageId: string | undefined) {
+  if (!messageId) return;
   if (!confirm('האם למחוק את ההודעה?')) return;
   this.feedbackService.deleteMessage(this.selectedSessionId,messageId).subscribe(() => {
     this.messages = this.messages.filter(m => m._id !== messageId);
@@ -348,8 +378,8 @@ loadUserProfile() {
       console.log("hi");
       
       this.userEmail = userSession.userId[0].email;
-      this.userPhotoUrl = 'assets/vivid-blurred-colorful-wallpaper-background.jpg'; 
-      this.adminPhotoUrl = 'assets/DSCN0107.JPG';
+       this.userPhotoUrl = 'assets/student.gif'; 
+      this.adminPhotoUrl = 'assets/teacher.gif';
     }}
   }
 
@@ -364,10 +394,19 @@ openRecordingDialog() {
 closeRecordingDialog() {
   this.isDialogOpen = false;
 }
-@ViewChild('messagesContainer') private messagesContainer!: ElementRef;
+@HostListener('document:click', ['$event'])
+onClickOutside(event: MouseEvent): void {
 
-@ViewChild('scrollContainer') scrollContainer!: ElementRef;
-@ViewChild('scrollPanel') scrollPanelRef!: ScrollPanel;
+  if (!this.openedMenuId) return;
+
+const clickedInsideSomeMenu = this.menuWrappers?.toArray().some(wrapper =>
+  wrapper.nativeElement.contains(event.target)
+);
+
+  if (!clickedInsideSomeMenu) {
+    this.openedMenuId = null;
+  }
+}
 
 scrollToBottom() {
   setTimeout(() => {

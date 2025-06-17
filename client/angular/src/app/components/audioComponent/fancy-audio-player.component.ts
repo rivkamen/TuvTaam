@@ -35,7 +35,6 @@ onAudioError() {
   audio.addEventListener('durationchange', () => this.updateDuration('durationchange'));
   audio.addEventListener('timeupdate', () => {
   const t = audio.currentTime;
-  console.log('[timeupdate] currentTime:', t);
   this.currentTime.set(t); // אם את משתמשת ב-Signal
 });
 
@@ -44,7 +43,6 @@ onAudioError() {
 updateDuration(eventName: string) {
   const audio = this.audioRef.nativeElement;
   const d = audio.duration;
-  console.log(`[${eventName}] duration:`, d);
   
   if (!isNaN(d) && isFinite(d) && d > 0) {
     this.duration.set(d);
@@ -56,17 +54,12 @@ updateDuration(eventName: string) {
 onLoadedMetadata() {
   const audio = this.audioRef.nativeElement;
 
-  console.log('[onLoadedMetadata] התחלת קריאה');
-  console.log('[onLoadedMetadata] audio element:', audio);
+
 
   const d = audio.duration;
-  console.log('[onLoadedMetadata] audio.duration:', d);
 
   // עוד בדיקות למעקב
-  console.log('[onLoadedMetadata] readyState:', audio.readyState); // 0–4
-  console.log('[onLoadedMetadata] networkState:', audio.networkState); // 0–3
-  console.log('[onLoadedMetadata] src:', audio.src);
-  console.log('[onLoadedMetadata] currentTime:', audio.currentTime);
+
 
   if (isNaN(d)) {
     console.warn('[onLoadedMetadata] duration הוא NaN');

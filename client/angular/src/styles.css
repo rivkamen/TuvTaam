@@ -1,1 +1,18 @@
 /* You can add global styles to this file, and also import other style files */
+:root {
+  /* צבעים ראשיים */
+  --color-primary: #00509E;         /* כחול בינוני – כפתורים, קווים */
+  --color-primary-dark: #003366;    /* כחול עמוק – כותרות, תפריטים */
+
+  /* צבעים משניים (אפור) */
+  --color-secondary: #F5F5F5;       /* אפור בהיר – רקע כללי */
+  --color-secondary-dark: #4A4A4A;  /* אפור כהה – טקסטים משניים */
+
+  /* צבעי אזהרה/הדגשה */
+  --color-danger: #D32F2F;          /* אדום עמוק – קריאות לפעולה */
+
+  /* רקעים וטקסט */
+  --color-surface: #ffffff;         /* רקע כללי */
+  --color-text: #000000;            /* טקסט רגיל */
+  --color-muted: #4A4A4A;           /* טקסט אפור/משני */
+}

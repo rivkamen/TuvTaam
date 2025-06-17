@@ -8,20 +8,22 @@
     (error)="onAudioError()">
   </audio>
   <div class="controls">
+
     <button
       pButton
       icon="{{ isPlaying() ? 'pi pi-pause' : 'pi pi-play' }}"
       (click)="togglePlayback()"
       class="play-btn">
     </button>
-<div class="time-display">
-  {{ formatTime(currentTime()) }}
-  <ng-container *ngIf="durationLoaded"> / {{ formatTime(duration()) }}</ng-container>
-</div>
+
 
     <a [href]="src" target="_blank" download>
       <button pButton icon="pi pi-download" class="download-btn"></button>
     </a>
+        <div class="time-display">
+  {{ formatTime(currentTime()) }}
+  <ng-container *ngIf="durationLoaded"> / {{ formatTime(duration()) }}</ng-container>
+</div>
   </div>
 
   <div class="progress-bar" (click)="onProgressBarClick($event)">

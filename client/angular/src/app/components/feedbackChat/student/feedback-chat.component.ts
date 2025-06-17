@@ -344,8 +344,8 @@ loadUserProfile() {
       console.log("hi");
       
       this.userEmail = userSession.userId[0].email;
-      this.userPhotoUrl = 'assets/vivid-blurred-colorful-wallpaper-background.jpg'; 
-      this.adminPhotoUrl = 'assets/DSCN0107.JPG';
+      this.userPhotoUrl = 'assets/teacher.gif'; 
+      this.adminPhotoUrl = 'assets/student.gif';
     }}
   }
 

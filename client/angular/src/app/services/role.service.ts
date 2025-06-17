@@ -54,7 +54,9 @@ export class RoleService {
     return payload.role || null;
   }
 
-  isAdmin(): boolean {
+  isAdmin(): boolean {0
+    console.log(this.getRole());
+    
     return this.getRole() === 'admin';
   } 
    isUser(): boolean {
