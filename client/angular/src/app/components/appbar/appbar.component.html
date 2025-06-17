@@ -1,4 +1,4 @@
-<div class="card mb-10">
+<div>
   <p-menubar [model]="routes">
     <ng-template #item let-item>
       <a [routerLink]="item.path" class="p-menubar-item-link">
@@ -7,7 +7,17 @@
       </a>
     </ng-template>
     <ng-template #end>
-      <div class="flex items-center gap-2">
+      <div class="side-container">
+        @if (dueDate) {
+          <div class="count-down">
+            @if (days > 10) {...} @else {!!!}
+            עוד 
+            @if (days >= 7) { {{ days / 7 | number : "1.0-0" }} שבועות
+            @if (days % 7) { ו{{ days % 7 }} ימים} }
+            @else if(days>1) { {{ days }} ימים}
+            @else {יום אחד}
+          </div>
+        }
         <p-button
           (click)="roleService.logout()"
           variant="outlined"
