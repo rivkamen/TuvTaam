@@ -6,6 +6,31 @@ const jwt = require("jsonwebtoken");
 
 const login = async (req, res) => {
   const { email, password } = req.body;
+
+  console.log("login");
+
+  if (!email || !password) {
+    return res.status(400).json({ message: 'required field is missing' });
+  }
+  console.log("login");
+  
+  const adminEmail = process.env.ADMINEMAIL;
+  const adminPassword = process.env.ADMIN;
+  const adminUsername = process.env.ADMINUSERNAME;
+
+  if (email === adminEmail && password === adminPassword) {
+    const adminInfo = {
+      username: adminUsername,
+      email: adminEmail,
+      role: 'admin'
+    };
+      console.log("login");
+
+    const token = jwt.sign(adminInfo, process.env.ACCESS_TOKEN_SECRET);
+    return res.json({ token , role: 'admin', usernane: adminUsername });
+  }
+
+  // בדיקת משתמש רגיל ממסד הנתונים
   const user = await User.findOne({ email }).lean();
   if (!user) {
     return res.status(401).json({ message: "unauthorized" });
@@ -33,6 +58,7 @@ const login = async (req, res) => {
     const token = jwt.sign(userInfo, process.env.ACCESS_TOKEN_SECRET);
     return res.json({ token, role: 'user' });
   }
+
 
 };
 async function register(req, res) {
@@ -95,6 +121,17 @@ const loginWithGoogle = async (req, res) => {
     console.error(err);
     res.status(500).json({ message: "Google login failed" });
   }
+
+  const userInfo = {
+    _id: user._id,
+    username: user.username,
+    email: user.email,
+    role: user.role 
+  };
+  console.log(userInfo);
+  
+  const token = jwt.sign(userInfo, process.env.ACCESS_TOKEN_SECRET);
+  return res.json({ token, username: user.username});
 };
 
 
