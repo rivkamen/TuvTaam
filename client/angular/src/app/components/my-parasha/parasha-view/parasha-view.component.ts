@@ -1,6 +1,9 @@
 import { Component, Input } from '@angular/core';
 import { FontSelectorsComponent } from '../font-selectors/font-selectors.component';
-import { TextSettings } from '../../../models/parasha.models';
+import {
+  defaultTextSettings,
+  TextSettings,
+} from '../../../models/parasha.models';
 import { CommonModule } from '@angular/common';
 import { HebrewSanitizerPipe } from '../../../core/pipes/hebrew-sanitizer.pipe';
 
@@ -13,11 +16,7 @@ import { HebrewSanitizerPipe } from '../../../core/pipes/hebrew-sanitizer.pipe';
 })
 export class ParashaViewComponent {
   @Input() verses: string[] = [];
-  textSettings: TextSettings = {
-    script: 'regular',
-    display: 'regular',
-    fontSize: 18,
-  };
+  textSettings = defaultTextSettings;
 
   onSettingsChange(newSettings: TextSettings): void {
     this.textSettings = newSettings;

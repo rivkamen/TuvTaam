@@ -1,8 +1,11 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { TooltipModule } from 'primeng/tooltip';
-import { TextSettings } from '../../../models/parasha.models';
+import {
+  defaultTextSettings,
+  TextSettings,
+} from '../../../models/parasha.models';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
@@ -20,11 +23,7 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./font-selectors.component.css'],
 })
 export class FontSelectorsComponent implements OnInit {
-  @Input() initialSettings: TextSettings = {
-    script: 'Guttman Stam',
-    display: 'no-nikud',
-    fontSize: 16,
-  };
+  private initialSettings = defaultTextSettings;
 
   @Output() settingsChange = new EventEmitter<TextSettings>();
 

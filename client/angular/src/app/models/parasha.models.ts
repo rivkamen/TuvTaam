@@ -23,3 +23,8 @@ export interface TextSettings {
   fontSize: number;
 }
 
+export const defaultTextSettings: TextSettings = {
+  script: 'Guttman Stam',
+  display: 'no-nikud',
+  fontSize: 16,
+};
