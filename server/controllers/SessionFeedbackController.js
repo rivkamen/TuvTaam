@@ -1,7 +1,7 @@
 const gcs = require("../service/gcsService");
 const Admin = require("../models/Admin");
 const SessionFeedback = require("../models/SessionFeedback");
-const { uploadToGCSWithBackup, deleteFromGCSIfExists } = require("../service/gcsService");
+const { uploadToGCSWithBackup, deleteFromGCS } = require("../service/gcsService");
 
 const createSession = async (req, res) => {
   const { userId, messages, title } = req.body;
@@ -351,8 +351,9 @@ const deleteMessage = async (req, res) => {
   const msg = session.messages.id(messageId);
   if (!msg) return res.status(404).json({ message: "message not found" });
 
-  if (msg.path) await deleteFromGCSIfExists(msg.path);
-  msg.remove();
+  if (msg.path) await deleteFromGCS(msg.path);
+
+session.messages.pull({ _id: messageId });
   await session.save();
 
   return res.status(200).json({
