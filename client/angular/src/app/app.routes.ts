@@ -6,8 +6,9 @@ import { UserComponent } from './components/user/user.component';
 import { RecordListComponent } from './components/record/record-list.component';
 import { TeacherChatComponent } from './components/session/teacherChat/teacher-chat.component';
 import { StudentChatComponent } from './components/session/studentChat/student-chat.component';
-import { FeedbackChatComponent } from './components/feedbackChat/feedback-chat.component';
+import { FeedbackChatComponent } from './components/feedbackChat/student/feedback-chat.component';
 import { RegisterComponent } from './components/register/register.component';
+import { AuthCallbackComponent } from './components/auth-callback/auth-callback.component';
 // import { FeedbackChatComponent } from './components/feedbackChat/student/feedback-chat.component';
 
 export const routes: Routes = [
@@ -15,6 +16,7 @@ export const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'admin', component: AdminComponent },
   { path: 'user', component: UserComponent },
+  { path: 'auth/callback', component: AuthCallbackComponent },
   { path: 'upload', component: UploadComponent },
   { path: 'teacherChat', component: TeacherChatComponent },
   { path: 'studentChat', component: StudentChatComponent },

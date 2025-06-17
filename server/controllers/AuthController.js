@@ -1,7 +1,8 @@
 
 const User = require("../models/User")
 const bcrypt = require("bcrypt")
-const jwt = require('jsonwebtoken')
+const jwt = require("jsonwebtoken");
+
 
 const login = async (req, res) => {
   const { email, password } = req.body;
@@ -13,7 +14,6 @@ const login = async (req, res) => {
   if (!match) {
     return res.status(401).json({ message: "unauthorized" });
   }
-
   if (user.role == 'admin') {
     const adminInfo = {
       username: user.username,
@@ -71,4 +71,31 @@ async function register(req, res) {
   }
 }
 
-module.exports = { login, register }
+const loginWithGoogle = async (req, res) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ message: "Not authenticated with Google" });
+    }
+
+    const googleUser = req.user;
+    const payload = {
+      username: googleUser.displayName,
+      email: googleUser.emails[0].value,
+      role: "user"     };
+
+    const token = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET);
+
+    // במקרה של אפליקציית Angular – נוח להחזיר עם redirect + token
+    res.redirect(`http://localhost:4200/dashboard?token=${token}`);
+
+    // לחלופין, אם רוצים להחזיר JSON:
+    // res.json({ token, role: "user" });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Google login failed" });
+  }
+};
+
+
+module.exports = { login, register,loginWithGoogle }

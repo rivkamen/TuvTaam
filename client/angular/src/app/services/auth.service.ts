@@ -30,5 +30,9 @@ export class AuthService {
       };
     return this.#http.post< User>(url, body);
   }
+  loginWithGoogle(): void {
+  window.location.href = this.apiServerAddress + '/auth/google';
+}
+
 }
 
