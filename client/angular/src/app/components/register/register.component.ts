@@ -33,7 +33,7 @@ import { AufrufConfettiComponent } from './aufruf-confetti/aufruf-confetti.compo
     MultiSelectModule,
     CommonModule,
     CheckboxModule,
-    AufrufConfettiComponent
+    AufrufConfettiComponent,
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css',
@@ -58,8 +58,8 @@ export class RegisterComponent {
     Validators.minLength(4),
   ]);
 
-  title:string = ""
-  leyningMap?: VerseRef[];
+  title: string = '';
+  leyningMap?: (VerseRef | undefined)[];
   haftara?: VerseRef;
   leynings = [
     { label: 'ראשון', value: 0 },
@@ -102,7 +102,7 @@ export class RegisterComponent {
 
   async onSelectDate(localDate: Date) {
     this.leyningMap = undefined;
-    this.title = ""
+    this.title = '';
     const utcDate = new Date(
       Date.UTC(
         localDate.getFullYear(),
@@ -114,7 +114,7 @@ export class RegisterComponent {
     this.#parasha.fetchParasha(formattedDate).then((parasha) => {
       this.leyningMap = parasha.leining;
       this.haftara = parasha.haftara;
-      this.title = parasha.title
+      this.title = parasha.title;
     });
   }
 
@@ -138,7 +138,7 @@ export class RegisterComponent {
       .subscribe({
         next: (res: any) => {
           if (res?.token) {
-            this.confetti.triggerConfetti()
+            this.confetti.triggerConfetti();
             sessionStorage.setItem('token', res.token);
             sessionStorage.setItem('role', res.role);
             alert('הרשמה הצליחה');
@@ -170,6 +170,8 @@ export class RegisterComponent {
     const maxIndex = values[values.length - 1];
     const start = this.leyningMap[minIndex];
     const end = this.leyningMap[maxIndex];
+
+    if (!start || !end) return null;
 
     return {
       bookName: start.bookName,

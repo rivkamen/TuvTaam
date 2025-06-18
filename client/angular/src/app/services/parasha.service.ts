@@ -144,11 +144,11 @@ export class ParashaService {
   private numberToGematria = (num: number): string =>
     GEMATRIA_MAP[num] || num.toString();
 
-  private parseVerseToHebrew = (verseString: string): VerseRef => {
+  private parseVerseToHebrew = (verseString: string): VerseRef|undefined => {
     const regex = /^(.*?)\s+(\d+):(\d+)-(?:(\d+):)?(\d+)$/;
     const match = verseString.trim().match(regex);
     if (!match) {
-      throw new Error('Invalid verse format');
+      return
     }
 
     const [_, bookName, startChapterStr, startVerseStr, endChapterStr, endVerseStr] =

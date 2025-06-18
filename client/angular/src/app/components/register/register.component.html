@@ -118,15 +118,15 @@
         </small>
       </div>
 
+      @if(haftara){
       <div class="p-field">
         <label>הפטרה</label>
         <div class="check-haftara">
           <p-checkbox [formControl]="withHafatara" [binary]="true" />
           {{ haftara && formatVerse(haftara) }}
-          @if(withHafatara.value==true){ }
         </div>
       </div>
-      }
+      } }
 
       <div class="button-container">
         <p-button
