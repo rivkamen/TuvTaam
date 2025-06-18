@@ -1,48 +1,151 @@
-<!-- 
-<div class="container">
-  <div class="header">הרשמה</div>
-  <div class="shadow-box">
-    <form class="form">
-        <div class="form-group">
-        <label for="username">שם משתמש</label>
-        <input id="username" type="text" [formControl]="usernameFormControl" class="input-field" />
-      </div>
-      <div class="form-group">
-        <label for="email">מייל </label>
-        <input id="email" type="text" [formControl]="emailFormControl" class="input-field" />
-      </div>
-      <div class="form-group">
-        <label for="password">סיסמה</label>
-        <input id="password" type="password" [formControl]="passwordFormControl" class="input-field" />
-      </div>
-       <button type="button" (click)="register()" class="submit-button">המשך</button>
-    </form>
-  </div>
-</div>
- -->
 <p-card class="register-card">
   <div class="header-container">
     <h2 class="register-title">הרשמה</h2>
+    <div class="step-indicator">
+      <span class="step" [class.active]="currentStep === 1">1</span>
+      <span class="step-separator"></span>
+      <span class="step" [class.active]="currentStep === 2">2</span>
+    </div>
   </div>
 
   <form class="p-fluid">
-    <div class="p-field">
-      <label for="username">שם משתמש</label>
-      <input id="username" type="text" pInputText [formControl]="usernameFormControl" />
+    <!-- שלב ראשון -->
+    <div *ngIf="currentStep === 1" class="step-content">
+      <div class="p-field">
+        <label for="username">שם משתמש</label>
+        <input
+          id="username"
+          type="text"
+          pInputText
+          [formControl]="usernameFormControl"
+        />
+        <small
+          *ngIf="usernameFormControl.invalid && usernameFormControl.touched"
+          class="p-error"
+        >
+          שם משתמש הוא שדה חובה
+        </small>
+      </div>
+
+      <div class="p-field">
+        <label for="email">מייל</label>
+        <input
+          id="email"
+          type="email"
+          pInputText
+          [formControl]="emailFormControl"
+        />
+        <small
+          *ngIf="emailFormControl.invalid && emailFormControl.touched"
+          class="p-error"
+        >
+          נא להזין כתובת מייל תקינה
+        </small>
+      </div>
+
+      <div class="p-field">
+        <label for="password">סיסמה</label>
+        <input
+          id="password"
+          type="password"
+          pInputText
+          [formControl]="passwordFormControl"
+        />
+        <small
+          *ngIf="passwordFormControl.invalid && passwordFormControl.touched"
+          class="p-error"
+        >
+          סיסמה חייבת להכיל לפחות 6 תווים
+        </small>
+      </div>
+
+      <div class="button-container">
+        <p-button
+          label="המשך"
+          icon="pi pi-arrow-left"
+          (onClick)="nextStep()"
+          class="register-button"
+          [disabled]="!isFirstStepValid()"
+        >
+        </p-button>
+      </div>
     </div>
 
-    <div class="p-field">
-      <label for="email">מייל</label>
-      <input id="email" type="email" pInputText [formControl]="emailFormControl" />
-    </div>
+    <!-- שלב שני -->
+    <div *ngIf="currentStep === 2" class="step-content">
+      <div class="p-field">
+        <label for="birthdate">תאריך העליה לתורה</label>
+        <div class="date-wrapper">
+          <p-datepicker
+            dir="ltr"
+            id="birthdate"
+            class="max-w-full"
+            [formControl]="birthdateFormControl"
+            [inline]="true"
+            [disabledDays]="[0, 1, 2, 3, 4, 5]"
+            [minDate]="currDate"
+            (onSelect)="onSelectDate($event)"
+          />
+          <small
+            *ngIf="birthdateFormControl.invalid && birthdateFormControl.touched"
+            class="p-error"
+          >
+            תאריך הקריאה הוא שדה חובה
+          </small>
+        </div>
+      </div>
 
-    <div class="p-field">
-      <label for="password">סיסמה</label>
-      <input id="password" type="password" pInputText [formControl]="passwordFormControl" />
-    </div>
+      <h3>{{ title }}</h3>
 
-    <div class="button-container">
-      <p-button label="המשך" icon="pi pi-user-plus" (onClick)="register()" class="register-button"></p-button>
+      @if(birthdateFormControl.value && leyningMap){
+      <div class="p-field">
+        <label for="city">הקריאה</label>
+        <p-multiselect
+          [options]="leynings"
+          [formControl]="leyningFormControl"
+          optionLabel="label"
+          placeholder="בחר קריאה"
+        >
+          <ng-template let-item #item>
+            {{ item.label }}
+          </ng-template>
+        </p-multiselect>
+        <small
+          *ngIf="leyningFormControl.invalid && leyningFormControl.touched"
+          class="p-error"
+        >
+          נא לבחור קריאה
+        </small>
+      </div>
+
+      <div class="p-field">
+        <label>הפטרה</label>
+        <div class="check-haftara">
+          <p-checkbox [formControl]="withHafatara" [binary]="true" />
+          {{ haftara && formatVerse(haftara) }}
+          @if(withHafatara.value==true){ }
+        </div>
+      </div>
+      }
+
+      <div class="button-container">
+        <p-button
+          label="חזור"
+          icon="pi pi-arrow-right"
+          (onClick)="previousStep()"
+          class="back-button"
+          severity="secondary"
+        >
+        </p-button>
+        <p-button
+          label="הרשמה"
+          icon="pi pi-user-plus"
+          (onClick)="register()"
+          class="register-button"
+          [disabled]="!isSecondStepValid()"
+        >
+        </p-button>
+      </div>
     </div>
   </form>
 </p-card>

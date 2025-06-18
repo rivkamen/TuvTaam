@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import {  LoginComponent } from './components/login/login.component';
 import { UploadComponent } from './components/upload/upload.component';
-import { AuthComponent } from './components/auth/auth.component';
 import { AdminComponent } from './components/admin/admin.component';
 import { UserComponent } from './components/user/user.component';
 import { RecordListComponent } from './components/record/record-list.component';
@@ -52,6 +51,6 @@ export const routes: Routes = [
     title: 'TuvTaam: My Parasha',
     canActivate: [authGuard],
   },
-  { path: 'home', component: AuthComponent, title: 'TuvTaam' }, // TODO: Change to HomeComponent when created
+  { path: 'home', component: FeedbackChatComponent, title: 'TuvTaam' }, // TODO: Change to HomeComponent when created
   { path: '', redirectTo: 'home', pathMatch: 'full' },
 ];

@@ -10,11 +10,11 @@ const BOOKS_MAP: Record<string, string> = {
   Joshua: 'יהושע',
   Judges: 'שופטים',
   Samuel: 'שמואל',
-  '1 Samuel': 'שמואל א',
-  '2 Samuel': 'שמואל ב',
+  'I Samuel': 'שמואל א',
+  'II Samuel': 'שמואל ב',
   Kings: 'מלכים',
-  '1 Kings': 'מלכים א',
-  '2 Kings': 'מלכים ב',
+  'I Kings': 'מלכים א',
+  'II Kings': 'מלכים ב',
   Isaiah: 'ישעיהו',
   Jeremiah: 'ירמיהו',
   Ezekiel: 'יחזקאל',
@@ -145,10 +145,18 @@ export class ParashaService {
     GEMATRIA_MAP[num] || num.toString();
 
   private parseVerseToHebrew = (verseString: string): VerseRef => {
-    const [bookName, range] = verseString.split(' ');
-    const [startRange, endRange] = range.split('-');
-    const [startChapter, startVerse] = startRange.split(':').map(Number);
-    const [endChapter, endVerse] = endRange.split(':').map(Number);
+    const regex = /^(.*?)\s+(\d+):(\d+)-(?:(\d+):)?(\d+)$/;
+    const match = verseString.trim().match(regex);
+    if (!match) {
+      throw new Error('Invalid verse format');
+    }
+
+    const [_, bookName, startChapterStr, startVerseStr, endChapterStr, endVerseStr] =
+      match;
+    const startChapter = Number(startChapterStr);
+    const startVerse = Number(startVerseStr);
+    const endVerse = Number(endVerseStr);
+    const endChapter = endChapterStr ? Number(endChapterStr) : startChapter;
 
     return {
       bookName: BOOKS_MAP[bookName],
@@ -245,6 +253,7 @@ export class ParashaService {
       throw new Error('Failed to fetch parasha');
     }
     const data = await res.json();
+
     if (!data.items || data.items.length === 0) {
       throw new Error('No parasha found for the given date');
     }

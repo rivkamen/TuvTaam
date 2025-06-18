@@ -1,59 +1,177 @@
 import { Component, inject } from '@angular/core';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms'; // אם תשתמשי ב-ngModel
+import {
+  FormControl,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { CardModule } from 'primeng/card';
-
+import { DropdownModule } from 'primeng/dropdown';
+import { DatePickerModule } from 'primeng/datepicker';
+import { CommonModule } from '@angular/common';
+import { ParashaService } from '../../services/parasha.service';
+import { VerseRef } from '../../models/parasha.models';
+import { CheckboxModule } from 'primeng/checkbox';
+import { MultiSelectModule } from 'primeng/multiselect';
 
 @Component({
   selector: 'register-auth',
   standalone: true,
-  imports: [ReactiveFormsModule, FormsModule,InputTextModule,ButtonModule,CardModule],
+  imports: [
+    ReactiveFormsModule,
+    FormsModule,
+    InputTextModule,
+    ButtonModule,
+    CardModule,
+    DatePickerModule,
+    DropdownModule,
+    MultiSelectModule,
+    CommonModule,
+    CheckboxModule,
+  ],
   templateUrl: './register.component.html',
-  styleUrl: './register.component.css'
+  styleUrl: './register.component.css',
 })
 export class RegisterComponent {
   #authService = inject(AuthService);
-  //#adminService = inject(AdminService)
   #router = inject(Router);
-  passwordFormControl = new FormControl('');
-  emailFormControl = new FormControl('');
-  usernameFormControl = new FormControl('');
+  #parasha = inject(ParashaService);
 
-  password: string = ""
-  email: string = ""
-  username: string = ""
-  role: string = ""
+  currDate = new Date();
+  currentStep = 1;
 
-  register(): void {
-  if (this.emailFormControl.invalid || this.passwordFormControl.invalid) {
-    alert("יש למלא את כל השדות כראוי");
-    return;
+  usernameFormControl = new FormControl('', [Validators.required]);
+  emailFormControl = new FormControl('', [
+    Validators.required,
+    Validators.email,
+  ]);
+  passwordFormControl = new FormControl('', [
+    Validators.required,
+    Validators.minLength(4),
+  ]);
+
+  title:string = ""
+  leyningMap?: VerseRef[];
+  haftara?: VerseRef;
+  leynings = [
+    { label: 'ראשון', value: 0 },
+    { label: 'שני', value: 1 },
+    { label: 'שלישי', value: 2 },
+    { label: 'רביעי', value: 3 },
+    { label: 'חמישי', value: 4 },
+    { label: 'שישי', value: 5 },
+    { label: 'שביעי', value: 6 },
+    { label: 'מפטיר', value: 7 },
+  ];
+  birthdateFormControl = new FormControl('', [Validators.required]);
+  leyningFormControl = new FormControl([], [Validators.required]);
+  withHafatara = new FormControl(false);
+
+  nextStep() {
+    if (this.isFirstStepValid()) {
+      this.currentStep = 2;
+    }
   }
 
-  const email = this.emailFormControl.value ?? '';
-  const password = this.passwordFormControl.value ?? '';
-  const username = this.usernameFormControl.value ?? '';
-  this.#authService.register(username, email, password).subscribe({
-    next: (res: any) => {
-      if (res?.token) {
-        sessionStorage.setItem('token', res.token);
-        sessionStorage.setItem('role', res.role);
-        alert("הרשמה הצליחה");
-        // מעבר אוטומטי לדף הלוגין
-        this.#router.navigateByUrl('/login');
-      } else {
-        alert("שגיאה בהרשמה");
-      }
-    },
-    error: (err) => {
-      console.error("שגיאה בהרשמה", err);
-      alert(`שגיאה בהרשמה: ${err?.message || 'לא ידוע'}`);
+  previousStep() {
+    this.currentStep = 1;
+  }
+
+  isFirstStepValid(): boolean {
+    return (
+      this.usernameFormControl.valid &&
+      this.emailFormControl.valid &&
+      this.passwordFormControl.valid
+    );
+  }
+
+  isSecondStepValid(): boolean {
+    return this.birthdateFormControl.valid && this.leyningFormControl.valid;
+  }
+
+  formatVerse = (verseRef: VerseRef) =>
+    `${verseRef.bookName} ${verseRef.startChapter} ${verseRef.startVerse} - ${verseRef.endChapter} ${verseRef.endVerse}`;
+
+  async onSelectDate(localDate: Date) {
+    this.leyningMap = undefined;
+    this.title = ""
+    const utcDate = new Date(
+      Date.UTC(
+        localDate.getFullYear(),
+        localDate.getMonth(),
+        localDate.getDate()
+      )
+    );
+    const formattedDate = utcDate.toISOString().slice(0, 10);
+    this.#parasha.fetchParasha(formattedDate).then((parasha) => {
+      this.leyningMap = parasha.leining;
+      this.haftara = parasha.haftara;
+      this.title = parasha.title
+    });
+  }
+
+  register(): void {
+    if (!this.isFirstStepValid() || !this.isSecondStepValid()) {
+      alert('יש למלא את כל השדות כראוי');
+      return;
     }
-  });
-}
+    const finalParasha = this.getFinalParasha();
+    if (!finalParasha) {
+      alert('נא לבחור קריאות ברצף.');
+    }
 
-}
+    const email = this.emailFormControl.value!;
+    const password = this.passwordFormControl.value!;
+    const username = this.usernameFormControl.value!;
+    const dueDate = this.birthdateFormControl.value!;
+    const haftara = this.withHafatara?.value ? this.haftara : undefined;
+    this.#authService
+      .register(username, email, password, dueDate, finalParasha!, haftara)
+      .subscribe({
+        next: (res: any) => {
+          if (res?.token) {
+            sessionStorage.setItem('token', res.token);
+            sessionStorage.setItem('role', res.role);
+            alert('הרשמה הצליחה');
+            this.#router.navigateByUrl('/login');
+          } else {
+            alert('שגיאה בהרשמה');
+          }
+        },
+        error: (err) => {
+          console.error('שגיאה בהרשמה', err);
+          alert(`שגיאה בהרשמה: ${err?.message || 'לא ידוע'}`);
+        },
+      });
+  }
 
+  private getFinalParasha(): VerseRef | null {
+    if (!this.leyningFormControl.value || !this.leyningMap) return null;
+    const values = this.leyningFormControl.value
+      .map((item) => item['value'])
+      .sort((a, b) => a - b);
+
+    const isConsecutive = values.every(
+      (val, idx, arr) => idx === 0 || val === arr[idx - 1] + 1
+    );
+
+    if (!isConsecutive) return null;
+
+    const minIndex = values[0];
+    const maxIndex = values[values.length - 1];
+    const start = this.leyningMap[minIndex];
+    const end = this.leyningMap[maxIndex];
+
+    return {
+      bookName: start.bookName,
+      startChapter: start.startChapter,
+      startVerse: start.startVerse,
+      endChapter: end.endChapter,
+      endVerse: end.endVerse,
+    };
+  }
+}

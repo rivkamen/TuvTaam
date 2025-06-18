@@ -1,88 +1,10 @@
-/* body {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f3f4f6;
-  margin: 0;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  direction: rtl;
-}
-
-.container {
-  width: 100%;
-  max-width: 400px;
-  padding: 20px;
-}
-
-.header {
-  font-size: 1.8rem;
-  font-weight: bold;
-  text-align: center;
-  margin-bottom: 20px;
-  color: #333;
-}
-
-.shadow-box {
-  background-color: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  padding: 30px 25px;
-}
-
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-}
-
-label {
-  font-weight: 600;
-  margin-bottom: 6px;
-  color: #555;
-}
-
-.input-field {
-  padding: 10px 12px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 1rem;
-  transition: border-color 0.3s;
-}
-
-.input-field:focus {
-  border-color: #3f51b5;
-  outline: none;
-}
-
-.submit-button {
-  background-color: #3f51b5;
-  color: white;
-  padding: 12px;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.submit-button:hover {
-  background-color: #303f9f;
-}
- */
 :host {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
   direction: rtl;
-  font-family: 'Varela Round', sans-serif;
+  font-family: "Varela Round", sans-serif;
   background-color: #f0f2f5;
 }
 
@@ -135,4 +57,125 @@ input.p-inputtext {
   font-size: 1.1rem;
   padding: 0.75rem 1rem;
   border-radius: 10px;
+}
+
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  direction: rtl;
+  font-family: "Varela Round", sans-serif;
+  background-color: #f0f2f5;
+}
+
+.register-card {
+  width: 100%;
+  max-width: 450px;
+  padding: 2rem;
+}
+
+.header-container {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.register-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 0 0 1rem 0;
+  color: #333;
+}
+
+.step-indicator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.step {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: #e0e0e0;
+  color: #666;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.step.active {
+  background-color: #10b981;
+  color: white;
+}
+
+.step-separator {
+  width: 40px;
+  height: 2px;
+  background-color: #e0e0e0;
+  margin: 0 10px;
+}
+
+.step-content {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.p-field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.25rem;
+}
+
+.p-field label {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  text-align: right;
+  color: #333;
+}
+
+input.p-inputtext {
+  border-radius: 8px;
+  padding: 0.75rem;
+  font-size: 1rem;
+}
+
+.date-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.register-button,
+.back-button {
+  font-size: 1.1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  min-width: 120px;
+}
+
+.p-error {
+  color: #e74c3c;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
 }
