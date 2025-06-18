@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -6,6 +7,7 @@ import { Injectable } from '@angular/core';
 export class RoleService {
   private _userRole: string | null = null;
   private _userId: string | null = null;
+  #router = inject(Router)
 
   constructor() {
     this.loadRoleFromToken();
@@ -67,6 +69,7 @@ export class RoleService {
 
   logout(): void {
     sessionStorage.removeItem('token');
-    // ניווט או פעולות נוספות
+    sessionStorage.removeItem('user')
+    this.#router.navigate(['/'])
   }
   }

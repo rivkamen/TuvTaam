@@ -14,13 +14,13 @@
 
 import { Component, inject } from '@angular/core';
 import { RouterOutlet, RouterModule, Router } from '@angular/router';
-import { AppbarComponent } from './components/appbar/appbar.component'; // 👈 חשוב מאוד!
+import { AppbarComponent } from './components/appbar/appbar.component'; 
 import { RoleService } from './services/role.service';
 import { ButtonModule } from 'primeng/button';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterModule, AppbarComponent, ButtonModule], // 👈 לוודא שזה נמצא כאן
+  imports: [RouterOutlet, RouterModule, AppbarComponent, ButtonModule],
   templateUrl: './app.component.html',
 })
 export class AppComponent {

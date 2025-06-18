@@ -4,21 +4,39 @@ import { Menubar } from 'primeng/menubar';
 import { RoleService } from '../../services/role.service';
 import { ButtonModule } from 'primeng/button';
 import { RouterLink } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
+import { DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'app-appbar',
   standalone: true,
-  imports: [Menubar, ButtonModule, RouterLink],
+  imports: [Menubar, ButtonModule, RouterLink, DecimalPipe],
   templateUrl: './appbar.component.html',
   styleUrl: './appbar.component.css',
 })
 export class AppbarComponent implements OnInit {
-  routes: MenuItem[] = [];
   roleService = inject(RoleService);
-  username: string | null = null;
+  routes: MenuItem[] = [];
+  dueDate?: Date;
+  days = this.dueDate
+    ? Math.ceil(
+        (this.dueDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)
+      )
+    : -1;
+
+  constructor(_authService: AuthService) {
+    _authService.user.subscribe((user) => {
+      if (user) {
+        this.dueDate = new Date(user.dueDate);
+        this.days = Math.ceil(
+          (this.dueDate.getTime() - new Date().getTime()) /
+            (1000 * 60 * 60 * 24)
+        );
+      }
+    });
+  }
 
   ngOnInit() {
-    this.username = sessionStorage.getItem('username');
     const routes = [
       {
         path: '/home',
@@ -36,14 +54,14 @@ export class AppbarComponent implements OnInit {
         path: this.roleService.isAdmin() ? '/admin' : '/user',
         label: 'PersonalArea',
       },
-    ]
-    if(this.roleService.isUser()){
+    ];
+    if (this.roleService.isUser()) {
       routes.splice(1, 0, {
         path: '/my-parasha',
         label: 'MyParasha',
-      })      
+      });
     }
-    
+
     this.routes = routes.map((route) => ({
       ...route,
       icon: this.getIcon(route.label),

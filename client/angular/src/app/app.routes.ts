@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import {  LoginComponent } from './components/login/login.component';
 import { UploadComponent } from './components/upload/upload.component';
-import { AuthComponent } from './components/auth/auth.component';
 import { AdminComponent } from './components/admin/admin.component';
 import { UserComponent } from './components/user/user.component';
 import { RecordListComponent } from './components/record/record-list.component';
@@ -11,6 +10,7 @@ import { FeedbackChatComponent } from './components/feedbackChat/student/feedbac
 import { RegisterComponent } from './components/register/register.component';
 import { authGuard } from './core/guards/auth.guard';
 import { adminGuard } from './core/guards/admin.guard';
+import { MyParashaComponent } from './components/my-parasha/my-parasha.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent, title: 'TuvTaam: Login' },
@@ -47,10 +47,10 @@ export const routes: Routes = [
   },
   {
     path: 'my-parasha',
-    component: RecordListComponent, // TODO: Change to MyParashaComponent when created
+    component: MyParashaComponent,
     title: 'TuvTaam: My Parasha',
     canActivate: [authGuard],
   },
-  { path: 'home', component: AuthComponent, title: 'TuvTaam' }, // TODO: Change to HomeComponent when created
+  { path: 'home', component: FeedbackChatComponent, title: 'TuvTaam' }, // TODO: Change to HomeComponent when created
   { path: '', redirectTo: 'home', pathMatch: 'full' },
 ];
