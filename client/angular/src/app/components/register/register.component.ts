@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ViewChild } from '@angular/core';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import {
@@ -17,6 +17,7 @@ import { ParashaService } from '../../services/parasha.service';
 import { VerseRef } from '../../models/parasha.models';
 import { CheckboxModule } from 'primeng/checkbox';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { AufrufConfettiComponent } from './aufruf-confetti/aufruf-confetti.component';
 
 @Component({
   selector: 'register-auth',
@@ -32,6 +33,7 @@ import { MultiSelectModule } from 'primeng/multiselect';
     MultiSelectModule,
     CommonModule,
     CheckboxModule,
+    AufrufConfettiComponent
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css',
@@ -40,6 +42,8 @@ export class RegisterComponent {
   #authService = inject(AuthService);
   #router = inject(Router);
   #parasha = inject(ParashaService);
+
+  @ViewChild('aufruf') confetti!: AufrufConfettiComponent;
 
   currDate = new Date();
   currentStep = 1;
@@ -134,6 +138,7 @@ export class RegisterComponent {
       .subscribe({
         next: (res: any) => {
           if (res?.token) {
+            this.confetti.triggerConfetti()
             sessionStorage.setItem('token', res.token);
             sessionStorage.setItem('role', res.role);
             alert('הרשמה הצליחה');
