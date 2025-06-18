@@ -64,7 +64,10 @@ async function register(req, res) {
 		if (!email || !password || !dueDate || !parashah) {
 			return res.status(400).json({ message: 'חסרים שדות נדרשים' })
 		}
-		const existingUser = await User.findOne({ email })
+		if (typeof email !== "string" || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+			return res.status(400).json({ message: 'Invalid email format' });
+		}
+		const existingUser = await User.findOne({ email: { $eq: email } });
 		if (existingUser) {
 			return res.status(400).json({ message: 'משתמש עם מייל זה כבר קיים' })
 		}
