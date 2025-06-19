@@ -141,8 +141,10 @@ export class RegisterComponent {
             this.confetti.triggerConfetti();
             sessionStorage.setItem('token', res.token);
             sessionStorage.setItem('role', res.role);
-            alert('הרשמה הצליחה');
-            this.#router.navigateByUrl('/login');
+            setTimeout(() => {
+              alert('הרשמה הצליחה');
+              this.#router.navigateByUrl('/home');
+            }, 3000);
           } else {
             alert('שגיאה בהרשמה');
           }

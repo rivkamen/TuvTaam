@@ -48,12 +48,12 @@ export class LoginComponent {
           this.role = res.role;
           if (this.role === 'admin') {
             alert("מנהל נכנס בהצלחה");
-            this.#router.navigateByUrl('/teacherChat');
+            this.#router.navigateByUrl('/');
           } if (this.role === 'user') {
             alert("התחברות משתמש הצליחה");
             const username = res.username || email;
             setTimeout(() => {
-              this.#router.navigate(['/studentChat']);
+              this.#router.navigate(['/']);
             }, 100);
           }
         } else {

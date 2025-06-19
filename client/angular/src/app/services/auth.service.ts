@@ -29,8 +29,13 @@ export class AuthService {
       password,
     };
     return this.#http
-      .post<User>(url, body)
-      .pipe(tap((data) => this.user.next(data as User)));
+      .post(url, body)
+      .pipe(
+        tap((res:any) => {
+          this.user.next(res.user as User);
+          sessionStorage.setItem('user', JSON.stringify(res.user as User));
+        })
+      );
   }
 
   register(
