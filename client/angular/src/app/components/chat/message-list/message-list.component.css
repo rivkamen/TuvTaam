@@ -383,11 +383,11 @@
 }
 .unread-divider {
   text-align: center;
-  color: #555;
-  background-color: #eee;
-  padding: 4px 8px;
-  margin: 10px 0;
-  border-top: 1px solid #ccc;
-  border-bottom: 1px solid #ccc;
   font-weight: bold;
+  color: #d32f2f;
+  margin: 16px 0;
+  border-top: 2px dashed var(--color-primary);
+  padding-top: 8px;
 }
+
+

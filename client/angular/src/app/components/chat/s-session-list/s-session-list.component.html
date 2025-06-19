@@ -6,6 +6,8 @@
     <div class="session-dates">
       <div class="hebrew-date">{{ getHebrewDate(s.createdAt) }}</div>
       <div class="gregorian-date">{{ s.createdAt | date: 'dd/MM/yyyy HH:mm' }}</div>
+      <span *ngIf="s.hasUnreadMessages" class="unread-dot"></span>
+
     </div>
   </button>
   

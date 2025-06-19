@@ -109,6 +109,7 @@
   vertical-align: top;
 }
 
+
 .message-wrapper.admin .bubble {
   background-color: var(--color-secondary);
 }
@@ -401,7 +402,7 @@
 }
 .bubble {
   display: inline-block;     /* כדי שהרוחב יתאים לתוכן */
-  max-width: 80%;
+  max-width: 700px;
   padding: 10px 15px;
   border-radius: 18px;
   background-color: #e0f7fa;

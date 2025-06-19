@@ -39,6 +39,7 @@ export class MChatComponent implements OnInit {
   openedMenuId: string | null = null;
 editMessageId: string | null = null;
 editedContent: string = '';
+firstUnreadIndex: number | null = null;
 
   constructor(
     private feedbackService: FeedbackService,
@@ -78,25 +79,59 @@ loadSessions() {
     this.loadUserProfile();
   }
 
-  loadMessages() {
-    if (!this.selectedSessionId) return;
-    this.loading = true;
+  // loadMessages() {
+  //   if (!this.selectedSessionId) return;
+  //   this.loading = true;
 
-    this.feedbackService.getMessages(this.selectedSessionId).subscribe((msgs) => {
-      this.messages = msgs.map((msg) => ({
-        ...msg,
-        signedUrl: msg.signedUrl || null,
-        safeAudioUrl: msg.signedUrl ? 
-          this.sanitizer.bypassSecurityTrustResourceUrl(msg.signedUrl) : null
-      }));
-      this.loading = false;
+  //   this.feedbackService.getMessages(this.selectedSessionId).subscribe((msgs) => {
+  //     this.messages = msgs.map((msg) => ({
+  //       ...msg,
+  //       signedUrl: msg.signedUrl || null,
+  //       safeAudioUrl: msg.signedUrl ? 
+  //         this.sanitizer.bypassSecurityTrustResourceUrl(msg.signedUrl) : null
+  //     }));
+  //     this.loading = false;
       
-      this.feedbackService.markAllMessagesAsRead(this.selectedSessionId).subscribe({
-        next: () => console.log("עודכן כנקראו"),
-        error: (err) => console.error("שגיאה בעדכון isRead", err)
-      });
+  //     this.feedbackService.markAllMessagesAsRead(this.selectedSessionId).subscribe({
+  //       next: () => console.log("עודכן כנקראו"),
+  //       error: (err) => console.error("שגיאה בעדכון isRead", err)
+  //     });
+  //   });
+  // }
+
+loadMessages() {
+  if (!this.selectedSessionId) return;
+  this.loading = true;
+  this.firstUnreadIndex = null; // אפס את זה בכל קריאה
+
+  this.feedbackService.getMessages(this.selectedSessionId).subscribe((msgs) => {
+    this.messages = msgs.map((msg, index) => {
+      const isUnread = !msg.isRead;
+
+      if (this.firstUnreadIndex === null && isUnread) {
+        this.firstUnreadIndex = index;
+      }
+
+      return {
+        ...msg,
+        isUnread,
+        isFirstUnread: this.firstUnreadIndex === index,
+        signedUrl: msg.signedUrl || null,
+        safeAudioUrl: msg.signedUrl
+          ? this.sanitizer.bypassSecurityTrustResourceUrl(msg.signedUrl)
+          : null
+      };
     });
-  }
+
+    this.loading = false;
+
+    // עדכון כנקראו לאחר העדכון
+    this.feedbackService.markAllMessagesAsRead(this.selectedSessionId).subscribe({
+      next: () => console.log("עודכן כנקראו"),
+      error: (err) => console.error("שגיאה בעדכון isRead", err)
+    });
+  });
+}
 
   sendMessage(messageData: MessageData) {
     if (!this.selectedSessionId) return;

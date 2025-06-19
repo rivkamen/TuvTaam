@@ -2,6 +2,8 @@ import { Component, Input, Output, EventEmitter, ViewChild, OnChanges, SimpleCha
 import { CommonModule } from '@angular/common';
 import { ScrollPanel, ScrollPanelModule } from 'primeng/scrollpanel';
 import { MessageItemComponent } from '../message-item/message-item.component';
+import { ElementRef, ViewChildren, QueryList, AfterViewInit } from '@angular/core';
+
 export interface MessageEditData {
   messageId: string;
   content: string;
@@ -14,7 +16,7 @@ export interface MessageEditData {
   templateUrl: './message-list.component.html',
   styleUrls: ['./message-list.component.css']
 })
-export class MessageListComponent implements OnChanges {
+export class MessageListComponent implements OnChanges, AfterViewInit  {
   @Input() messages: any[] = [];
   @Input() loading: boolean = false;
   @Input() userPhotoUrl: string = '';
@@ -28,6 +30,8 @@ export class MessageListComponent implements OnChanges {
 @Input() editMessageId: string | null = null;
 @Input() editedContent: string = '';
   @ViewChild('scrollPanel') scrollPanelRef!: ScrollPanel;
+@ViewChildren('unreadDivider') unreadDividers!: QueryList<ElementRef>;
+@Input() firstUnreadIndex: number | null = null;
 
   // editMessageId: string | null = null;
   editedMessageContent: string = '';
@@ -37,9 +41,30 @@ export class MessageListComponent implements OnChanges {
   //     setTimeout(() => this.scrollToBottom(), 300);
   //   }
   // }
+// ngOnChanges(changes: SimpleChanges) {
+//   if (changes['messages'] && this.messages.length > 0) {
+//     setTimeout(() => this.scrollToBottom(), 300);
+//   }
+
+//   if (changes['editMessageId']) {
+//     const newId = this.editMessageId;
+//     if (newId) {
+//       const msg = this.messages.find(m => m._id === newId);
+//       if (msg) {
+//         this.editedMessageContent = msg.content;
+//       }
+//     }
+//   }
+// }
 ngOnChanges(changes: SimpleChanges) {
   if (changes['messages'] && this.messages.length > 0) {
-    setTimeout(() => this.scrollToBottom(), 300);
+    setTimeout(() => {
+      if (this.firstUnreadIndex != null && this.firstUnreadIndex >= 0) {
+        this.scrollToUnread();
+      } else {
+        this.scrollToBottom();
+      }
+    }, 300);
   }
 
   if (changes['editMessageId']) {
@@ -52,9 +77,31 @@ ngOnChanges(changes: SimpleChanges) {
     }
   }
 }
+scrollToUnread() {
+  setTimeout(() => {
+    const el = this.unreadDividers?.first?.nativeElement;
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      this.scrollToBottom();
+    }
+  }, 100);
+}
+
   trackByMessageId(index: number, msg: any): string {
     return msg._id;
   }
+ngAfterViewInit() {
+  this.scrollToUnreadDivider();
+}
+scrollToUnreadDivider() {
+  setTimeout(() => {
+    const element = this.unreadDividers?.first?.nativeElement;
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, 200);
+}
 
   onEditStarted(message: any) {
     this.editMessageId = message._id;
@@ -90,11 +137,22 @@ ngOnChanges(changes: SimpleChanges) {
       }
     }, 100);
   }
-  shouldShowUnreadDivider(index: number): boolean {
+//   shouldShowUnreadDivider(index: number): boolean {
+//   const msg = this.messages[index];
+//   if (!msg) return false;
+//   const isFirstUnread = !msg.isRead && this.messages.findIndex(m => !m.isRead) === index;
+//   return isFirstUnread;
+// }
+
+shouldShowUnreadDivider(index: number): boolean {
   const msg = this.messages[index];
-  if (!msg) return false;
-  const isFirstUnread = !msg.isRead && this.messages.findIndex(m => !m.isRead) === index;
-  return isFirstUnread;
+  const isUnread = !msg?.isRead;
+  const firstUnreadIndex = this.messages.findIndex(m => !m.isRead);
+  const isFirstUnread = index === firstUnreadIndex;
+
+  return isUnread && isFirstUnread;
 }
+
+
 
 }

@@ -11,6 +11,7 @@ export interface Message {
   createdAt?: string;
   signedUrl?: string;
   safeAudioUrl?: SafeUrl;
+  isRead?: boolean;   
 }
 
 export interface Session {
