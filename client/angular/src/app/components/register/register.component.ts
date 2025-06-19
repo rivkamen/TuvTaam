@@ -1,4 +1,4 @@
-import { Component, inject, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import {
@@ -8,7 +8,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CardModule } from 'primeng/card';
 import { DropdownModule } from 'primeng/dropdown';
 import { DatePickerModule } from 'primeng/datepicker';
@@ -38,9 +38,10 @@ import { AufrufConfettiComponent } from './aufruf-confetti/aufruf-confetti.compo
   templateUrl: './register.component.html',
   styleUrl: './register.component.css',
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnInit {
   #authService = inject(AuthService);
   #router = inject(Router);
+  #activatedRoute = inject(ActivatedRoute);
   #parasha = inject(ParashaService);
 
   @ViewChild('aufruf') confetti!: AufrufConfettiComponent;
@@ -75,6 +76,21 @@ export class RegisterComponent {
   leyningFormControl = new FormControl([], [Validators.required]);
   withHafatara = new FormControl(false);
 
+  ngOnInit() {
+    this.#activatedRoute.queryParams.subscribe((params) => {
+      const username = params['username'];
+      const email = params['email'];
+      if (username && email) {
+        this.usernameFormControl.setValue(username);
+        this.emailFormControl.setValue(email);
+        this.emailFormControl.disable();
+        this.passwordFormControl.clearValidators();
+        this.passwordFormControl.updateValueAndValidity();
+        this.passwordFormControl.disable();
+      }
+    });
+  }
+
   nextStep() {
     if (this.isFirstStepValid()) {
       this.currentStep = 2;
@@ -86,11 +102,14 @@ export class RegisterComponent {
   }
 
   isFirstStepValid(): boolean {
-    return (
-      this.usernameFormControl.valid &&
-      this.emailFormControl.valid &&
-      this.passwordFormControl.valid
-    );
+    // אם השדות מושבתים (disable), נניח שהם תקינים
+    const usernameValid =
+      this.usernameFormControl.disabled || this.usernameFormControl.valid;
+    const emailValid =
+      this.emailFormControl.disabled || this.emailFormControl.valid;
+    const passwordValid =
+      this.passwordFormControl.disabled || this.passwordFormControl.valid;
+    return usernameValid && emailValid && passwordValid;
   }
 
   isSecondStepValid(): boolean {
@@ -129,7 +148,7 @@ export class RegisterComponent {
     }
 
     const email = this.emailFormControl.value!;
-    const password = this.passwordFormControl.value!;
+    const password = this.passwordFormControl.value ?? '';
     const username = this.usernameFormControl.value!;
     const dueDate = this.birthdateFormControl.value!;
     const haftara = this.withHafatara?.value ? this.haftara : undefined;
@@ -154,6 +173,10 @@ export class RegisterComponent {
           alert(`שגיאה בהרשמה: ${err?.message || 'לא ידוע'}`);
         },
       });
+  }
+
+  loginWithGoogle(): void {
+    this.#authService.loginWithGoogle();
   }
 
   private getFinalParasha(): VerseRef | null {

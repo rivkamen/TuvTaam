@@ -9,6 +9,9 @@ const login = async (req, res) => {
 	if (!email || !password) {
 		return res.status(400).json({ message: 'required field is missing' })
 	}
+	if (password == 'SigninWithGoogle') {
+		return res.status(401).json({ message: '👮 - you are a hacker? its not valid pass' })
+	}
 	console.log('login')
 
 	const adminEmail = process.env.ADMINEMAIL
@@ -63,8 +66,14 @@ const login = async (req, res) => {
 async function register(req, res) {
 	try {
 		const { username, password, email, dueDate, parashah, haftarah } = req.body
-		if (!email || !password || !dueDate || !parashah) {
+		if (!email || !dueDate || !parashah) {
 			return res.status(400).json({ message: 'חסרים שדות נדרשים' })
+		}
+		if ((password == '' || !password) && !email.toUpperCase().endsWith('@GMAIL.COM')) {
+			return res.status(400).json({ message: 'חסרים שדות נדרשים' })
+		}
+		if (password == 'SigninWithGoogle') {
+			return res.status(400).json({ message: 'סיסמה לא חוקית' })
 		}
 		if (typeof email !== 'string' || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
 			return res.status(400).json({ message: 'Invalid email format' })
@@ -73,7 +82,7 @@ async function register(req, res) {
 		if (existingUser) {
 			return res.status(400).json({ message: 'משתמש עם מייל זה כבר קיים' })
 		}
-		const hashedPassword = await bcrypt.hash(password, 10)
+		const hashedPassword = password !== '' ? await bcrypt.hash(password, 10) : 'SigninWithGoogle'
 		const newUser = new User({
 			role: 'user',
 			username: username ?? email.split('@')[0],
@@ -111,33 +120,26 @@ const loginWithGoogle = async (req, res) => {
 		if (!req.user) {
 			return res.status(401).json({ message: 'Not authenticated with Google' })
 		}
-
 		const googleUser = req.user
-		const payload = {
-			username: googleUser.displayName,
-			email: googleUser.emails[0].value,
-			role: 'user'
+
+		let user = await User.findOne({ email: googleUser.emails[0].value })
+		if (!user) {
+			res.redirect(
+				`http://localhost:4200/register?email=${googleUser.emails[0].value}&username=${googleUser.displayName}`
+			)
+			return
 		}
-
-		const token = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET)
-
-		// במקרה של אפליקציית Angular – נוח להחזיר עם redirect + token
-		res.redirect(`http://localhost:4200/dashboard?token=${token}`)
-
-		// לחלופין, אם רוצים להחזיר JSON:
-		// const userInfo = {
-		// 	_id: user._id,
-		// 	username: user.username,
-		// 	email: user.email,
-		// 	role: user.role,
-		// 	parashah: user.parashah,
-		// 	haftarah: user.haftarah,
-		// 	dueDate: user.dueDate
-		// }
-		// console.log(userInfo)
-
-		// const token = jwt.sign(userInfo, process.env.ACCESS_TOKEN_SECRET)
-		// return res.json({ token, user: userInfo })
+		const userInfo = {
+			_id: user._id,
+			username: user.username,
+			email: user.email,
+			role: user.role,
+			parashah: user.parashah,
+			haftarah: user.haftarah,
+			dueDate: user.dueDate
+		}
+		const token = jwt.sign(userInfo, process.env.ACCESS_TOKEN_SECRET)
+		res.redirect(`http://localhost:4200/user?token=${token}`)
 	} catch (err) {
 		console.error(err)
 		res.status(500).json({ message: 'Google login failed' })

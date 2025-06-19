@@ -43,6 +43,7 @@
         </small>
       </div>
 
+      @if(!passwordFormControl.disabled){
       <div class="p-field">
         <label for="password">סיסמה</label>
         <input
@@ -58,6 +59,16 @@
           סיסמה חייבת להכיל לפחות 6 תווים
         </small>
       </div>
+
+      <div class="button-container">
+        <p-button
+          label="הרשם עם גוגל"
+          icon="pi pi-google"
+          (onClick)="loginWithGoogle()"
+          class="google-button p-button-secondary"
+        ></p-button>
+      </div>
+      }
 
       <div class="button-container">
         <p-button
