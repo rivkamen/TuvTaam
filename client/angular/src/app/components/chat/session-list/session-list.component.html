@@ -1,0 +1,18 @@
+<div class="session-list">
+  <button *ngFor="let s of sessions"
+          class="session-item"
+          [class.selected]="s._id === selectedSessionId"
+          (click)="onSessionSelect(s._id)">
+    <div class="session-title">
+      שיחה עם {{ s.userId[0].email || 'לא ידוע' }}
+        <span *ngIf="s.hasUnreadMessages" class="unread-dot"></span>
+
+    </div>
+    <div class="session-dates">
+      <div class="hebrew-date">{{ getHebrewDate(s.createdAt) }}</div>
+      <div class="gregorian-date">{{ s.createdAt | date: 'dd/MM/yyyy HH:mm' }}</div>
+    </div>
+  </button>
+  
+  <button class="new-session-btn" (click)="onNewSession()">+ שיחה חדשה</button>
+</div>

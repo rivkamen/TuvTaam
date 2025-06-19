@@ -15,11 +15,13 @@ import { ButtonModule } from 'primeng/button';
 import { MenuItem } from 'primeng/api';
 import { SpeedDialModule } from 'primeng/speeddial';
 import { ViewChildren, QueryList } from '@angular/core';
+import { EditorModule } from 'primeng/editor';
+import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-m-feedback-chat',
   standalone: true,
-  imports: [CommonModule, FormsModule, RecordingComponent, ScrollPanelModule, FancyAudioPlayerComponent, ButtonModule, SpeedDialModule],
+  imports: [CommonModule, FormsModule, RecordingComponent, ScrollPanelModule, FancyAudioPlayerComponent, ButtonModule, SpeedDialModule, EditorModule],
   templateUrl: './m-feedback-chat.component.html',
   styleUrls: ['./m-feedback-chat.component.css']
 })
@@ -37,6 +39,7 @@ export class MFeedbackChatComponent implements OnInit {
 userEmail: string = '';
 editMessageId: string | null = null;
 editedMessageContent: string = '';
+firstUnreadMessageId: string | null = null;
 
   // הקלטה
   isRecording = false;
@@ -57,6 +60,16 @@ isDialogOpen = false;
 @ViewChildren('menuWrapper') menuWrappers!: QueryList<ElementRef>;
 @ViewChild('scrollContainer') scrollContainer!: ElementRef;
 @ViewChild('scrollPanel') scrollPanelRef!: ScrollPanel;
+editorModules = {
+  toolbar: [
+    ['bold', 'italic', 'underline'],        // עיצוב טקסט
+    [{ 'color': [] }, { 'background': [] }], // צבעים
+    [{ 'font': [] }],                        // פונט
+    [{ 'align': [] }],                       // יישור
+    ['link', 'clean'],                       // קישור וניקוי
+    [{ 'list': 'ordered'}, { 'list': 'bullet' }], // רשימות
+  ]
+};
 
 getMenuItems(msg: Message): MenuItem[] {
   return [
@@ -85,7 +98,9 @@ log(msg: any) {
     this.isDialogOpen = false;
   }
   ngOnInit() {
-    this.loadSessions();
+  this.loadSessions();
+  const firstUnread = this.messages.find(m => !m.isRead);
+  this.firstUnreadMessageId = firstUnread?._id ?? null;
   }
 
   isOwnMessage(msg: Message): boolean {
@@ -99,6 +114,8 @@ log(msg: any) {
   }
 
   selectSession(sessionId: string) {
+    console.log();
+    
     this.selectedSessionId = sessionId;
     this.loadMessages();
     this.loadUserProfile();
@@ -115,8 +132,14 @@ loadMessages() {
       safeAudioUrl: msg.signedUrl ? this.sanitizer.bypassSecurityTrustResourceUrl(msg.signedUrl) : null
     }));
     this.loading = false;
+    this.feedbackService.markAllMessagesAsRead(this.selectedSessionId).subscribe({
+      next: () => console.log("עודכן כנקראו"),
+      error: (err) => console.error("שגיאה בעדכון isRead", err)
+    });
   });
 }
+
+
 sendMessage() {
 
   if (!this.newMessage.trim() && !this.recordedBlob) return;
@@ -132,26 +155,7 @@ sendMessage() {
   }
 
   this.feedbackService.sendMessageWithAudio(this.selectedSessionId, formData).subscribe({
-//     next: (newMessage) => {
-//       this.newMessage = '';
-//       this.recordedBlob = null;
-//       this.loading = false;
-// if (newMessage) {
-//   const processedMessage = {
-//     ...newMessage,
-//     isAudio: !!newMessage.signedUrl,
-//     isText: !!newMessage.content,
-//     safeAudioUrl: newMessage.signedUrl
-//       ? this.sanitizer.bypassSecurityTrustResourceUrl(newMessage.signedUrl)
-//       : null
-//   };
 
-//   this.messages = [...this.messages, processedMessage];
-
-//   setTimeout(() => this.scrollToBottom(), 300);
-//   console.log('processedMessage', processedMessage);
-
-// }
 next: (newMessage) => {
   this.newMessage = '';
   this.recordedBlob = null;
@@ -193,7 +197,16 @@ handleRecordedAudio(blob: Blob) {
   this.recordedBlob = blob;
   this.sendMessage();
 }
-
+getHebrewDate(dateStr: string | Date): string {
+  const date = new Date(dateStr);
+  const formatter = new Intl.DateTimeFormat('he-IL-u-ca-hebrew', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+  return formatter.format(date);
+}
 
 
 
@@ -230,7 +243,6 @@ toggleRecording() {
     });
   }
 
-
   uploadRecording() {
     if (!this.recordedBlob || !this.selectedSessionId) return;
 
@@ -264,30 +276,6 @@ onAudioError(msg: any) {
   return this.sanitizer.bypassSecurityTrustResourceUrl(url);
 }
 
-// sendRecordingWithOptionalText() {
-//   if (!this.recordedBlob || !this.selectedSessionId) return;
-
-//   const formData = new FormData();
-//   const fileName = `recording-${Date.now()}.webm`;
-//   formData.append('audio', this.recordedBlob, fileName);
-//   formData.append('sessionId', this.selectedSessionId);
-
-//   if (this.newMessage.trim()) {
-//     formData.append('content', this.newMessage.trim());
-//   }
-
-//   this.feedbackService.uploadAudioWithBackup(formData).subscribe({
-//     next: () => {
-//       this.recordedBlob = null;
-//       this.newMessage = '';
-//       this.loadMessages();
-//     },
-//     error: (err) => {
-//       console.error('Upload error:', err);
-//       alert('שגיאה בהעלאה');
-//     }
-//   });
-// }
 
 
 chunks: BlobPart[] = [];
@@ -376,6 +364,7 @@ loadUserProfile() {
     
     if (userSession && userSession.userId[0]?.email) {
       console.log("hi");
+      console.log(userSession.userId[0]);
       
       this.userEmail = userSession.userId[0].email;
        this.userPhotoUrl = 'assets/student.gif'; 
@@ -416,20 +405,6 @@ scrollToBottom() {
     }
   }, 100);
 }
-
-// ngAfterViewInit(): void {
-//   const audio = this.playerRef.nativeElement;
-
-//   if (this.src) {
-//     audio.src = this.src;
-
-//     audio.addEventListener('loadedmetadata', () => {
-//       new Plyr(audio, {
-//         controls: ['play', 'progress', 'current-time', 'duration', 'mute', 'volume', 'download'],
-//       });
-//     });
-//   }
-// }
 
 
 }

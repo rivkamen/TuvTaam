@@ -68,4 +68,8 @@ deleteMessage(id: string,messageId:string) {
   
   return this.http.put(`${this.apiUrl}/${id}/messages/${messageId}/delete`,{});
 }
+markAllMessagesAsRead(sessionId: string): Observable<any> {
+  return this.http.put(`${this.apiUrl}/${sessionId}/messages/mark-all-read`, {});
+}
+
 }

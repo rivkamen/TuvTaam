@@ -1,0 +1,48 @@
+<div class="chat-layout">
+  <app-session-list
+    [sessions]="sessions"
+    [selectedSessionId]="selectedSessionId"
+    (sessionSelected)="selectSession($event)"
+    (newSessionRequested)="startNewSession()">
+  </app-session-list>
+
+  <div class="chat-container">
+    <br/><br/>
+    
+    <app-user-profile-bar
+      [userEmail]="userEmail"
+      [userPhotoUrl]="userPhotoUrl">
+    </app-user-profile-bar>
+
+    <app-new-session-form
+      [isVisible]="newSessionMode"
+      (sessionCreated)="createNewSession($event)"
+      (cancelled)="cancelNewSession()">
+    </app-new-session-form>
+
+    <br/>
+    
+    <div *ngIf="!newSessionMode && selectedSessionId">
+      <div *ngIf="loading">טוען הודעות...</div>
+      
+      <app-message-list
+        [messages]="messages"
+        [loading]="loading"
+        [userPhotoUrl]="userPhotoUrl"
+        [adminPhotoUrl]="adminPhotoUrl"
+        [editMessageId]="editMessageId"
+        [editedContent]="editedContent"
+        (editStarted)="startEdit($event)"
+        (editSaved)="saveEdit($event)"
+        (editCancelled)="cancelEdit()"
+        (messageDeleted)="deleteMessage($event)"
+        (menuToggled)="toggleMenu($event)">
+      </app-message-list>
+
+      <app-message-input
+        [loading]="loading"
+        (messageSent)="sendMessage($event)">
+      </app-message-input>
+    </div>
+  </div>
+</div>

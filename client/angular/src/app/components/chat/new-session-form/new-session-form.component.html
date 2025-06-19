@@ -1,0 +1,20 @@
+<div class="new-session-box" *ngIf="isVisible">
+  <input type="text" 
+         [(ngModel)]="sessionTitle" 
+         placeholder="שם השיחה (לא חובה)" />
+  
+  <p-editor
+    [(ngModel)]="sessionMessage"
+    [style]="{height:'200px'}"
+    [styleClass]="'custom-editor'"
+    [modules]="editorModules">
+  </p-editor>
+
+  <div class="form-buttons">
+    <p-button label="שליחה" 
+              icon="pi pi-send" 
+              (click)="onSubmit()" 
+              class="p-button-sm p-mt-2" />
+    <button (click)="onCancel()">ביטול</button>
+  </div>
+</div>

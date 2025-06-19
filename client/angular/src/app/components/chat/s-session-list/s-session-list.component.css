@@ -89,14 +89,6 @@
   flex-direction: row;
 }
 
-.bubble {
-  /* max-width: 60%; */
-  padding: 10px 15px;
-  border-radius: 18px;
-  background-color: #D0E6FF;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  word-break: break-word;
-}
 .message-wrapper.admin .bubble {
   background-color: var(--color-secondary);
 }
@@ -386,4 +378,12 @@
   color: #555;
   display: flex;
   gap: 1rem;
+}
+.unread-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 5px;
+  background-color: red;
+  border-radius: 50%;
 }

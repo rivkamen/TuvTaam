@@ -1,15 +1,23 @@
 <div class="chat-layout">
 
-  <!-- רשימת שיחות -->
-  <div class="session-list">
-    <button *ngFor="let s of sessions"
-            class="session-item"
-            [class.selected]="s._id === selectedSessionId"
-            (click)="selectSession(s._id)">
-      {{ s.createdAt || (s._id ? 'שיחה #' + s._id.slice(-4) : 'שיחה ללא מזהה') }}
-    </button>
-    <button class="new-session-btn" (click)="startNewSession()">+ שיחה חדשה</button>
-  </div>
+<div class="session-list">
+  <button *ngFor="let s of sessions"
+          class="session-item"
+          [class.selected]="s._id === selectedSessionId"
+          (click)="selectSession(s._id)">
+    <div class="session-title">
+  שיחה עם {{ s.userId[0].email || 'לא ידוע' }}
+
+</div>
+
+    <div class="session-dates">
+      <div class="hebrew-date">{{ getHebrewDate(s.createdAt) }}</div>
+      <div class="gregorian-date">{{ s.createdAt | date: 'dd/MM/yyyy HH:mm' }}</div>
+    </div>
+  </button>
+
+  <button class="new-session-btn" (click)="startNewSession()">+ שיחה חדשה</button>
+</div>
 
   <!-- צ'אט -->
   <div class="chat-container">
@@ -17,7 +25,7 @@
 <br/>
     <!-- פרופיל -->
     <div class="user-profile-bar" *ngIf="userEmail">
-      <img *ngIf="userPhotoUrl" [src]="roleService.isAdmin() ? adminPhotoUrl : userPhotoUrl" class="profile-img" />
+      <img *ngIf="userPhotoUrl" [src]="userPhotoUrl" class="profile-img" />
       <span class="email">{{ userEmail }}</span>
     </div>
 
@@ -25,6 +33,17 @@
     <div *ngIf="newSessionMode" class="new-session-box">
       <input type="text" [(ngModel)]="newSessionTitle" placeholder="שם השיחה (לא חובה)" />
       <textarea [(ngModel)]="newSessionMessage" placeholder="כתוב את ההודעה הראשונה..."></textarea>
+       <!-- <p-editor [(ngModel)]="newSessionMessage" [style]="{height:'150px'}" [styleClass]="'custom-editor'"></p-editor> -->
+<!-- <p-editor
+  [(ngModel)]="newSessionMessage"
+  [style]="{height:'200px'}"
+  [styleClass]="'custom-editor'"
+  [modules]="editorModules"
+></p-editor> -->
+
+
+<p-button label="שליחה" icon="pi pi-send" (click)="sendMessage()" class="p-button-sm p-mt-2" />
+
       <button (click)="createNewSession()">שלח</button>
       <button (click)="cancelNewSession()">ביטול</button>
     </div>
@@ -84,7 +103,9 @@
           <div class="bubble">
             
 
-<div *ngIf="msg.content">{{ msg.content }}</div>
+<!-- <div *ngIf="msg.content">{{ msg.content }}</div> -->
+ <div *ngIf="msg.content" [innerHTML]="msg.content"></div>
+
    <app-fancy-audio-player
   *ngIf="msg.signedUrl"
   [src]="msg.safeAudioUrl"

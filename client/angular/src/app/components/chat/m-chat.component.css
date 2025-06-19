@@ -89,14 +89,6 @@
   flex-direction: row;
 }
 
-.bubble {
-  /* max-width: 60%; */
-  padding: 10px 15px;
-  border-radius: 18px;
-  background-color: #D0E6FF;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  word-break: break-word;
-}
 .message-wrapper.admin .bubble {
   background-color: var(--color-secondary);
 }
@@ -386,4 +378,61 @@
   color: #555;
   display: flex;
   gap: 1rem;
+}
+
+
+/**/
+/* m-chat.component.css */
+
+.chat-layout {
+  display: flex;
+  height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  direction: rtl;
+}
+
+.chat-container {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  background: #fafafa;
+}
+
+/* אנימציות לסימון הודעות לא נקראות */
+@keyframes unreadPulse {
+  0% { 
+    box-shadow: 0 0 0 0 rgba(244, 67, 54, 0.7);
+  }
+  70% { 
+    box-shadow: 0 0 0 10px rgba(244, 67, 54, 0);
+  }
+  100% { 
+    box-shadow: 0 0 0 0 rgba(244, 67, 54, 0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* עיצוב לסימון שיחות עם הודעות לא נקראות */
+.session-item.has-unread {
+  animation: unreadPulse 2s infinite;
+}
+
+.unread-badge {
+  animation: slideIn 0.3s ease-out;
+}
+
+/* עיצוב לקו המפריד */
+.unread-separator {
+  animation: slideIn 0.5s ease-out;
 }

@@ -100,14 +100,7 @@
   flex-direction: row;
 }
 
-.bubble {
-  max-width: 60%;
-  padding: 10px 15px;
-  border-radius: 18px;
-  background-color: #e0f7fa;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  word-break: break-word;
-}
+
 
 .message-wrapper.admin .bubble {
   background-color: #f1f0f0;
@@ -116,7 +109,7 @@
 
 
 .bubblee {
-  max-width: 60%;
+  /* max-width: 10%; */
   padding: 10px 15px;
   border-radius: 18px;
   /* background-color: #e0f7fa; */

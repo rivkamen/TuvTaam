@@ -8,6 +8,7 @@ const messageSchema = new mongoose.Schema({
     fromUser:{
         type: Boolean
     }
+
 }, {
   timestamps: true
 });
