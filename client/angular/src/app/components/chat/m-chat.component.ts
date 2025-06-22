@@ -237,6 +237,9 @@ loadMessages() {
 
   createNewSession(sessionData: NewSessionData) {
     const userId = this.roleService.getUserId() || 'undefined';
+    console.log("userId");
+    console.log(userId);
+    
     const title = sessionData.title || 'ללא שם';
 
     this.feedbackService.createSession(userId, title, sessionData.message ? [

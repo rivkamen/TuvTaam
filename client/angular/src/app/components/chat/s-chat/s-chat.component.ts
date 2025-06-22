@@ -12,6 +12,7 @@ import { MessageInputComponent, MessageData } from '../message-input/message-inp
 import { AdminProfileBarComponent } from '../admin-profile-bar/admin-profile-bar.component';
 import { SSessionListComponent } from '../s-session-list/s-session-list.component';
 import { SMessageListComponent } from '../s-message-list/s-message-list.component';
+import { SNewSessionFormComponent } from '../s-new-session-form/s-new-session-form.component';
 
 @Component({
   selector: 'app-s-chat',
@@ -19,7 +20,7 @@ import { SMessageListComponent } from '../s-message-list/s-message-list.componen
   imports: [
     CommonModule,
     SSessionListComponent,
-    NewSessionFormComponent,
+    SNewSessionFormComponent,
     SMessageListComponent,
     MessageInputComponent,
     AdminProfileBarComponent
