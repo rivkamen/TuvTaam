@@ -1,0 +1,66 @@
+<div class="container">
+  <p-selectButton
+    [options]="scriptOptions"
+    [(ngModel)]="currentSettings.script"
+    (onChange)="onSettingsChange()"
+    optionValue="value"
+    size="large"
+    [allowEmpty]="false"
+  >
+    <ng-template let-item #item>
+      <span
+        [ngClass]="{
+          'font-selector-option': true,
+          selected: currentSettings.script === item.value
+        }"
+        [ngStyle]="{ fontFamily: item.value }"
+        >א</span
+      >
+    </ng-template>
+  </p-selectButton>
+
+  <p-selectButton
+    [options]="displayOptions"
+    [(ngModel)]="currentSettings.display"
+    (onChange)="onSettingsChange()"
+    [allowEmpty]="false"
+    size="large"
+    optionValue="value"
+    optionLabel="label"
+  >
+    <ng-template let-item #item>
+      <span
+        class="font-selector-option"
+        [ngClass]="{ selected: currentSettings.display === item.value }"
+      >
+        {{ item.label }}
+      </span>
+    </ng-template>
+  </p-selectButton>
+
+  <p-button
+    [disabled]="currentSettings.fontSize >= maxFontSize"
+    (click)="increaseFontSize()"
+    severity="secondary"
+    variant="outlined"
+  >
+    א+
+  </p-button>
+  <p-button
+    [disabled]="currentSettings.fontSize <= minFontSize"
+    (click)="decreaseFontSize()"
+    severity="secondary"
+    variant="outlined"
+  >
+    א-
+  </p-button>
+
+  <p-button
+    severity="secondary"
+    label="איפוס"
+    icon="pi pi-refresh"
+    (click)="resetSettings()"
+    severity="primary"
+    size="small"
+  />
+</div>

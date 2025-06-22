@@ -1,0 +1,16 @@
+<div class="confetti-container" #confettiContainer>
+  <div
+    *ngFor="let piece of confettiPieces; trackBy: trackByPiece"
+    class="confetti-piece"
+    [ngClass]="!piece.emoji ? 'confetti-' + piece.shape : ''"
+    [style.left.px]="piece.x"
+    [style.top.px]="piece.y"
+    [style.transform]="'rotate(' + piece.rotation + 'deg)'"
+    [style.background-color]="piece.color"
+    [style.width.px]="piece.size"
+    [style.height.px]="piece.size"
+    [style.opacity]="piece.opacity"
+  >
+    <span *ngIf="piece.emoji" class="emoji">{{ piece.emoji }}</span>
+  </div>
+</div>

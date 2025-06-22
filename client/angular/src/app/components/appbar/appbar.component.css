@@ -1,0 +1,12 @@
+.side-container {
+  display: flex;
+  align-items: center;
+}
+
+.count-down {
+  margin: 8px 15px 0 0;
+  font-size: 14px;
+  font-family: "Playpen Sans Hebrew", cursive;
+  font-weight: 450;
+  color: var(--p-primary-500);
+}

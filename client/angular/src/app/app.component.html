@@ -6,5 +6,10 @@
   <a routerLink="/feedbackChat">Feedback Chat</a> |
   <a routerLink="/mfeedbackChat">manager Feedback Chat</a> |
 
-</nav>
+
+@if (roleService.isLoggedIn()) { 
+    <nav>
+    <app-appbar></app-appbar> 
+  </nav>
+  }
 <router-outlet></router-outlet>

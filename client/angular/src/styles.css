@@ -17,3 +17,4 @@
   --color-text: #000000;            /* טקסט רגיל */
   --color-muted: #4A4A4A;           /* טקסט אפור/משני */
 }
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Playpen+Sans+Hebrew:wght@100..800&display=swap');

@@ -1,8 +1,13 @@
- 
- export class User{
-    id:number=0;
-    username:string="";
-    password:string='';
-    email:string='';
-    adminId:string=''
+import { VerseRef } from './parasha.models';
+
+export interface User {
+  id: number;
+  username: string;
+  password: string;
+  email: string;
+  adminId: string;
+  dueDate: Date;
+  parashah: VerseRef;
+  haftarah?: VerseRef;
+  recordBookmark: number;
 }
