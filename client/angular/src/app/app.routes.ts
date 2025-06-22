@@ -12,6 +12,8 @@ import { RegisterComponent } from './components/register/register.component';
 import { authGuard } from './core/guards/auth.guard';
 import { adminGuard } from './core/guards/admin.guard';
 import { MyParashaComponent } from './components/my-parasha/my-parasha.component';
+import { MChatComponent } from './components/chat/m-chat.component';
+import { SChatComponent } from './components/chat/s-chat/s-chat.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent, title: 'TuvTaam: Login' },
@@ -52,6 +54,7 @@ export const routes: Routes = [
     title: 'TuvTaam: My Parasha',
     canActivate: [authGuard],
   },
-  { path: 'home', component: FeedbackChatComponent, title: 'TuvTaam' }, // TODO: Change to HomeComponent when created
+  { path: 'mChat', component: MChatComponent, title: 'TuvTaam:chat' }, // TODO: Change to HomeComponent when created
+  { path: 'sChat', component: SChatComponent, title: 'TuvTaam:chat' }, // TODO: Change to HomeComponent when created
   { path: '', redirectTo: 'home', pathMatch: 'full' },
 ];
