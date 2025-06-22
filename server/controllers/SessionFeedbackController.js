@@ -2,6 +2,29 @@ const gcs = require("../service/gcsService");
 const Admin = require("../models/Admin");
 const SessionFeedback = require("../models/SessionFeedback");
 const { uploadToGCSWithBackup, deleteFromGCS } = require("../service/gcsService");
+// 1. צור מיפוי של לקוחות SSE פתוחים
+const clients = {};
+
+// 2. פתח endpoint לקבלת הודעות ב-Server-Sent Events
+const sseConnection = (req, res) => {
+  const sessionId = req.params._id;
+  res.set({
+    'Content-Type': 'text/event-stream',
+    'Cache-Control': 'no-cache',
+    Connection: 'keep-alive',
+  });
+  res.flushHeaders();
+
+  // שליחה ראשונית למנוע timeout
+res.write(`data: ${JSON.stringify({ status: 'connected' })}\n\n`);
+
+  if (!clients[sessionId]) clients[sessionId] = [];
+  clients[sessionId].push(res);
+
+  req.on('close', () => {
+    clients[sessionId] = clients[sessionId].filter((r) => r !== res);
+  });
+};
 
 const createSession = async (req, res) => {
   const { userId, messages, title } = req.body;
@@ -162,6 +185,64 @@ const deleteSession = async (req, res) => {
   return res.status(405).json({ message: "unauthorized" });
 };
 
+// const createMessage = async (req, res) => {
+//   console.log("🚀 התחלת createMessage");
+
+//   const { _id } = req.params;
+//   const message = req.body;
+//   const file = req.file;
+
+//   let session;
+//   try {
+//     session = await SessionFeedback.findById(_id).exec();
+//     if (!session) {
+//       return res.status(404).json({ message: "session not found" });
+//     }
+//   } catch (err) {
+//     return res.status(500).json({ message: "Error finding session", error: err.message });
+//   }
+
+//   if (file) {
+//     try {
+//       const uploadResult = await uploadToGCSWithBackup(file);
+//       message.path = uploadResult.name;
+
+//       // 🧠 כאן תוספת חדשה: יצירת signed URL
+//       try {
+//         const signedUrlData = await gcs.generateSignedUrl(message.path);
+//         message.signedUrl = signedUrlData.signedUrl;
+//         message.expiresAt = signedUrlData.expiresAt;
+//       } catch (error) {
+//         console.error("⚠️ שגיאה ביצירת signed URL:", error.message);
+//         // ממשיכים בלי signedUrl
+//       }
+
+//     } catch (err) {
+//       return res.status(500).json({ message: "File upload failed", error: err.message });
+//     }
+//   }
+
+//   if (message.fromUser === undefined) {
+//     console.log("🚀 fromUser לא נמצא, מגדירים ל-true");
+    
+//     message.fromUser = false;
+//   }
+
+//   session.messages.push(message);
+
+//   try {
+//     await session.save();
+//   } catch (err) {
+//     return res.status(500).json({ message: "Error saving session", error: err.message });
+//   }
+
+//   // ✔️ מחזירים את ההודעה עם signedUrl אם יש
+//   return res.status(201).json({
+//     success: true,
+//     message: `Message added to session "${session.title}"`,
+//     data: message,
+//   });
+// };
 const createMessage = async (req, res) => {
   console.log("🚀 התחלת createMessage");
 
@@ -184,14 +265,12 @@ const createMessage = async (req, res) => {
       const uploadResult = await uploadToGCSWithBackup(file);
       message.path = uploadResult.name;
 
-      // 🧠 כאן תוספת חדשה: יצירת signed URL
       try {
         const signedUrlData = await gcs.generateSignedUrl(message.path);
         message.signedUrl = signedUrlData.signedUrl;
         message.expiresAt = signedUrlData.expiresAt;
       } catch (error) {
         console.error("⚠️ שגיאה ביצירת signed URL:", error.message);
-        // ממשיכים בלי signedUrl
       }
 
     } catch (err) {
@@ -200,8 +279,6 @@ const createMessage = async (req, res) => {
   }
 
   if (message.fromUser === undefined) {
-    console.log("🚀 fromUser לא נמצא, מגדירים ל-true");
-    
     message.fromUser = false;
   }
 
@@ -213,10 +290,18 @@ const createMessage = async (req, res) => {
     return res.status(500).json({ message: "Error saving session", error: err.message });
   }
 
-  // ✔️ מחזירים את ההודעה עם signedUrl אם יש
+  // 🔴 שליחת עדכון ללקוחות SSE
+  const subscribers = clients[_id];
+  if (subscribers) {
+    const msgToSend = JSON.stringify({ newMessage: message });
+    subscribers.forEach((clientRes) => {
+      clientRes.write(`event: message\ndata: ${msgToSend}\n\n`);
+    });
+  }
+
   return res.status(201).json({
     success: true,
-    message: `Message added to session "${session.title}"`,
+    message: `Message added to session \"${session.title}\"`,
     data: message,
   });
 };
@@ -333,6 +418,6 @@ const markAllMessagesAsRead = async (req, res) => {
   }
 };
 
-module.exports = {createSession,getSessions,getSessionById,getMessages,getMessageById,updateSession,deleteSession,createMessage,updateMessage,deleteMessage,getUserSessions,updateMessageReadStatus,markAllMessagesAsRead}
+module.exports = {createSession,getSessions,getSessionById,getMessages,getMessageById,updateSession,deleteSession,createMessage,updateMessage,deleteMessage,getUserSessions,updateMessageReadStatus,markAllMessagesAsRead,sseConnection}
 
 // שאר הפונקציות (getSessions, getSessionById, getMessages וכו') נשארות כפי שהן כי הן רק קוראות מידע.

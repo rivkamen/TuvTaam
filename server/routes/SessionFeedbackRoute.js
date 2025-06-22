@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const sessionFeedbackController = require("../controllers/SessionFeedbackController");
 const verifyJWT = require("../middleware/verifyJWT");
+const sseVerifyJWT = require("../middleware/sseVerifyJWT");
 const verifyAdmin = require("../middleware/verifyAdmin");
 const multer = require("multer");
 const upload = multer(); // שומר את הקובץ בזיכרון
@@ -24,5 +25,6 @@ router.put("/:_id/messages/:messageId/read", verifyJWT, sessionFeedbackControlle
 
 router.put("/:_id/messages/:messageId/delete", verifyJWT,/*verifyAdmin,*/ sessionFeedbackController.deleteMessage);
 // בתוך הקובץ של הראוטים שלך:
+router.get('/sse/:sessionId', sseVerifyJWT, sessionFeedbackController.sseConnection);
 
 module.exports = router;

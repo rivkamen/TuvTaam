@@ -29,33 +29,14 @@ export class MessageListComponent implements OnChanges, AfterViewInit  {
   @Output() menuToggled = new EventEmitter<string>();
 @Input() editMessageId: string | null = null;
 @Input() editedContent: string = '';
-  @ViewChild('scrollPanel') scrollPanelRef!: ScrollPanel;
+@ViewChild('scrollPanel') scrollPanelRef!: ScrollPanel;
 @ViewChildren('unreadDivider') unreadDividers!: QueryList<ElementRef>;
 @Input() firstUnreadIndex: number | null = null;
+showScrollToBottom = false;
 
-  // editMessageId: string | null = null;
   editedMessageContent: string = '';
 
-  // ngOnChanges() {
-  //   if (this.messages.length > 0) {
-  //     setTimeout(() => this.scrollToBottom(), 300);
-  //   }
-  // }
-// ngOnChanges(changes: SimpleChanges) {
-//   if (changes['messages'] && this.messages.length > 0) {
-//     setTimeout(() => this.scrollToBottom(), 300);
-//   }
 
-//   if (changes['editMessageId']) {
-//     const newId = this.editMessageId;
-//     if (newId) {
-//       const msg = this.messages.find(m => m._id === newId);
-//       if (msg) {
-//         this.editedMessageContent = msg.content;
-//       }
-//     }
-//   }
-// }
 ngOnChanges(changes: SimpleChanges) {
   if (changes['messages'] && this.messages.length > 0) {
     setTimeout(() => {
@@ -87,13 +68,42 @@ scrollToUnread() {
     }
   }, 100);
 }
+onScroll(event: any) {
+  const scrollContainer = this.scrollPanelRef?.el?.nativeElement?.querySelector('.p-scrollpanel-content');
+  if (!scrollContainer) return;
+
+  const scrollTop = scrollContainer.scrollTop;
+  const scrollHeight = scrollContainer.scrollHeight;
+  const clientHeight = scrollContainer.clientHeight;
+
+  // הצג כפתור רק אם המשתמש לא בתחתית (תוך מרווח ביטחון)
+  this.showScrollToBottom = (scrollTop + clientHeight + 100) < scrollHeight;
+}
 
   trackByMessageId(index: number, msg: any): string {
     return msg._id;
   }
+// ngAfterViewInit() {
+//   this.scrollToUnreadDivider();
+// }
+
 ngAfterViewInit() {
   this.scrollToUnreadDivider();
+
+  const scrollContentEl = this.scrollPanelRef?.el?.nativeElement?.querySelector('.p-scrollpanel-content');
+  if (scrollContentEl) {
+    scrollContentEl.addEventListener('scroll', () => this.checkScrollPosition(scrollContentEl));
+  }
 }
+checkScrollPosition(scrollContentEl: HTMLElement) {
+  const scrollTop = scrollContentEl.scrollTop;
+  const scrollHeight = scrollContentEl.scrollHeight;
+  const clientHeight = scrollContentEl.clientHeight;
+
+  // מופעל אם המשתמש לא בתחתית
+  this.showScrollToBottom = (scrollTop + clientHeight + 80) < scrollHeight;
+}
+
 scrollToUnreadDivider() {
   setTimeout(() => {
     const element = this.unreadDividers?.first?.nativeElement;
@@ -137,22 +147,18 @@ scrollToUnreadDivider() {
       }
     }, 100);
   }
-//   shouldShowUnreadDivider(index: number): boolean {
-//   const msg = this.messages[index];
-//   if (!msg) return false;
-//   const isFirstUnread = !msg.isRead && this.messages.findIndex(m => !m.isRead) === index;
-//   return isFirstUnread;
-// }
+
 
 shouldShowUnreadDivider(index: number): boolean {
+  
   const msg = this.messages[index];
   const isUnread = !msg?.isRead;
-  const firstUnreadIndex = this.messages.findIndex(m => !m.isRead);
+  const isFromOtherSide = msg?.fromUser; // רק אם ההודעה מהצד השני
+  const firstUnreadIndex = this.messages.findIndex(m => !m.isRead && m.fromUser);
   const isFirstUnread = index === firstUnreadIndex;
 
-  return isUnread && isFirstUnread;
+  return isUnread && isFromOtherSide && isFirstUnread;
 }
-
 
 
 }

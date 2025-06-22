@@ -59,7 +59,6 @@
 <div *ngFor="let msg of messages; trackBy: trackByMessageId"
      class="message-wrapper" 
      [ngClass]="msg.fromUser ? 'admin' : 'user'">
-  {{log(msg) }}
 
   <!-- 🧑‍💼 תצוגת פרופיל -->
   <div class="message-profile">

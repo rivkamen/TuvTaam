@@ -72,5 +72,8 @@ deleteMessage(id: string,messageId:string) {
 markAllMessagesAsRead(sessionId: string): Observable<any> {
   return this.http.put(`${this.apiUrl}/${sessionId}/messages/mark-all-read`, {});
 }
+getMessageById(sessionId: string, messageId: string): Observable<any> {
+  return this.http.get<any>(`${this.apiUrl}/${sessionId}/messages/${messageId}`);
+}
 
 }

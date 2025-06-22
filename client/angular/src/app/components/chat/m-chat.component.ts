@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Message, FeedbackService } from '../../services/feedback.service';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -10,6 +10,7 @@ import { NewSessionFormComponent, NewSessionData } from './new-session-form/new-
 import { MessageListComponent, MessageEditData } from './message-list/message-list.component';
 import { MessageInputComponent, MessageData } from './message-input/message-input.component';
 import { UserProfileBarComponent } from './user-profile-bar/user-profile-bar.component';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-m-chat',
@@ -25,7 +26,7 @@ import { UserProfileBarComponent } from './user-profile-bar/user-profile-bar.com
   templateUrl: './m-chat.component.html',
   styleUrls: ['./m-chat.component.css']
 })
-export class MChatComponent implements OnInit {
+export class MChatComponent implements OnInit, OnDestroy {
   sessions: any[] = [];
   selectedSessionId: string = '';
   messages: any[] = [];
@@ -40,6 +41,8 @@ export class MChatComponent implements OnInit {
 editMessageId: string | null = null;
 editedContent: string = '';
 firstUnreadIndex: number | null = null;
+apiUrl: string = '';
+private sseMap = new Map<string, EventSource>();
 
   constructor(
     private feedbackService: FeedbackService,
@@ -50,6 +53,75 @@ firstUnreadIndex: number | null = null;
   ngOnInit() {
     this.loadSessions();
   }
+
+ ngOnDestroy() {
+    this.closeAllSSE(); // ניתוק כל החיבורים
+  }
+
+
+
+openSession(sessionId: string) {
+    this.selectedSessionId = sessionId;
+    this.loadMessages();
+    this.loadUserProfile();
+
+    this.initSSE(sessionId); // התחלת האזנה ל-SSE עבור שיחה זו
+  }
+
+  private initSSE(sessionId: string) {
+    console.log(`[SSE] מנסה לפתוח חיבור לשיחה ${sessionId}`);
+
+    if (this.sseMap.has(sessionId)) return; // לא פותחים פעמיים
+const token = sessionStorage.getItem('token'); // או מאיפה שאת שומרת אותו
+const eventSource = new EventSource(`${environment.apiUrl}/feedback/sse/${sessionId}?token=${token}`);
+console.log(`[SSE] EventSource נפתח עבור ${sessionId}`);
+
+    eventSource.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      console.log(`[SSE] הודעה חדשה לשיחה ${sessionId}, data`);
+
+      if (data.sessionId === this.selectedSessionId) {
+            console.log('[SSE] מדובר בשיחה הפתוחה כעת – טוען הודעות מחדש...');
+
+        this.loadMessages();
+      } else {
+        console.log('[SSE] מדובר בשיחה אחרת – מסמן כהודעה שלא נקראה');
+
+        const session = this.sessions.find(s => s._id === data.sessionId);
+        if (session) {
+          session.hasUnreadMessages = true;
+        }
+      }
+    };
+
+    eventSource.onerror = () => {
+      console.warn(`[SSE] שגיאה בשיחה ${sessionId}, מנסה שוב בעוד 3 שניות...`);
+      eventSource.close();
+      this.sseMap.delete(sessionId);
+      setTimeout(() => this.initSSE(sessionId), 3000);
+    };
+
+    this.sseMap.set(sessionId, eventSource);
+  }
+
+  private closeSSE(sessionId: string) {
+    const source = this.sseMap.get(sessionId);
+    if (source) {
+      source.close();
+      this.sseMap.delete(sessionId);
+    }
+  }
+
+  private closeAllSSE() {
+    this.sseMap.forEach((source, id) => {
+      source.close();
+    });
+    this.sseMap.clear();
+  }
+
+
+
+
 
   // loadSessions() {
   //   this.feedbackService.getSessions().subscribe((sessions) => {
@@ -73,31 +145,14 @@ loadSessions() {
   });
 }
 
-  selectSession(sessionId: string) {
-    this.selectedSessionId = sessionId;
-    this.loadMessages();
-    this.loadUserProfile();
-  }
-
-  // loadMessages() {
-  //   if (!this.selectedSessionId) return;
-  //   this.loading = true;
-
-  //   this.feedbackService.getMessages(this.selectedSessionId).subscribe((msgs) => {
-  //     this.messages = msgs.map((msg) => ({
-  //       ...msg,
-  //       signedUrl: msg.signedUrl || null,
-  //       safeAudioUrl: msg.signedUrl ? 
-  //         this.sanitizer.bypassSecurityTrustResourceUrl(msg.signedUrl) : null
-  //     }));
-  //     this.loading = false;
-      
-  //     this.feedbackService.markAllMessagesAsRead(this.selectedSessionId).subscribe({
-  //       next: () => console.log("עודכן כנקראו"),
-  //       error: (err) => console.error("שגיאה בעדכון isRead", err)
-  //     });
-  //   });
+  // selectSession(sessionId: string) {
+  //   this.selectedSessionId = sessionId;
+  //   this.loadMessages();
+  //   this.loadUserProfile();
   // }
+selectSession(sessionId: string) {
+  this.openSession(sessionId); // זה כולל loadMessages + initSSE
+}
 
 loadMessages() {
   if (!this.selectedSessionId) return;
@@ -124,7 +179,6 @@ loadMessages() {
     });
 
     this.loading = false;
-
     // עדכון כנקראו לאחר העדכון
     this.feedbackService.markAllMessagesAsRead(this.selectedSessionId).subscribe({
       next: () => console.log("עודכן כנקראו"),
@@ -192,6 +246,7 @@ loadMessages() {
       this.selectedSessionId = session._id;
       this.messages = session.messages || [];
       this.newSessionMode = false;
+      this.initSSE(session._id); 
     });
   }
 
@@ -248,4 +303,12 @@ cancelEdit() {
       }
     }
   }
+  
+
+
+
+
+
+
+  
 }

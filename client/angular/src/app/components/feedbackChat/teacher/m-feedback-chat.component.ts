@@ -85,10 +85,7 @@ getMenuItems(msg: Message): MenuItem[] {
     }
   ];
 }
-log(msg: any) {
-  console.log('Message:', msg);
-  return '';
-}
+
 
   openDialog() {
     this.isDialogOpen = true;

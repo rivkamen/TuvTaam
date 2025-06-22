@@ -17,12 +17,19 @@ export class SessionListComponent {
 
 
   onSessionSelect(sessionId: string) {
+    alert("hi")
+    console.log('[SessionListComponent] session selected:', sessionId); // ✅ להוסיף
+
     this.sessionSelected.emit(sessionId);
   }
 
   onNewSession() {
     this.newSessionRequested.emit();
   }
+  ngOnChanges() {
+  console.log('sessions received:', this.sessions);
+}
+
 
   getHebrewDate(dateStr: string | Date): string {
     const date = new Date(dateStr);
@@ -34,4 +41,8 @@ export class SessionListComponent {
     });
     return formatter.format(date);
   }
+  getUnreadCount(session: any): number {
+  return session.messages?.filter((msg: any) => !msg.isRead && msg.fromUser)?.length || 0;
+}
+
 }

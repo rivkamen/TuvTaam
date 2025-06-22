@@ -43,7 +43,7 @@
       </app-fancy-audio-player>
     </div>
 
-    <div class="msg-menu-wrapper" *ngIf="!message.fromUser" #menuWrapper>
+    <div class="msg-menu-wrapper" *ngIf="message.fromUser" #menuWrapper>
       <button class="menu-toggle-btn" (click)="toggleMenu()">⋮</button>
       <div class="msg-menu-modern" *ngIf="openedMenuId === message._id">
         <button *ngIf="!message.signedUrl" class="icon-btn" (click)="startEdit()">
