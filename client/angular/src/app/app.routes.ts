@@ -54,7 +54,10 @@ export const routes: Routes = [
     title: 'TuvTaam: My Parasha',
     canActivate: [authGuard],
   },
-  { path: 'mChat', component: MChatComponent, title: 'TuvTaam:chat' }, // TODO: Change to HomeComponent when created
-  { path: 'sChat', component: SChatComponent, title: 'TuvTaam:chat' }, // TODO: Change to HomeComponent when created
+  { path: 'mChat', component: MChatComponent, title: 'TuvTaam: chat', canActivate: [authGuard],
+ }, 
+  { path: 'sChat', component: SChatComponent, title: 'TuvTaam: chat', canActivate: [authGuard],
+ }, 
+ // TODO: Change to HomeComponent when created
   { path: '', redirectTo: 'home', pathMatch: 'full' },
 ];

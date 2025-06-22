@@ -43,7 +43,7 @@ export class AppbarComponent implements OnInit {
         label: 'Home',
       },
       {
-        path: this.roleService.isAdmin() ?'mChat' : 'sChat',
+        path: this.roleService.isAdmin() ?'/mChat' : '/sChat',
         label: 'Feedback Chat',
       },
       {
