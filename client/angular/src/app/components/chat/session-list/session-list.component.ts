@@ -17,7 +17,6 @@ export class SessionListComponent {
 
 
   onSessionSelect(sessionId: string) {
-    alert("hi")
     console.log('[SessionListComponent] session selected:', sessionId); // ✅ להוסיף
 
     this.sessionSelected.emit(sessionId);

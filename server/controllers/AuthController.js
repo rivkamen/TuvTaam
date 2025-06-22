@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken')
 
 const login = async (req, res) => {
 	const { email, password } = req.body
-	console.log('login')
+	console.log('login1')
 
 	if (!email || !password) {
 		return res.status(400).json({ message: 'required field is missing' })
@@ -12,7 +12,7 @@ const login = async (req, res) => {
 	if (password == 'SigninWithGoogle') {
 		return res.status(401).json({ message: '👮 - you are a hacker? its not valid pass' })
 	}
-	console.log('login')
+	console.log('login2')
 
 	const adminEmail = process.env.ADMINEMAIL
 	const adminPassword = process.env.ADMIN
@@ -24,19 +24,21 @@ const login = async (req, res) => {
 			email: adminEmail,
 			role: 'admin'
 		}
-		console.log('login')
+		console.log('login3')
 
 		const token = jwt.sign(adminInfo, process.env.ACCESS_TOKEN_SECRET)
 		return res.json({ token, role: 'admin', usernane: adminUsername })
 	}
-
+	console.log('login4')
 	// בדיקת משתמש רגיל ממסד הנתונים
 	const user = await User.findOne({ email }).lean()
 	if (!user) {
+		console.log('login5')
 		return res.status(401).json({ message: 'unauthorized' })
 	}
+	console.log('login6')
 	const match = await bcrypt.compare(password, user.password)
-
+console.log('login7')
 	if (!match) {
 		return res.status(401).json({ message: 'unauthorized' })
 	}
@@ -59,6 +61,8 @@ const login = async (req, res) => {
 			parashah: user.parashah,
 			haftarah: user.haftarah
 		}
+		console.log('login8');
+		
 		const token = jwt.sign(userInfo, process.env.ACCESS_TOKEN_SECRET)
 		return res.json({ token, role: 'user', user: userInfo })
 	}
