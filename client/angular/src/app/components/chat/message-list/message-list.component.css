@@ -1,0 +1,423 @@
+
+.chat-layout {
+  display: flex;
+  height: 100vh;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  direction: rtl;
+  background: var(--color-secondary);
+  color: var(--color-secondary-dark);
+}
+
+.session-list {
+  width: 250px;
+  background-color: var(--color-white);
+  border-left: 1px solid var(--color-primary);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  box-shadow: -2px 0 5px rgba(0,0,0,0.05);
+  overflow-y: auto;
+}
+
+.session-item {
+  padding: 10px;
+  background-color: var(--color-secondary);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: right;
+  transition: background-color 0.2s ease;
+}
+.session-item:hover {
+  background-color: #e0e0e0;
+}
+.session-item.selected {
+  background-color: #D0E6FF;
+  font-weight: bold;
+}
+
+.new-session-btn {
+  margin-top: auto;
+  padding: 10px;
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+.new-session-btn:hover {
+  background-color: var(--color-primary-dark);
+}
+
+.chat-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.user-profile-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+.user-profile-bar .profile-img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.user-profile-bar .email {
+  font-weight: bold;
+}
+
+.message-wrapper {
+  display: flex;
+  align-items: flex-end;
+  margin-bottom: 10px;
+  gap: 10px;
+}
+
+.message-wrapper.user {
+  flex-direction: row-reverse;
+}
+.message-wrapper.admin {
+  flex-direction: row;
+}
+
+
+.message-wrapper.admin .bubble {
+  background-color: var(--color-secondary);
+}
+
+.msg-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 5px;
+}
+.msg-actions button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-secondary-dark);
+  font-size: 0.9em;
+}
+.msg-actions button:hover {
+  text-decoration: underline;
+}
+
+.profile-img-small {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.new-session-box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.new-session-box input,
+.new-session-box textarea {
+  padding: 8px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font-family: inherit;
+}
+
+.new-session-box button {
+  padding: 8px;
+  background-color: var(--color-primary);
+  border: none;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+.new-session-box button:hover {
+  background-color: var(--color-primary-dark);
+}
+
+.message-input {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid var(--color-primary);
+}
+.message-input input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #bbb;
+  border-radius: 6px;
+}
+.message-input button {
+  padding: 10px 15px;
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.message-input button:hover {
+  background-color: var(--color-primary-dark);
+}
+
+.msg-menu-wrapper {
+  position: relative;
+  display: inline-block;
+  margin-right: auto;
+}
+
+.message-wrapper.user:hover .msg-menu-wrapper,
+.message-wrapper.admin:hover .msg-menu-wrapper {
+  display: block;
+}
+
+.menu-toggle-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: var(--color-muted);
+  padding: 5px;
+  transition: color 0.2s ease;
+}
+.menu-toggle-btn:hover {
+  color: var(--color-primary-dark);
+}
+
+.msg-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  min-width: 100px;
+}
+.msg-menu button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 10px;
+  background: none;
+  border: none;
+  text-align: right;
+  cursor: pointer;
+  font-size: 0.95em;
+  color: var(--color-secondary-dark);
+}
+.msg-menu button:hover {
+  background-color: var(--color-secondary);
+}
+
+.edit-message-container {
+  background-color: var(--color-white);
+  border: 1px solid var(--color-primary);
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.07);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.edit-textarea {
+  width: 100%;
+  border: 1px solid #bbb;
+  border-radius: 8px;
+  padding: 0.75rem;
+  font-size: 1rem;
+  resize: vertical;
+  font-family: inherit;
+  color: var(--color-secondary-dark);
+  background-color: var(--color-secondary);
+}
+.edit-textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 5px rgba(0, 80, 158, 0.3);
+}
+
+.edit-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.save-btn {
+  background-color: var(--color-primary) !important;
+  border: none;
+}
+.save-btn:hover {
+  background-color: var(--color-primary-dark) !important;
+}
+
+.cancel-btn {
+  background-color: var(--color-danger) !important;
+  border: none;
+}
+.cancel-btn:hover {
+  background-color: var(--color-danger-dark) !important;
+}
+
+
+.msg-menu-modern button:hover {
+  background-color: var(--color-secondary);
+  color: var(--color-primary);
+}
+.msg-menu-modern button.delete:hover {
+  color: var(--color-danger);
+}
+
+.icon-btn {
+  background-color: #f0f0f0;
+  border-radius: 50%;
+  width: 2.5rem;
+  height: 2.5rem;
+  font-size: 1.2rem;
+  color: #444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.2s, color 0.2s;
+  cursor: pointer;
+}
+.icon-btn:hover {
+  background-color: #e0e0e0;
+  color: #222;
+}
+.icon-btn.delete:hover {
+  background-color: #ffe5e5;
+  color: #c00;
+}
+.recording-dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6); 
+  display: flex;
+  justify-content: center; /* מרכז אופקית */
+  align-items: center;     /* מרכז אנכית */
+  z-index: 9999;
+}
+.msg-menu-modern {
+  position: absolute;
+  top: 50%;
+  left: 100%; /* פותח לצד שמאל של הכפתור */
+  transform: translateY(-50%); /* מרכז לגובה הכפתור */
+  
+  display: flex;
+  flex-direction: row; /* שורות – מאוזן */
+  gap: 0.5rem;
+
+  background-color: #F5F5F5;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 5px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+}
+.msg-menu-modern button {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding: 8px 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: var(--color-secondary-dark);
+  transition: background-color 0.2s, color 0.2s;
+}
+/* הסתרת כפתור התפריט כברירת מחדל */
+.menu-toggle-btn {
+  visibility: hidden;
+}
+
+/* הצגת כפתור התפריט כשמרחפים על ההודעה */
+.message-wrapper.admin:hover .menu-toggle-btn,
+.message-wrapper.user:hover .menu-toggle-btn {
+  visibility: visible;
+}
+
+.messages-container {
+  padding: 2rem;
+}
+/**/
+.session-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: right;
+  padding: 0.5rem 1rem;
+}
+
+.session-title {
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+}
+
+.session-dates {
+  font-size: 0.85rem;
+  color: #555;
+  display: flex;
+  gap: 1rem;
+}
+.unread-divider {
+  text-align: center;
+  font-weight: bold;
+  color: #d32f2f;
+  margin: 16px 0;
+  border-top: 2px dashed var(--color-primary);
+  padding-top: 8px;
+}
+
+
+/* .scroll-to-bottom-btn {
+  position: fixed;
+  bottom: 90px;
+  left: 20px;
+  z-index: 1000;
+  background-color: #007ad9;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 50px;
+  font-size: 14px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+} */
+.scroll-to-bottom-btn {
+  position: fixed;
+  bottom: 90px;
+  left: 20px;
+  z-index: 1000;
+  background-color: #007ad9;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 50px;
+  font-size: 14px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}

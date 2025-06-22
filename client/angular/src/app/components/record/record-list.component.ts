@@ -203,6 +203,7 @@ import { TreeSelectModule } from 'primeng/treeselect';
 import { SidebarModule } from 'primeng/sidebar';
 import { TreeModule } from 'primeng/tree';
 import { DrawerModule } from 'primeng/drawer';
+import { FancyAudioPlayerComponent } from '../audioComponent/fancy-audio-player.component';
 @Component({
   selector: 'app-record-list',
   standalone: true,
@@ -221,7 +222,8 @@ import { DrawerModule } from 'primeng/drawer';
     TreeSelectModule,
     SidebarModule,
     TreeModule,
-    DrawerModule
+    DrawerModule,
+    FancyAudioPlayerComponent
   ],
   templateUrl: './record-list.component.html',
   styleUrls: ['./record-list.component.css']

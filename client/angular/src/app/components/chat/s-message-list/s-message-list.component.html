@@ -1,0 +1,28 @@
+<p-scrollPanel #scrollPanel 
+               styleClass="messages-container" 
+               [style]="{height: '400px'}">
+  
+  <div *ngFor="let msg of messages; trackBy: trackByMessageId"
+       class="message-wrapper" 
+       [ngClass]="msg.fromUser ? 'user' : 'admin'">
+  <div *ngIf="shouldShowUnreadDivider(msg)" class="unread-divider">
+    הודעות חדשות
+  </div>
+    <div class="message-profile">
+      <img [src]="msg.fromUser ? userPhotoUrl :adminPhotoUrl"
+           alt="תמונת פרופיל"
+           class="profile-img-small" />
+    </div>
+
+    <app-s-message-item
+      [message]="msg"
+      [isEditing]="editMessageId === msg._id"
+      [editedContent]="editedMessageContent"
+      (editStarted)="onEditStarted($event)"
+      (editSaved)="onEditSaved($event)"
+      (editCancelled)="onEditCancelled()"
+      (messageDeleted)="onMessageDeleted($event)"
+      (menuToggled)="onMenuToggled($event)">
+    </app-s-message-item>
+  </div>
+</p-scrollPanel>

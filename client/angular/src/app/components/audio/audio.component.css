@@ -1,0 +1,55 @@
+.audio-container {
+  max-width: 400px;
+  background-color: #f0f0f0; /* אפור בהיר */
+  border-radius: 12px;
+  padding: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* צבע אדום לפס ההתקדמות */
+.plyr--audio .plyr__progress input[type='range'] {
+  color: #e53935;
+}
+
+.plyr--audio .plyr__controls button {
+  color: #e53935;
+}
+
+.plyr--audio .plyr__controls svg {
+  fill: #e53935;
+}
+
+.plyr__controls {
+  font-size: 14px;
+}
+.audio-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: #f1f1f1;
+  padding: 0.75rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  max-width: 500px;
+}
+
+audio {
+  flex: 1;
+  height: 40px;
+  outline: none;
+  accent-color: #d32f2f; /* אדום */
+}
+
+.download-button {
+  background-color: #d32f2f;
+  color: white;
+  padding: 0.4rem 0.75rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease;
+}
+
+.download-button:hover {
+  background-color: #b71c1c;
+}

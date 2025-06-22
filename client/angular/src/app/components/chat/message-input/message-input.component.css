@@ -1,0 +1,52 @@
+
+
+/**/
+
+.message-input {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid var(--color-primary);
+}
+.message-input input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #bbb;
+  border-radius: 6px;
+}
+.message-input button {
+  padding: 10px 15px;
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.message-input button:hover {
+  background-color: var(--color-primary-dark);
+}
+
+.msg-actions button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-secondary-dark);
+  font-size: 0.9em;
+}
+.msg-actions button:hover {
+  text-decoration: underline;
+}
+
+.recording-dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6); 
+  display: flex;
+  justify-content: center; /* מרכז אופקית */
+  align-items: center;     /* מרכז אנכית */
+  z-index: 9999;
+}

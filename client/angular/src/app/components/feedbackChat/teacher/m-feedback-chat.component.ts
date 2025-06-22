@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, HostListener, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Message, FeedbackService } from '../../../services/feedback.service';
@@ -9,11 +9,19 @@ import { ViewChild } from '@angular/core';
 import { ScrollPanel } from 'primeng/scrollpanel';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { MAudioPlayerComponent } from '../../managerAudio/m-audio-player.component';
+import { FancyAudioPlayerComponent } from '../../audioComponent/fancy-audio-player.component';
+import { AAudioPlayerComponent } from '../../audio/audio.component';
+import { ButtonModule } from 'primeng/button';
+import { MenuItem } from 'primeng/api';
+import { SpeedDialModule } from 'primeng/speeddial';
+import { ViewChildren, QueryList } from '@angular/core';
+import { EditorModule } from 'primeng/editor';
+import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-m-feedback-chat',
   standalone: true,
-  imports: [CommonModule, FormsModule, RecordingComponent,ScrollPanelModule,MAudioPlayerComponent],
+  imports: [CommonModule, FormsModule, RecordingComponent, ScrollPanelModule, FancyAudioPlayerComponent, ButtonModule, SpeedDialModule, EditorModule],
   templateUrl: './m-feedback-chat.component.html',
   styleUrls: ['./m-feedback-chat.component.css']
 })
@@ -31,6 +39,7 @@ export class MFeedbackChatComponent implements OnInit {
 userEmail: string = '';
 editMessageId: string | null = null;
 editedMessageContent: string = '';
+firstUnreadMessageId: string | null = null;
 
   // הקלטה
   isRecording = false;
@@ -47,6 +56,36 @@ openedMenuId: string | null = null;
     public roleService: RoleService
   ) {}
 isDialogOpen = false;
+@ViewChild('messagesContainer') private messagesContainer!: ElementRef;
+@ViewChildren('menuWrapper') menuWrappers!: QueryList<ElementRef>;
+@ViewChild('scrollContainer') scrollContainer!: ElementRef;
+@ViewChild('scrollPanel') scrollPanelRef!: ScrollPanel;
+editorModules = {
+  toolbar: [
+    ['bold', 'italic', 'underline'],        // עיצוב טקסט
+    [{ 'color': [] }, { 'background': [] }], // צבעים
+    [{ 'font': [] }],                        // פונט
+    [{ 'align': [] }],                       // יישור
+    ['link', 'clean'],                       // קישור וניקוי
+    [{ 'list': 'ordered'}, { 'list': 'bullet' }], // רשימות
+  ]
+};
+
+getMenuItems(msg: Message): MenuItem[] {
+  return [
+    {
+      label: 'עריכה',
+      icon: 'pi pi-pencil',
+      command: () => this.startEdit(msg)
+    },
+    {
+      label: 'מחיקה',
+      icon: 'pi pi-trash',
+      command: () => {this.deleteMessage(msg._id)}
+    }
+  ];
+}
+
 
   openDialog() {
     this.isDialogOpen = true;
@@ -56,7 +95,9 @@ isDialogOpen = false;
     this.isDialogOpen = false;
   }
   ngOnInit() {
-    this.loadSessions();
+  this.loadSessions();
+  const firstUnread = this.messages.find(m => !m.isRead);
+  this.firstUnreadMessageId = firstUnread?._id ?? null;
   }
 
   isOwnMessage(msg: Message): boolean {
@@ -70,6 +111,8 @@ isDialogOpen = false;
   }
 
   selectSession(sessionId: string) {
+    console.log();
+    
     this.selectedSessionId = sessionId;
     this.loadMessages();
     this.loadUserProfile();
@@ -81,11 +124,19 @@ loadMessages() {
   this.feedbackService.getMessages(this.selectedSessionId).subscribe((msgs) => {
     this.messages = msgs.map((msg) => ({
       ...msg,
+      signedUrl: msg.signedUrl || null,
+
       safeAudioUrl: msg.signedUrl ? this.sanitizer.bypassSecurityTrustResourceUrl(msg.signedUrl) : null
     }));
     this.loading = false;
+    this.feedbackService.markAllMessagesAsRead(this.selectedSessionId).subscribe({
+      next: () => console.log("עודכן כנקראו"),
+      error: (err) => console.error("שגיאה בעדכון isRead", err)
+    });
   });
 }
+
+
 sendMessage() {
 
   if (!this.newMessage.trim() && !this.recordedBlob) return;
@@ -101,26 +152,7 @@ sendMessage() {
   }
 
   this.feedbackService.sendMessageWithAudio(this.selectedSessionId, formData).subscribe({
-//     next: (newMessage) => {
-//       this.newMessage = '';
-//       this.recordedBlob = null;
-//       this.loading = false;
-// if (newMessage) {
-//   const processedMessage = {
-//     ...newMessage,
-//     isAudio: !!newMessage.signedUrl,
-//     isText: !!newMessage.content,
-//     safeAudioUrl: newMessage.signedUrl
-//       ? this.sanitizer.bypassSecurityTrustResourceUrl(newMessage.signedUrl)
-//       : null
-//   };
 
-//   this.messages = [...this.messages, processedMessage];
-
-//   setTimeout(() => this.scrollToBottom(), 300);
-//   console.log('processedMessage', processedMessage);
-
-// }
 next: (newMessage) => {
   this.newMessage = '';
   this.recordedBlob = null;
@@ -133,6 +165,7 @@ next: (newMessage) => {
       ...data,
       isAudio: !!data.signedUrl,
       isText: !!data.content,
+      signedUrl: data.signedUrl || null, // הוספה
       safeAudioUrl: data.signedUrl
         ? this.sanitizer.bypassSecurityTrustResourceUrl(data.signedUrl)
         : null
@@ -161,7 +194,16 @@ handleRecordedAudio(blob: Blob) {
   this.recordedBlob = blob;
   this.sendMessage();
 }
-
+getHebrewDate(dateStr: string | Date): string {
+  const date = new Date(dateStr);
+  const formatter = new Intl.DateTimeFormat('he-IL-u-ca-hebrew', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+  return formatter.format(date);
+}
 
 
 
@@ -188,7 +230,7 @@ toggleRecording() {
     const initialMessage = this.newSessionMessage.trim();
 
     this.feedbackService.createSession(userId, title, initialMessage ? [
-      { content: initialMessage, fromUser: true}
+      { content: initialMessage, fromUser: false}
     ] : []).subscribe(session => {
       this.sessions.push(session);
       this.selectedSessionId = session._id;
@@ -197,7 +239,6 @@ toggleRecording() {
       this.newMessage = '';
     });
   }
-
 
   uploadRecording() {
     if (!this.recordedBlob || !this.selectedSessionId) return;
@@ -232,36 +273,13 @@ onAudioError(msg: any) {
   return this.sanitizer.bypassSecurityTrustResourceUrl(url);
 }
 
-// sendRecordingWithOptionalText() {
-//   if (!this.recordedBlob || !this.selectedSessionId) return;
-
-//   const formData = new FormData();
-//   const fileName = `recording-${Date.now()}.webm`;
-//   formData.append('audio', this.recordedBlob, fileName);
-//   formData.append('sessionId', this.selectedSessionId);
-
-//   if (this.newMessage.trim()) {
-//     formData.append('content', this.newMessage.trim());
-//   }
-
-//   this.feedbackService.uploadAudioWithBackup(formData).subscribe({
-//     next: () => {
-//       this.recordedBlob = null;
-//       this.newMessage = '';
-//       this.loadMessages();
-//     },
-//     error: (err) => {
-//       console.error('Upload error:', err);
-//       alert('שגיאה בהעלאה');
-//     }
-//   });
-// }
 
 
 chunks: BlobPart[] = [];
 recordingStartTime: number = 0;
 recordingTime: Date = new Date(0);
 recordingInterval: any;
+isDropdownOpen = false;
 
 startRecording() {
   this.isRecording = true;
@@ -318,7 +336,8 @@ saveEdit(messageId:string) {
     this.cancelEdit();
   });
 }
-deleteMessage(messageId: string) {
+deleteMessage(messageId: string | undefined) {
+  if (!messageId) return;
   if (!confirm('האם למחוק את ההודעה?')) return;
   this.feedbackService.deleteMessage(this.selectedSessionId,messageId).subscribe(() => {
     this.messages = this.messages.filter(m => m._id !== messageId);
@@ -342,10 +361,11 @@ loadUserProfile() {
     
     if (userSession && userSession.userId[0]?.email) {
       console.log("hi");
+      console.log(userSession.userId[0]);
       
       this.userEmail = userSession.userId[0].email;
-      this.userPhotoUrl = 'assets/vivid-blurred-colorful-wallpaper-background.jpg'; 
-      this.adminPhotoUrl = 'assets/DSCN0107.JPG';
+       this.userPhotoUrl = 'assets/student.gif'; 
+      this.adminPhotoUrl = 'assets/teacher.gif';
     }}
   }
 
@@ -360,10 +380,19 @@ openRecordingDialog() {
 closeRecordingDialog() {
   this.isDialogOpen = false;
 }
-@ViewChild('messagesContainer') private messagesContainer!: ElementRef;
+@HostListener('document:click', ['$event'])
+onClickOutside(event: MouseEvent): void {
 
-@ViewChild('scrollContainer') scrollContainer!: ElementRef;
-@ViewChild('scrollPanel') scrollPanelRef!: ScrollPanel;
+  if (!this.openedMenuId) return;
+
+const clickedInsideSomeMenu = this.menuWrappers?.toArray().some(wrapper =>
+  wrapper.nativeElement.contains(event.target)
+);
+
+  if (!clickedInsideSomeMenu) {
+    this.openedMenuId = null;
+  }
+}
 
 scrollToBottom() {
   setTimeout(() => {
@@ -373,8 +402,6 @@ scrollToBottom() {
     }
   }, 100);
 }
-
-
 
 
 }

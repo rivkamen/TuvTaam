@@ -7,6 +7,7 @@ import { RecordListComponent } from './components/record/record-list.component';
 import { TeacherChatComponent } from './components/session/teacherChat/teacher-chat.component';
 import { StudentChatComponent } from './components/session/studentChat/student-chat.component';
 import { FeedbackChatComponent } from './components/feedbackChat/student/feedback-chat.component';
+
 import { RegisterComponent } from './components/register/register.component';
 import { authGuard } from './core/guards/auth.guard';
 import { adminGuard } from './core/guards/admin.guard';

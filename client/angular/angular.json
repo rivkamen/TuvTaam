@@ -21,15 +21,22 @@
             ],
             "tsConfig": "tsconfig.app.json",
             "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              }
-            ],
-            "styles": [
-              "node_modules/primeicons/primeicons.css",
-              "src/styles.css"
-            ],
+  {
+    "glob": "**/*",
+    "input": "public"
+  },
+  "src/favicon.ico",
+  "src/assets"
+],
+        "styles": [
+            "node_modules/plyr/dist/plyr.css",
+
+  "node_modules/primeicons/primeicons.css",
+  "src/styles.css"
+],
+
+
+
             "scripts": []
           },
           "configurations": {
@@ -79,18 +86,26 @@
               "zone.js/testing"
             ],
             "tsConfig": "tsconfig.spec.json",
-            "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              },
-              "src/favicon.ico",
-              "src/assets"
-            ],
-            "styles": [
-              "node_modules/primeicons/primeicons.css",
-              "src/styles.css"
-            ],
+                    "assets": [
+  {
+    "glob": "**/*",
+    "input": "public"
+  },
+  "src/favicon.ico",
+  "src/assets"
+],
+          
+        "styles": [  
+          "node_modules/quill/dist/quill.snow.css",
+
+            "node_modules/plyr/dist/plyr.css",
+
+  "node_modules/primeicons/primeicons.css",
+  "src/styles.css"
+],
+
+           
+
             "scripts": []
           }
         }

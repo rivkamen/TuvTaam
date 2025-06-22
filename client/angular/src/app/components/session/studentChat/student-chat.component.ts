@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Message, SessionService } from '../../../services/session.service';
 import { RoleService } from '../../../services/role.service'; // נתיב נכון לפי הפרויקט שלך
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-teacher-chat',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ButtonModule],
   templateUrl: './student-chat.component.html',
   styleUrls: ['./student-chat.component.css']
 })
@@ -140,8 +141,8 @@ loadUserProfile() {
       console.log("hi");
       
       this.userEmail = userSession.userId[0].email;
-      this.userPhotoUrl = 'assets/vivid-blurred-colorful-wallpaper-background.jpg'; 
-      this.adminPhotoUrl = 'assets/DSCN0107.JPG';
+    this.userPhotoUrl = 'assets/teacher.gif'; 
+      this.adminPhotoUrl = 'assets/student.gif';
     }}
   }
 }

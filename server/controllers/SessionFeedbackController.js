@@ -1,7 +1,30 @@
 const gcs = require("../service/gcsService");
 const Admin = require("../models/Admin");
 const SessionFeedback = require("../models/SessionFeedback");
-const { uploadToGCSWithBackup, deleteFromGCSIfExists } = require("../service/gcsService");
+const { uploadToGCSWithBackup, deleteFromGCS } = require("../service/gcsService");
+// 1. צור מיפוי של לקוחות SSE פתוחים
+const clients = {};
+
+// 2. פתח endpoint לקבלת הודעות ב-Server-Sent Events
+const sseConnection = (req, res) => {
+  const sessionId = req.params._id;
+  res.set({
+    'Content-Type': 'text/event-stream',
+    'Cache-Control': 'no-cache',
+    Connection: 'keep-alive',
+  });
+  res.flushHeaders();
+
+  // שליחה ראשונית למנוע timeout
+res.write(`data: ${JSON.stringify({ status: 'connected' })}\n\n`);
+
+  if (!clients[sessionId]) clients[sessionId] = [];
+  clients[sessionId].push(res);
+
+  req.on('close', () => {
+    clients[sessionId] = clients[sessionId].filter((r) => r !== res);
+  });
+};
 
 const createSession = async (req, res) => {
   const { userId, messages, title } = req.body;
@@ -56,19 +79,6 @@ if(session.userId==req.user._id || admin){
 return res.status(405).json({message:"unauthorized"})
 
 }
-// const getMessages = async (req, res) => {
-//     const { _id } = req.params; // session ID
-//     const session = await SessionFeedback.findById(_id).lean();
-//     // const admin = await Admin.findById({ _id: req.user._id });
-
-//     if (!session) return res.status(404).json({ message: "session not found" });
-
-//     if (/*session.userId.toString() === req.user._id.toString() || admin*/true) {
-//         return res.status(200).json(session.messages);
-//     }
-
-//     return res.status(403).json({ message: "unauthorized" });
-// };
 
 const getMessages = async (req, res) => {
   try {
@@ -159,11 +169,10 @@ const updateSession = async (req, res) => {
 const deleteSession = async (req, res) => {
   const { _id } = req.params;
   const session = await SessionFeedback.findById(_id).exec();
-  const admin = await Admin.findById({ _id: req.user._id });
 
   if (!session) return res.status(401).json({ message: "not found" });
 
-  if (admin) {
+  if (req.user.role==='admin') {
     for (const msg of session.messages) {
       if (msg.path) {
         await deleteFromGCSIfExists(msg.path);
@@ -177,104 +186,57 @@ const deleteSession = async (req, res) => {
 };
 
 // const createMessage = async (req, res) => {
-//   const { _id } = req.params;
- 
-//   const {message} = req.body;
-//   const file = req.file;
-
-//   const session = await SessionFeedback.findById(_id).exec();
-  
-//   if (!session) return res.status(404).json({ message: "session not found" });
- 
-
-//   if (file) {
-//     try {
-//       const uploadResult = await uploadToGCSWithBackup(file);
-//       message.path = uploadResult.publicUrl;
-//     } catch (err) {
-        
-//       return res.status(500).json({ message: "File upload failed", error: err.message });
-//     }
-//   }
-//  if (message.fromUser === undefined) {
-//     message.fromUser = false; // ברירת מחדל אם לא נשלח
-//   }
-
-//   session.messages= [...session.messages, message];
- 
-//   await session.save();
-
-//   return res.status(201).json({
-//     success: true,
-//     message: `Message added to session "${session.title}"`,
-//     data: message
-//   });
-// };
-
-// const createMessage = async (req, res) => {
 //   console.log("🚀 התחלת createMessage");
 
 //   const { _id } = req.params;
-//   console.log("📌 מזהה סשן:", _id);
-
-//   const message  = req.body;
-//   console.log(req.body);
-  
-//   console.log("📩 הודעה מהגוף:", message);
-
+//   const message = req.body;
 //   const file = req.file;
-//   if (file) {
-//     console.log("📁 קובץ מצורף:", file.originalname);
-//   } else {
-//     console.log("🚫 אין קובץ מצורף");
-//   }
 
 //   let session;
 //   try {
 //     session = await SessionFeedback.findById(_id).exec();
-//     console.log("🔍 מצאתי סשן:", session ? session.title : "לא נמצא");
+//     if (!session) {
+//       return res.status(404).json({ message: "session not found" });
+//     }
 //   } catch (err) {
-//     console.error("❌ שגיאה באיתור סשן:", err);
 //     return res.status(500).json({ message: "Error finding session", error: err.message });
-//   }
-
-//   if (!session) {
-//     console.warn("⚠️ סשן לא נמצא");
-//     return res.status(404).json({ message: "session not found" });
 //   }
 
 //   if (file) {
 //     try {
-//       console.log("☁️ מתחיל העלאה ל-GCS...");
 //       const uploadResult = await uploadToGCSWithBackup(file);
-//       console.log("✅ העלאה ל-GCS הושלמה:", uploadResult.publicUrl);
-//       console.log(uploadResult);
-      
 //       message.path = uploadResult.name;
+
+//       // 🧠 כאן תוספת חדשה: יצירת signed URL
+//       try {
+//         const signedUrlData = await gcs.generateSignedUrl(message.path);
+//         message.signedUrl = signedUrlData.signedUrl;
+//         message.expiresAt = signedUrlData.expiresAt;
+//       } catch (error) {
+//         console.error("⚠️ שגיאה ביצירת signed URL:", error.message);
+//         // ממשיכים בלי signedUrl
+//       }
+
 //     } catch (err) {
-//       console.error("❌ שגיאה בהעלאת הקובץ ל-GCS:", err);
 //       return res.status(500).json({ message: "File upload failed", error: err.message });
 //     }
 //   }
 
 //   if (message.fromUser === undefined) {
+//     console.log("🚀 fromUser לא נמצא, מגדירים ל-true");
+    
 //     message.fromUser = false;
-//     console.log("ℹ️ fromUser לא היה מוגדר, מגדיר ל-false");
 //   }
 
-//   console.log("➕ מוסיף הודעה למערך ההודעות של הסשן");
-//   session.messages = [...session.messages, message];
+//   session.messages.push(message);
 
 //   try {
 //     await session.save();
-//     console.log("💾 שמרתי את הסשן עם ההודעה החדשה");
 //   } catch (err) {
-//     console.error("❌ שגיאה בשמירת הסשן:", err);
 //     return res.status(500).json({ message: "Error saving session", error: err.message });
 //   }
-// console.log(message);
 
-//   console.log("✅ מחזיר תשובה עם סטטוס 201");
+//   // ✔️ מחזירים את ההודעה עם signedUrl אם יש
 //   return res.status(201).json({
 //     success: true,
 //     message: `Message added to session "${session.title}"`,
@@ -303,14 +265,12 @@ const createMessage = async (req, res) => {
       const uploadResult = await uploadToGCSWithBackup(file);
       message.path = uploadResult.name;
 
-      // 🧠 כאן תוספת חדשה: יצירת signed URL
       try {
         const signedUrlData = await gcs.generateSignedUrl(message.path);
         message.signedUrl = signedUrlData.signedUrl;
         message.expiresAt = signedUrlData.expiresAt;
       } catch (error) {
         console.error("⚠️ שגיאה ביצירת signed URL:", error.message);
-        // ממשיכים בלי signedUrl
       }
 
     } catch (err) {
@@ -330,10 +290,18 @@ const createMessage = async (req, res) => {
     return res.status(500).json({ message: "Error saving session", error: err.message });
   }
 
-  // ✔️ מחזירים את ההודעה עם signedUrl אם יש
+  // 🔴 שליחת עדכון ללקוחות SSE
+  const subscribers = clients[_id];
+  if (subscribers) {
+    const msgToSend = JSON.stringify({ newMessage: message });
+    subscribers.forEach((clientRes) => {
+      clientRes.write(`event: message\ndata: ${msgToSend}\n\n`);
+    });
+  }
+
   return res.status(201).json({
     success: true,
-    message: `Message added to session "${session.title}"`,
+    message: `Message added to session \"${session.title}\"`,
     data: message,
   });
 };
@@ -341,18 +309,15 @@ const createMessage = async (req, res) => {
 const deleteMessage = async (req, res) => {
   const { _id, messageId } = req.params;
   const session = await SessionFeedback.findById(_id).exec();
-  const admin = await Admin.findById({ _id: req.user._id });
-
   if (!session) return res.status(404).json({ message: "session not found" });
-
+ 
   const isUser = session.userId.find(id => id.toString() === req.user._id.toString());
-  if (!isUser && !admin) return res.status(403).json({ message: "unauthorized" });
 
+  if (!isUser && req.user.role !== 'admin' && false) return res.status(403).json({ message: "unauthorized" });
   const msg = session.messages.id(messageId);
   if (!msg) return res.status(404).json({ message: "message not found" });
-
-  if (msg.path) await deleteFromGCSIfExists(msg.path);
-  msg.remove();
+  if (msg.path) await deleteFromGCS(msg.path);
+session.messages.pull({ _id: messageId });
   await session.save();
 
   return res.status(200).json({
@@ -379,6 +344,8 @@ const updateMessage = async (req, res) => {
 
   const session = await SessionFeedback.findById(_id).exec();
   if (!session) return res.status(404).json({ message: "session not found" });
+const isUser = session.userId.find(id => id.toString() === req.user._id.toString());
+  if (!isUser && req.user.role !== 'admin' && false) return res.status(403).json({ message: "unauthorized" });
 
   const msg = session.messages.id(messageId);
   if (!msg) return res.status(404).json({ message: "message not found" });
@@ -394,7 +361,63 @@ const updateMessage = async (req, res) => {
     updatedMessage: msg,
   });
 };
+const updateMessageReadStatus = async (req, res) => {
+  const { _id, messageId } = req.params;
+  const session = await SessionFeedback.findById(_id).exec();
+  if (!session) return res.status(404).json({ message: "Session not found" });
 
-module.exports = {createSession,getSessions,getSessionById,getMessages,getMessageById,updateSession,deleteSession,createMessage,updateMessage,deleteMessage,getUserSessions}
+  // בדיקה שהיוזר הוא הבעלים של הסשן או אדמין
+  if (session.userId.toString() !== req.user._id.toString() && req.user.role !== 'admin' && false) {
+    return res.status(403).json({ message: "unauthorized" });
+  }
+
+  const message = session.messages.id(messageId);
+  if (!message) return res.status(404).json({ message: "Message not found" });
+
+  message.isRead = true;
+
+  try {
+    await session.save();
+    return res.status(200).json({ success: true, message: "Message marked as read" });
+  } catch (err) {
+    return res.status(500).json({ message: "Error updating message", error: err.message });
+  }
+};
+const markAllMessagesAsRead = async (req, res) => {
+  try {
+    const { _id } = req.params; // session ID
+    const session = await SessionFeedback.findById(_id).exec();
+
+    if (!session) {
+      return res.status(404).json({ message: "session not found" });
+    }
+
+    const isOwner = session.userId.toString() === req.user._id.toString();
+    const isAdmin = req.user.role === 'admin';
+
+    if (!isOwner && !isAdmin && false) {
+      return res.status(403).json({ message: "unauthorized" });
+    }
+
+    let updatedCount = 0;
+    session.messages.forEach(msg => {
+      if (!msg.isRead) {
+        msg.isRead = true;
+        updatedCount++;
+      }
+    });
+
+    await session.save();
+
+    return res.status(200).json({
+      success: true,
+      message: `${updatedCount} messages marked as read.`,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+module.exports = {createSession,getSessions,getSessionById,getMessages,getMessageById,updateSession,deleteSession,createMessage,updateMessage,deleteMessage,getUserSessions,updateMessageReadStatus,markAllMessagesAsRead,sseConnection}
 
 // שאר הפונקציות (getSessions, getSessionById, getMessages וכו') נשארות כפי שהן כי הן רק קוראות מידע.

@@ -11,6 +11,7 @@ export interface Message {
   createdAt?: string;
   signedUrl?: string;
   safeAudioUrl?: SafeUrl;
+  isRead?: boolean;   
 }
 
 export interface Session {
@@ -69,4 +70,11 @@ deleteMessage(id: string,messageId:string) {
   
   return this.http.put(`${this.apiUrl}/${id}/messages/${messageId}/delete`,{});
 }
+markAllMessagesAsRead(sessionId: string): Observable<any> {
+  return this.http.put(`${this.apiUrl}/${sessionId}/messages/mark-all-read`, {});
+}
+getMessageById(sessionId: string, messageId: string): Observable<any> {
+  return this.http.get<any>(`${this.apiUrl}/${sessionId}/messages/${messageId}`);
+}
+
 }
