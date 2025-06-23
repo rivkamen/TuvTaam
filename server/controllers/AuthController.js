@@ -39,6 +39,7 @@ const login = async (req, res) => {
 	}
 	if (user.role == 'admin') {
 		const adminInfo = {
+			_id: user._id,
 			username: user.username,
 			email: user.email,
 			role: 'admin'

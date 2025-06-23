@@ -31,7 +31,6 @@ const clients = {};
 // };
 const sseConnection = (req, res) => {
   const sessionId = req.params._id;
-  console.log(`[SSE] התחלת חיבור חדש לשיחה ${sessionId}`);
 
   res.set({
     'Content-Type': 'text/event-stream',
@@ -41,23 +40,17 @@ const sseConnection = (req, res) => {
   });
 
   res.flushHeaders();
-  console.log(`[SSE] הגדרות הכותרות נשלחו לשיחה ${sessionId}`);
 
   // שליחה ראשונית למנוע timeout
   res.write(`data: ${JSON.stringify({ status: 'connected' })}\n\n`);
-  console.log(`[SSE] הודעת התחברות ראשונית נשלחה לשיחה ${sessionId}`);
 
   if (!clients[sessionId]) {
     clients[sessionId] = [];
-    console.log(`[SSE] יצירת מערך מאזינים חדש לשיחה ${sessionId}`);
   }
   clients[sessionId].push(res);
-  console.log(`[SSE] מאזין נוסף לשיחה ${sessionId}. סה"כ מאזינים: ${clients[sessionId].length}`);
 
   req.on('close', () => {
-    console.log(`[SSE] חיבור נסגר לשיחה ${sessionId}`);
     clients[sessionId] = clients[sessionId].filter((r) => r !== res);
-    console.log(`[SSE] מאזין הוסר לשיחה ${sessionId}. סה"כ מאזינים שנותרו: ${clients[sessionId].length}`);
   });
 };
 
@@ -69,9 +62,7 @@ console.log(userId);
 
     // 🧠 קח userId או מה־body או מה־token
     const userIdd = userId || req.user?._id;
-      console.log("🚀 התחלת יצירת סשן");
-  console.log(req.body);
-  console.log(userIdd);
+
   
     if (!userIdd) {
       return res.status(400).json({ message: "userId is missing" });
@@ -81,7 +72,6 @@ console.log(userId);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    let messagesWithUploads = [];
 
   const session = await SessionFeedback.create({ userId:userIdd, messages:[], title });
 
@@ -332,7 +322,7 @@ const updateMessage = async (req, res) => {
 
   const session = await SessionFeedback.findById(_id).exec();
   if (!session) return res.status(404).json({ message: "session not found" });
-const isUser = session.userId.find(id => id.toString() === req.user._id.toString());
+const isUser = session.userId.find(id => id.toString() === req.user?._id.toString());
   if (!isUser && req.user.role !== 'admin' && false) return res.status(403).json({ message: "unauthorized" });
 
   const msg = session.messages.id(messageId);
