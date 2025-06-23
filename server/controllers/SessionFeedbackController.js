@@ -283,26 +283,84 @@ if (subscribers) {
     data: message,
   });
 };
+const updateMessage = async (req, res) => {
+  const { _id, messageId } = req.params;
+  const { content, path } = req.body;
 
+  const session = await SessionFeedback.findById(_id).exec();
+  if (!session) return res.status(404).json({ message: "session not found" });
+
+  const isUser = session.userId.find(id => id.toString() === req.user?._id.toString());
+  if (!isUser && req.user.role !== 'admin') return res.status(403).json({ message: "unauthorized" });
+
+  const msg = session.messages.id(messageId);
+  if (!msg) return res.status(404).json({ message: "message not found" });
+
+  if (content !== undefined) msg.content = content;
+  if (path !== undefined) msg.path = path;
+
+  await session.save();
+
+  // 🔔 שליחת הודעה מיידית ללקוח
+  if (clients[_id]) {
+    clients[_id].forEach(res => {
+      res.write(`event: message-updated\ndata: ${JSON.stringify({ message: msg })}\n\n`);
+    });
+  }
+
+  return res.status(200).json({
+    success: true,
+    message: "Message updated successfully",
+    updatedMessage: msg,
+  });
+};
 const deleteMessage = async (req, res) => {
   const { _id, messageId } = req.params;
   const session = await SessionFeedback.findById(_id).exec();
   if (!session) return res.status(404).json({ message: "session not found" });
- 
-  const isUser = session.userId.find(id => id.toString() === req.user._id.toString());
 
-  if (!isUser && req.user.role !== 'admin' && false) return res.status(403).json({ message: "unauthorized" });
+  const isUser = session.userId.find(id => id.toString() === req.user?._id.toString());
+  if (!isUser && req.user.role !== 'admin') return res.status(403).json({ message: "unauthorized" });
+
   const msg = session.messages.id(messageId);
   if (!msg) return res.status(404).json({ message: "message not found" });
+
   if (msg.path) await deleteFromGCS(msg.path);
-session.messages.pull({ _id: messageId });
+  session.messages.pull({ _id: messageId });
   await session.save();
+
+  // 🔔 שליחת אירוע מחיקה
+  if (clients[_id]) {
+    clients[_id].forEach(res => {
+      res.write(`event: message-deleted\ndata: ${JSON.stringify({ messageId })}\n\n`);
+    });
+  }
 
   return res.status(200).json({
     success: true,
     message: "Message deleted successfully",
   });
 };
+
+// const deleteMessage = async (req, res) => {
+//   const { _id, messageId } = req.params;
+//   const session = await SessionFeedback.findById(_id).exec();
+//   if (!session) return res.status(404).json({ message: "session not found" });
+ 
+//   const isUser = session.userId.find(id => id.toString() === req.user._id.toString());
+
+//   if (!isUser && req.user.role !== 'admin' && false) return res.status(403).json({ message: "unauthorized" });
+//   const msg = session.messages.id(messageId);
+//   if (!msg) return res.status(404).json({ message: "message not found" });
+//   if (msg.path) await deleteFromGCS(msg.path);
+// session.messages.pull({ _id: messageId });
+//   await session.save();
+
+//   return res.status(200).json({
+//     success: true,
+//     message: "Message deleted successfully",
+//   });
+// };
   const getUserSessions = async (req, res) => {
     console.log("hi");
     
@@ -316,29 +374,29 @@ session.messages.pull({ _id: messageId });
     }
   };
   
-const updateMessage = async (req, res) => {
-  const { _id, messageId } = req.params; // _id של session, messageId של ההודעה
-  const { content, path } = req.body;
+// const updateMessage = async (req, res) => {
+//   const { _id, messageId } = req.params; // _id של session, messageId של ההודעה
+//   const { content, path } = req.body;
 
-  const session = await SessionFeedback.findById(_id).exec();
-  if (!session) return res.status(404).json({ message: "session not found" });
-const isUser = session.userId.find(id => id.toString() === req.user?._id.toString());
-  if (!isUser && req.user.role !== 'admin' && false) return res.status(403).json({ message: "unauthorized" });
+//   const session = await SessionFeedback.findById(_id).exec();
+//   if (!session) return res.status(404).json({ message: "session not found" });
+// const isUser = session.userId.find(id => id.toString() === req.user?._id.toString());
+//   if (!isUser && req.user.role !== 'admin' && false) return res.status(403).json({ message: "unauthorized" });
 
-  const msg = session.messages.id(messageId);
-  if (!msg) return res.status(404).json({ message: "message not found" });
+//   const msg = session.messages.id(messageId);
+//   if (!msg) return res.status(404).json({ message: "message not found" });
 
-  if (content !== undefined) msg.content = content;
-  if (path !== undefined) msg.path = path;
+//   if (content !== undefined) msg.content = content;
+//   if (path !== undefined) msg.path = path;
 
-  await session.save();
+//   await session.save();
 
-  return res.status(200).json({
-    success: true,
-    message: "Message updated successfully",
-    updatedMessage: msg,
-  });
-};
+//   return res.status(200).json({
+//     success: true,
+//     message: "Message updated successfully",
+//     updatedMessage: msg,
+//   });
+// };
 const updateMessageReadStatus = async (req, res) => {
   const { _id, messageId } = req.params;
   const session = await SessionFeedback.findById(_id).exec();
