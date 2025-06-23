@@ -232,7 +232,15 @@ private initSSE(sessionId: string) {
             const data = JSON.parse(event.data);
             console.log('[SSE] 🗑️ הודעה נמחקה:', data);
 
-            this.messages = this.messages.filter(m => m._id !== data.messageId);
+            // this.messages = this.messages.filter(m => m._id !== data.messageId);
+            const index = this.messages.findIndex(m => m._id === data.messageId);
+if (index > -1) {
+  this.messages[index].isDeleted = true;
+  this.messages[index].content = '';
+  this.messages[index].signedUrl = '';
+  this.cdr.detectChanges();
+}
+
             this.cdr.detectChanges();
         } catch (err) {
             console.error('[SSE] שגיאה ב-message-deleted:', err);
