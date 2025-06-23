@@ -8,29 +8,64 @@ const { User } = require('../models/User')
 const clients = {};
 
 // 2. פתח endpoint לקבלת הודעות ב-Server-Sent Events
+// const sseConnection = (req, res) => {
+//   const sessionId = req.params._id;
+// res.set({
+//   'Content-Type': 'text/event-stream',
+//   'Cache-Control': 'no-cache',
+//   'Connection': 'keep-alive',
+//   'Access-Control-Allow-Origin': '*', // או ספציפית origin שלך
+// });
+
+//   res.flushHeaders();
+
+//   // שליחה ראשונית למנוע timeout
+// res.write(`data: ${JSON.stringify({ status: 'connected' })}\n\n`);
+
+//   if (!clients[sessionId]) clients[sessionId] = [];
+//   clients[sessionId].push(res);
+
+//   req.on('close', () => {
+//     clients[sessionId] = clients[sessionId].filter((r) => r !== res);
+//   });
+// };
 const sseConnection = (req, res) => {
   const sessionId = req.params._id;
+  console.log(`[SSE] התחלת חיבור חדש לשיחה ${sessionId}`);
+
   res.set({
     'Content-Type': 'text/event-stream',
     'Cache-Control': 'no-cache',
-    Connection: 'keep-alive',
+    'Connection': 'keep-alive',
+    'Access-Control-Allow-Origin': '*', // אפשר להחליף ל-origin ספציפי
   });
+
   res.flushHeaders();
+  console.log(`[SSE] הגדרות הכותרות נשלחו לשיחה ${sessionId}`);
 
   // שליחה ראשונית למנוע timeout
-res.write(`data: ${JSON.stringify({ status: 'connected' })}\n\n`);
+  res.write(`data: ${JSON.stringify({ status: 'connected' })}\n\n`);
+  console.log(`[SSE] הודעת התחברות ראשונית נשלחה לשיחה ${sessionId}`);
 
-  if (!clients[sessionId]) clients[sessionId] = [];
+  if (!clients[sessionId]) {
+    clients[sessionId] = [];
+    console.log(`[SSE] יצירת מערך מאזינים חדש לשיחה ${sessionId}`);
+  }
   clients[sessionId].push(res);
+  console.log(`[SSE] מאזין נוסף לשיחה ${sessionId}. סה"כ מאזינים: ${clients[sessionId].length}`);
 
   req.on('close', () => {
+    console.log(`[SSE] חיבור נסגר לשיחה ${sessionId}`);
     clients[sessionId] = clients[sessionId].filter((r) => r !== res);
+    console.log(`[SSE] מאזין הוסר לשיחה ${sessionId}. סה"כ מאזינים שנותרו: ${clients[sessionId].length}`);
   });
 };
+
 
 const createSession = async (req, res) => {
 
     const { userId, title} = req.body;
+console.log(userId);
 
     // 🧠 קח userId או מה־body או מה־token
     const userIdd = userId || req.user?._id;
@@ -49,6 +84,7 @@ const createSession = async (req, res) => {
     let messagesWithUploads = [];
 
   const session = await SessionFeedback.create({ userId:userIdd, messages:[], title });
+
 
   if (session) {
     return res.status(201).json({
@@ -191,65 +227,6 @@ const deleteSession = async (req, res) => {
 
   return res.status(405).json({ message: "unauthorized" });
 };
-
-// const createMessage = async (req, res) => {
-//   console.log("🚀 התחלת createMessage");
-
-//   const { _id } = req.params;
-//   const message = req.body;
-//   const file = req.file;
-
-//   let session;
-//   try {
-//     session = await SessionFeedback.findById(_id).exec();
-//     if (!session) {
-//       return res.status(404).json({ message: "session not found" });
-//     }
-//   } catch (err) {
-//     return res.status(500).json({ message: "Error finding session", error: err.message });
-//   }
-
-//   if (file) {
-//     try {
-//       const uploadResult = await uploadToGCSWithBackup(file);
-//       message.path = uploadResult.name;
-
-//       // 🧠 כאן תוספת חדשה: יצירת signed URL
-//       try {
-//         const signedUrlData = await gcs.generateSignedUrl(message.path);
-//         message.signedUrl = signedUrlData.signedUrl;
-//         message.expiresAt = signedUrlData.expiresAt;
-//       } catch (error) {
-//         console.error("⚠️ שגיאה ביצירת signed URL:", error.message);
-//         // ממשיכים בלי signedUrl
-//       }
-
-//     } catch (err) {
-//       return res.status(500).json({ message: "File upload failed", error: err.message });
-//     }
-//   }
-
-//   if (message.fromUser === undefined) {
-//     console.log("🚀 fromUser לא נמצא, מגדירים ל-true");
-    
-//     message.fromUser = false;
-//   }
-
-//   session.messages.push(message);
-
-//   try {
-//     await session.save();
-//   } catch (err) {
-//     return res.status(500).json({ message: "Error saving session", error: err.message });
-//   }
-
-//   // ✔️ מחזירים את ההודעה עם signedUrl אם יש
-//   return res.status(201).json({
-//     success: true,
-//     message: `Message added to session "${session.title}"`,
-//     data: message,
-//   });
-// };
 const createMessage = async (req, res) => {
   console.log("🚀 התחלת createMessage");
 
@@ -299,13 +276,17 @@ const createMessage = async (req, res) => {
 
   // 🔴 שליחת עדכון ללקוחות SSE
   const subscribers = clients[_id];
-  if (subscribers) {
-    const msgToSend = JSON.stringify({ newMessage: message });
-    subscribers.forEach((clientRes) => {
-      clientRes.write(`event: message\ndata: ${msgToSend}\n\n`);
-    });
-  }
+if (subscribers) {
+  console.log(`[SSE] שולחת ל-${subscribers.length} מאזינים עבור שיחה ${_id}`);
+  const msgToSend = JSON.stringify({ sessionId: _id });
+  subscribers.forEach((clientRes) => {
+    clientRes.write(`event: message\ndata: ${msgToSend}\n\n`);
+  });
+} else {
+  console.log(`[SSE] אין מאזינים מחוברים לשיחה ${_id}`);
+}
 
+  
   return res.status(201).json({
     success: true,
     message: `Message added to session \"${session.title}\"`,
@@ -374,7 +355,7 @@ const updateMessageReadStatus = async (req, res) => {
   if (!session) return res.status(404).json({ message: "Session not found" });
 
   // בדיקה שהיוזר הוא הבעלים של הסשן או אדמין
-  if (session.userId.toString() !== req.user._id.toString() && req.user.role !== 'admin' && false) {
+  if (session.userId.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
     return res.status(403).json({ message: "unauthorized" });
   }
 
@@ -390,19 +371,63 @@ const updateMessageReadStatus = async (req, res) => {
     return res.status(500).json({ message: "Error updating message", error: err.message });
   }
 };
+// const markAllMessagesAsRead = async (req, res) => {
+//   try {
+//     const { _id } = req.params; // session ID
+
+    
+//     const session = await SessionFeedback.findById(_id).exec();
+
+//     if (!session) {
+//       return res.status(404).json({ message: "session not found" });
+//     }
+
+//     const isOwner = session.userId.toString() === req.user._id.toString();
+//     const isAdmin = req.user.role === 'admin';
+
+//     if (!isOwner && !isAdmin) {
+//       return res.status(403).json({ message: "unauthorized" });
+//     }
+
+//     let updatedCount = 0;
+//     session.messages.forEach(msg => {
+//       if (!msg.isRead) {
+//         msg.isRead = true;
+//         updatedCount++;
+//       }
+//     });
+
+//     await session.save();
+
+//     return res.status(200).json({
+//       success: true,
+//       message: `${updatedCount} messages marked as read.`,
+//     });
+//   } catch (error) {
+//     return res.status(500).json({ message: "Server error", error: error.message });
+//   }
+// };
 const markAllMessagesAsRead = async (req, res) => {
   try {
     const { _id } = req.params; // session ID
+    console.log('[markAllMessagesAsRead] התחלה, sessionId:', _id);
+    console.log('[markAllMessagesAsRead] משתמש מבקש:', req.user);
+
     const session = await SessionFeedback.findById(_id).exec();
+    console.log('[markAllMessagesAsRead] session שהתקבל:', session);
 
     if (!session) {
+      console.warn('[markAllMessagesAsRead] שיחה לא נמצאה');
       return res.status(404).json({ message: "session not found" });
     }
 
-    const isOwner = session.userId.toString() === req.user._id.toString();
+    const isOwner = session.userId?.toString() === req.user._id?.toString();
     const isAdmin = req.user.role === 'admin';
 
-    if (!isOwner && !isAdmin && false) {
+    console.log('[markAllMessagesAsRead] בדיקת הרשאות - isOwner:', isOwner, 'isAdmin:', isAdmin);
+
+    if (!isOwner && !isAdmin) {
+      console.warn('[markAllMessagesAsRead] אין הרשאות למשתמש');
       return res.status(403).json({ message: "unauthorized" });
     }
 
@@ -414,17 +439,21 @@ const markAllMessagesAsRead = async (req, res) => {
       }
     });
 
+    console.log(`[markAllMessagesAsRead] כמות הודעות שסומנו כנקראו: ${updatedCount}`);
+    
     await session.save();
+    console.log('[markAllMessagesAsRead] שיחה נשמרה בהצלחה');
 
     return res.status(200).json({
       success: true,
       message: `${updatedCount} messages marked as read.`,
     });
+
   } catch (error) {
+    console.error('[markAllMessagesAsRead] שגיאה כללית:', error);
     return res.status(500).json({ message: "Server error", error: error.message });
   }
 };
-
 module.exports = {createSession,getSessions,getSessionById,getMessages,getMessageById,updateSession,deleteSession,createMessage,updateMessage,deleteMessage,getUserSessions,updateMessageReadStatus,markAllMessagesAsRead,sseConnection}
 
 // שאר הפונקציות (getSessions, getSessionById, getMessages וכו') נשארות כפי שהן כי הן רק קוראות מידע.

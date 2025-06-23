@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewChild, OnChanges, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef, ViewChildren, QueryList, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ScrollPanel, ScrollPanelModule } from 'primeng/scrollpanel';
 import { MessageItemComponent } from '../message-item/message-item.component';
@@ -11,11 +11,16 @@ export interface MessageEditData {
 @Component({
   selector: 'app-s-message-list',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, ScrollPanelModule, SMessageItemComponent],
   templateUrl: './s-message-list.component.html',
   styleUrls: ['./s-message-list.component.css']
 })
 export class SMessageListComponent implements OnChanges {
+    constructor(private cdr: ChangeDetectorRef) {} // הוסף זה
+  @Input() firstUnreadIndex: number | null = null;
+showScrollToBottom = false;
+
   @Input() messages: any[] = [];
   @Input() loading: boolean = false;
   @Input() userPhotoUrl: string = '';
@@ -29,6 +34,7 @@ export class SMessageListComponent implements OnChanges {
 @Input() editMessageId: string | null = null;
 @Input() editedContent: string = '';
   @ViewChild('scrollPanel') scrollPanelRef!: ScrollPanel;
+@ViewChildren('unreadDivider') unreadDividers!: QueryList<ElementRef>;
 
   // editMessageId: string | null = null;
   editedMessageContent: string = '';
@@ -38,10 +44,18 @@ export class SMessageListComponent implements OnChanges {
   //     setTimeout(() => this.scrollToBottom(), 300);
   //   }
   // }
-ngOnChanges(changes: SimpleChanges) {
-  if (changes['messages'] && this.messages.length > 0) {
-    setTimeout(() => this.scrollToBottom(), 300);
-  }
+  ngOnChanges(changes: SimpleChanges) {
+
+ if (changes['messages'] && this.messages.length > 0) {
+      this.cdr.detectChanges(); // הוסף זה
+      setTimeout(() => {
+        if (this.firstUnreadIndex != null && this.firstUnreadIndex >= 0) {
+          this.scrollToUnread();
+        } else {
+          this.scrollToBottom();
+        }
+      }, 300);
+    }
 
   if (changes['editMessageId']) {
     const newId = this.editMessageId;
@@ -53,10 +67,34 @@ ngOnChanges(changes: SimpleChanges) {
     }
   }
 }
+// ngOnChanges(changes: SimpleChanges) {
+//   if (changes['messages'] && this.messages.length > 0) {
+//     setTimeout(() => this.scrollToBottom(), 300);
+//   }
+
+//   if (changes['editMessageId']) {
+//     const newId = this.editMessageId;
+//     if (newId) {
+//       const msg = this.messages.find(m => m._id === newId);
+//       if (msg) {
+//         this.editedMessageContent = msg.content;
+//       }
+//     }
+//   }
+// }
   trackByMessageId(index: number, msg: any): string {
     return msg._id;
   }
-
+scrollToUnread() {
+  setTimeout(() => {
+    const el = this.unreadDividers?.first?.nativeElement;
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      this.scrollToBottom();
+    }
+  }, 100);
+}
   onEditStarted(message: any) {
     this.editMessageId = message._id;
     this.editedMessageContent = message.content;

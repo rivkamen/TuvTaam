@@ -25,6 +25,6 @@ router.put("/:_id/messages/:messageId/read", verifyJWT, sessionFeedbackControlle
 
 router.put("/:_id/messages/:messageId/delete", verifyJWT,/*verifyAdmin,*/ sessionFeedbackController.deleteMessage);
 // בתוך הקובץ של הראוטים שלך:
-router.get('/sse/:sessionId', sseVerifyJWT, sessionFeedbackController.sseConnection);
+router.get('/sse/:_id', sseVerifyJWT, sessionFeedbackController.sseConnection);
 
 module.exports = router;

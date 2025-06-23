@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewChild, OnChanges, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ScrollPanel, ScrollPanelModule } from 'primeng/scrollpanel';
 import { MessageItemComponent } from '../message-item/message-item.component';
@@ -12,11 +12,14 @@ export interface MessageEditData {
 @Component({
   selector: 'app-message-list',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, ScrollPanelModule, MessageItemComponent],
   templateUrl: './message-list.component.html',
   styleUrls: ['./message-list.component.css']
 })
 export class MessageListComponent implements OnChanges, AfterViewInit  {
+  constructor(private cdr: ChangeDetectorRef) {} // הוסף זה
+
   @Input() messages: any[] = [];
   @Input() loading: boolean = false;
   @Input() userPhotoUrl: string = '';
@@ -38,15 +41,17 @@ showScrollToBottom = false;
 
 
 ngOnChanges(changes: SimpleChanges) {
-  if (changes['messages'] && this.messages.length > 0) {
-    setTimeout(() => {
-      if (this.firstUnreadIndex != null && this.firstUnreadIndex >= 0) {
-        this.scrollToUnread();
-      } else {
-        this.scrollToBottom();
-      }
-    }, 300);
-  }
+
+ if (changes['messages'] && this.messages.length > 0) {
+      this.cdr.detectChanges(); // הוסף זה
+      setTimeout(() => {
+        if (this.firstUnreadIndex != null && this.firstUnreadIndex >= 0) {
+          this.scrollToUnread();
+        } else {
+          this.scrollToBottom();
+        }
+      }, 300);
+    }
 
   if (changes['editMessageId']) {
     const newId = this.editMessageId;

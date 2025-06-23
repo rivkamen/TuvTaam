@@ -31,8 +31,7 @@ const updateUser = async (req, res) => {
 	if (!user) {
 		return res.status(401).json({ message: 'not found' })
 	}
-	console.log(user._id)
-	console.log(req.user._id)
+
 	if (user._id == req.user._id || req.user.role === 'admin') {
 		if (username) {
 			user.username = username
