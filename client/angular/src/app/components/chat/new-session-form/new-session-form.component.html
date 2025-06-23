@@ -1,20 +1,61 @@
-<div class="new-session-box" *ngIf="isVisible">
+<!-- <div class="new-session-box" *ngIf="isVisible">
   <input type="text" 
          [(ngModel)]="sessionTitle" 
          placeholder="נושא השיחה (לא חובה)" />
   
-  <!-- <p-editor
-    [(ngModel)]="sessionMessage"
-    [style]="{height:'200px'}"
-    [styleClass]="'custom-editor'"
-    [modules]="editorModules">
-  </p-editor> -->
+
   <textarea [(ngModel)]="sessionMessage" placeholder="כתוב את ההודעה הראשונה..."></textarea>
 
   <div class="form-buttons">
     <p-button label="שליחה" 
               icon="pi pi-send" 
               (click)="onSubmit()" 
+              class="p-button-sm p-mt-2" />
+    <button (click)="onCancel()">ביטול</button>
+  </div>
+</div> -->
+
+<div class="new-session-box" *ngIf="isVisible">
+  <input type="text"
+         [(ngModel)]="sessionTitle"
+         placeholder="נושא השיחה (לא חובה)" />
+
+  <!-- <p-dropdown
+    [options]="filteredUsers"
+    [(ngModel)]="selectedUserId"
+    optionLabel="username"
+    optionValue="_id"
+    [filter]="true"
+    [filterBy]="'username,email'"
+    placeholder="בחר משתמש"
+    (filterChange)="onFilterUsers($event)">
+    <ng-template let-user pTemplate="item">
+      {{ user.username }} ({{ user.email }})
+    </ng-template>
+  </p-dropdown> -->
+<p-dropdown
+  [options]="filteredUsers"
+  [(ngModel)]="selectedUserId"
+  [optionLabel]="'username'"
+  [optionValue]="'_id'"
+  [filter]="true"
+  [filterBy]="'username,email'"
+  placeholder="בחר משתמש"
+  (filterChange)="onFilterUsers($event)">
+
+  <ng-template let-user pTemplate="item">
+    {{ user.username }} ({{ user.email }})
+  </ng-template>
+
+  <ng-template let-user pTemplate="selectedItem">
+    {{ user?.username }} ({{ user?.email }})
+  </ng-template>
+
+</p-dropdown>
+  <div class="form-buttons">
+    <p-button label="יצירה"
+              icon="pi pi-plus"
+              (click)="onSubmit()"
               class="p-button-sm p-mt-2" />
     <button (click)="onCancel()">ביטול</button>
   </div>

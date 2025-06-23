@@ -31,8 +31,14 @@ getSessions(): Observable<any[]> {
   return this.http.get<any[]>(`${this.apiUrl}`); // ���� ������������ ���� ������������/��
 }
 
-createSession(userId: string, title: string, messages: any[] = []) {
-  return this.http.post<any>(`${this.apiUrl}`, { userId, messages,title });
+// createSession(userId: string, title: string, messages: any[] = []) {
+//   return this.http.post<any>(`${this.apiUrl}`, { userId, messages,title });
+// }
+createSession(title: string, targetUserId: string): Observable<any> {
+  return this.http.post(`${this.apiUrl}`, {
+    title,
+    userId: targetUserId // או איך שאת מקבלת את זה בצד שרת
+  });
 }
 
   getUserSessions(): Observable<Session[]> {

@@ -4,7 +4,7 @@
           [class.selected]="s._id === selectedSessionId"
           (click)="onSessionSelect(s._id)">
     <div class="session-title">
-      םםשיחה עם {{ s.userId[0].email || 'לא ידוע' }}
+      שיחה עם {{ s.userId[0].email || 'לא ידוע' }}
         <span *ngIf="s.hasUnreadMessages" class="unread-dot">  {{ getUnreadCount(s) }}
 </span>
 

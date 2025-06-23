@@ -6,6 +6,7 @@
     (newSessionRequested)="startNewSession()">
   </app-session-list>
 
+
   <div class="chat-container">
     <br/><br/>
     
@@ -14,11 +15,19 @@
       [userPhotoUrl]="userPhotoUrl">
     </app-user-profile-bar>
 
-    <app-new-session-form
+    <!-- <app-new-session-form
       [isVisible]="newSessionMode"
       (sessionCreated)="createNewSession($event)"
       (cancelled)="cancelNewSession()">
-    </app-new-session-form>
+    </app-new-session-form> -->
+<app-new-session-form
+  [isVisible]="newSessionMode"
+  [allUsers]="users"
+  (sessionCreated)="createNewSession($event)"
+  (cancelled)="cancelNewSession()"
+  >
+  
+</app-new-session-form>
 
     <br/>
     

@@ -187,9 +187,7 @@ loadSessions() {
     const userId = this.roleService.getUserId() || 'undefined';
     const title = sessionData.title || 'ללא שם';
 
-    this.feedbackService.createSession(userId, title, sessionData.message ? [
-      { content: sessionData.message, fromUser: true}
-    ] : []).subscribe(session => {
+    this.feedbackService.createSession(userId, title).subscribe(session => {
       this.sessions.push(session);
       this.selectedSessionId = session._id;
       this.messages = session.messages || [];

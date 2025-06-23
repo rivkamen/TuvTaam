@@ -3,6 +3,7 @@ const Admin = require('../models/Admin')
 
 const getUsers = async (req, res) => {
 	const users = await User.find().lean()
+	
 	if (!users) {
 		res.status(500).json({ error: error.message })
 	}

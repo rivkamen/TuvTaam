@@ -6,7 +6,7 @@ import { ButtonModule } from 'primeng/button';
 
 export interface NewSessionData {
   title: string;
-  message: string;
+  targetUserId: string;
 }
 
 @Component({
@@ -39,7 +39,7 @@ export class SNewSessionFormComponent {
   onSubmit() {
     this.sessionCreated.emit({
       title: this.sessionTitle,
-      message: this.sessionMessage
+      targetUserId: 'userId', // Replace with actual user ID logic
     });
     this.reset();
   }

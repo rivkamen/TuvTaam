@@ -11,6 +11,8 @@ import { MessageListComponent, MessageEditData } from './message-list/message-li
 import { MessageInputComponent, MessageData } from './message-input/message-input.component';
 import { UserProfileBarComponent } from './user-profile-bar/user-profile-bar.component';
 import { environment } from '../../environments/environment';
+import { UserService } from '../../services/user.service';
+import { User } from '../../models/user.model';
 
 @Component({
   selector: 'app-m-chat',
@@ -43,9 +45,11 @@ editedContent: string = '';
 firstUnreadIndex: number | null = null;
 apiUrl: string = '';
 private sseMap = new Map<string, EventSource>();
+users: User[] = [];
 
   constructor(
     private feedbackService: FeedbackService,
+    private userService: UserService,
     private sanitizer: DomSanitizer,
     public roleService: RoleService
   ) {}
@@ -227,31 +231,60 @@ loadMessages() {
     });
   }
 
-  startNewSession() {
-    this.newSessionMode = true;
-  }
+
 
   cancelNewSession() {
     this.newSessionMode = false;
   }
 
-  createNewSession(sessionData: NewSessionData) {
-    const userId = this.roleService.getUserId() || 'undefined';
-    console.log("userId");
-    console.log(userId);
-    
-    const title = sessionData.title || 'ללא שם';
+startNewSession() {
+  console.log('[MChat/SChatComponent] startNewSession triggered');
 
-    this.feedbackService.createSession(userId, title, sessionData.message ? [
-      { content: sessionData.message, fromUser: false}
-    ] : []).subscribe(session => {
-      this.sessions.push(session);
-      this.selectedSessionId = session._id;
-      this.messages = session.messages || [];
-      this.newSessionMode = false;
-      this.initSSE(session._id); 
-    });
-  }
+  this.userService.getAllUsers().subscribe(users => {
+    console.log('[startNewSession] users from service:', users);
+
+    this.users = users;
+    this.newSessionMode = true;
+  });
+  console.log("users");
+  console.log(this.users);
+  
+}
+//   createNewSession(sessionData: NewSessionData) {
+//     const userId = this.roleService.getUserId() || 'undefined';
+//     console.log("userId");
+//     console.log(userId);
+    
+//     const title = sessionData.title || 'ללא שם';
+//     this.feedbackService.createSession(title,sessionData.targetUserId).subscribe(session => {
+//   this.sessions.push(session);
+//   this.selectedSessionId = session._id;
+//   this.messages = session.messages || [];
+//   this.newSessionMode = false;
+//   this.initSSE(session._id); 
+// });
+
+//   }
+createNewSession(sessionData: NewSessionData) {
+  const userId = this.roleService.getUserId() || 'undefined';
+  console.log("userId", userId);
+  
+  const title = sessionData.title || 'ללא שם';
+
+  this.feedbackService.createSession(title, sessionData.targetUserId).subscribe(newSession => {
+    // רענון כל השיחות כדי לקבל את השיחה החדשה עם userId ונתונים מלאים
+    this.loadSessions();
+
+    // סימון השיחה החדשה כנבחרת
+    this.selectedSessionId = newSession._id;
+
+    // יציאה ממצב יצירת שיחה
+    this.newSessionMode = false;
+
+    // התחלת האזנת SSE לשיחה החדשה
+    this.initSSE(newSession._id);
+  });
+}
 
 startEdit(message: any) {
   this.editMessageId = null; // מאפס כדי להבטיח זיהוי שינוי
@@ -274,7 +307,11 @@ startEdit(message: any) {
     this.editedContent = '';
   });
 }
-
+log(){
+  alert("editMessageId");
+  console.log("editMessageId");
+  console.log(this.editMessageId);
+}
 cancelEdit() {
   this.editMessageId = null;
   this.editedContent = '';

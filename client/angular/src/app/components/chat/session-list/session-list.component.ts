@@ -23,6 +23,8 @@ export class SessionListComponent {
   }
 
   onNewSession() {
+    console.log('[SessionListComponent] new session button clicked');
+
     this.newSessionRequested.emit();
   }
   ngOnChanges() {

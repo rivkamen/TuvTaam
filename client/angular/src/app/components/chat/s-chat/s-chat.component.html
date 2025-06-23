@@ -13,13 +13,20 @@
       [userEmail]="userEmail"
       [adminPhotoUrl]="adminPhotoUrl">
     </app-admin-profile-bar>
-
+<!-- 
     <app-s-new-session-form
       [isVisible]="newSessionMode"
       (sessionCreated)="createNewSession($event)"
       (cancelled)="cancelNewSession()">
-    </app-s-new-session-form>
-
+    </app-s-new-session-form> -->
+<app-s-new-session-form
+  [isVisible]="newSessionMode"
+  (sessionCreated)="createNewSession($event)"
+  (cancelled)="cancelNewSession()"
+  >
+  <h1>jhjkhl</h1>
+  
+</app-s-new-session-form>
     <br/>
     
     <div *ngIf="!newSessionMode && selectedSessionId">

@@ -187,9 +187,7 @@ toggleRecording() {
     const title = this.newSessionTitle || 'ללא שם';
     const initialMessage = this.newSessionMessage.trim();
 
-    this.feedbackService.createSession(userId, title, initialMessage ? [
-      { content: initialMessage, fromUser: true}
-    ] : []).subscribe(session => {
+    this.feedbackService.createSession(userId, title).subscribe(session => {
       this.sessions.push(session);
       this.selectedSessionId = session._id;
       this.messages = session.messages || [];

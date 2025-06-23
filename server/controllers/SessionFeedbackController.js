@@ -2,7 +2,8 @@ const gcs = require("../service/gcsService");
 const Admin = require("../models/Admin");
 const SessionFeedback = require("../models/SessionFeedback");
 const { uploadToGCSWithBackup, deleteFromGCS } = require("../service/gcsService");
-const User = require("../models/User");
+const { User } = require('../models/User')
+
 // 1. צור מיפוי של לקוחות SSE פתוחים
 const clients = {};
 
@@ -29,34 +30,25 @@ res.write(`data: ${JSON.stringify({ status: 'connected' })}\n\n`);
 
 const createSession = async (req, res) => {
 
-    const { userId: userIdFromBody, messages = [], title = 'ללא שם' } = req.body;
+    const { userId, title} = req.body;
 
     // 🧠 קח userId או מה־body או מה־token
-    const userId = userIdFromBody || req.user?._id;
+    const userIdd = userId || req.user?._id;
       console.log("🚀 התחלת יצירת סשן");
   console.log(req.body);
-    if (!userId) {
+  console.log(userIdd);
+  
+    if (!userIdd) {
       return res.status(400).json({ message: "userId is missing" });
     }
 
-    const user = await User.findById(userId).lean(); // ⬅️ await היה חסר
+    const user = await User.findById(userIdd).lean(); // ⬅️ await היה חסר
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
     let messagesWithUploads = [];
 
-if (Array.isArray(messages) && messages.length > 0) {
-
-  messagesWithUploads = await Promise.all(messages.map(async (msg) => {
-    if (msg.path && msg.path.startsWith("temp")) {
-      const fakeFile = { originalname: msg.path, buffer: Buffer.from("") }; // דמה
-      const uploadResult = await uploadToGCSWithBackup(fakeFile);
-      msg.path = uploadResult.name;
-    }
-    return msg;
-  }));}
-
-  const session = await SessionFeedback.create({ userId, messages: messagesWithUploads, title });
+  const session = await SessionFeedback.create({ userId:userIdd, messages:[], title });
 
   if (session) {
     return res.status(201).json({
