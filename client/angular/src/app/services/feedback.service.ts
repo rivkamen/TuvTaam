@@ -8,12 +8,13 @@ export interface Message {
   _id?: string;
   content: string;
   fromUser: boolean;
-  createdAt?: string;
+  updatedAt?: string;
   signedUrl?: string;
   safeAudioUrl?: SafeUrl;
-  isRead?: boolean;   
+  isRead?: boolean; 
+  isEdited?: boolean;
+isDeleted?: boolean; // הוסף שדה זה
 }
-
 export interface Session {
   _id?: string;
   userId: string[];

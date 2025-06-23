@@ -296,7 +296,10 @@ const updateMessage = async (req, res) => {
   const msg = session.messages.id(messageId);
   if (!msg) return res.status(404).json({ message: "message not found" });
 
-  if (content !== undefined) msg.content = content;
+  if (content !== undefined){ 
+    msg.content = content; 
+     msg.isEdited = true;
+}
   if (path !== undefined) msg.path = path;
 
   await session.save();
@@ -326,7 +329,10 @@ const deleteMessage = async (req, res) => {
   if (!msg) return res.status(404).json({ message: "message not found" });
 
   if (msg.path) await deleteFromGCS(msg.path);
-  session.messages.pull({ _id: messageId });
+  // session.messages.pull({ _id: messageId });
+  msg.isDeleted = true;
+  msg.path = null;
+
   await session.save();
 
   // 🔔 שליחת אירוע מחיקה

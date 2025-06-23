@@ -76,21 +76,14 @@
   font-weight: bold;
 }
 
-.message-wrapper {
-  display: flex;
-  align-items: flex-end;
-  margin-bottom: 10px;
-  gap: 10px;
-}
-.message-wrapper.user {
-  flex-direction: row-reverse;
-}
-.message-wrapper.admin {
-  flex-direction: row;
+
+
+.message-item-wrapper.admin,.message-item-wrapper.user {
+  flex-direction: column;
 }
 
 
-.message-wrapper.admin .bubble {
+.message-item-wrapper.admin .bubble {
   background-color: var(--color-secondary);
 }
 
@@ -174,9 +167,8 @@
   display: inline-block;
   margin-right: auto;
 }
-
-.message-wrapper.user:hover .msg-menu-wrapper,
-.message-wrapper.admin:hover .msg-menu-wrapper {
+.message-item-wrapper.user:hover .msg-menu-wrapper,
+.message-item-wrapper.admin:hover .msg-menu-wrapper {
   display: block;
 }
 
@@ -352,8 +344,8 @@
 }
 
 /* הצגת כפתור התפריט כשמרחפים על ההודעה */
-.message-wrapper.admin:hover .menu-toggle-btn,
-.message-wrapper.user:hover .menu-toggle-btn {
+.message-item-wrapper.admin:hover .menu-toggle-btn,
+.message-item-wrapper.user:hover .menu-toggle-btn {
   visibility: visible;
 }
 
@@ -363,7 +355,7 @@
 /**/
 .session-item {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: flex-start;
   text-align: right;
   padding: 0.5rem 1rem;
@@ -388,4 +380,94 @@
   background-color: #e0f7fa;
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
   word-break: break-word;
+}
+
+
+/**/
+.message-meta {
+  font-size: 0.75rem;
+  color: gray;
+  margin-bottom: 0.2rem;
+  text-align: start;
+  direction: ltr;
+}
+
+.edited-label {
+  font-style: italic;
+  color: #888;
+}
+
+.bubble.deleted {
+  background-color: #f5f5f5;
+  color: #888;
+  font-style: italic;
+}
+
+.deleted-text {
+  text-align: center;
+  padding: 0.5rem;
+}
+.message-meta {
+  font-size: 0.75rem;
+  color: #888;
+  margin-bottom: 4px;
+  direction: rtl;
+  text-align: right;
+  padding-inline: 8px;
+}
+
+.edited-label {
+  margin-right: 4px;
+  color: #999;
+}
+
+.small-icon {
+  font-size: 0.7rem;
+  vertical-align: middle;
+  margin-left: 2px;
+}
+/**/
+.message-item-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 10px;
+  gap: 4px;
+}
+.message-item-wrapper.user {
+  align-items: flex-end;
+}
+
+.message-meta {
+  font-size: 0.75rem;
+  color: #888;
+  margin-bottom: 4px;
+  direction: rtl;
+  text-align: right;
+  padding-inline: 8px;
+}
+
+.edited-label {
+  margin-right: 4px;
+  color: #999;
+}
+
+.small-icon {
+  font-size: 0.7rem;
+  vertical-align: middle;
+  margin-left: 2px;
+}
+.message-content-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.message-item-wrapper.user .message-content-row {
+  flex-direction: row-reverse;
+}
+
+.msg-menu-wrapper {
+  align-self: flex-start;
+  margin-top: 2px;
 }

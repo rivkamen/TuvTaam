@@ -202,10 +202,14 @@ private initSSE(sessionId: string) {
         } catch (error) {
             console.error('[SSE] שגיאה בפענוח נתונים:', error);
         }
+        this.loadMessages();
+
     };
 
     eventSource.addEventListener('message-updated', (event) => {
         try {
+            console.log('[SSE RAW] event.data:', event.data); // << זו השורה הנוספת
+
             const data = JSON.parse(event.data);
             console.log('[SSE] ✏️ הודעה עודכנה:', data);
 
@@ -214,6 +218,8 @@ private initSSE(sessionId: string) {
             if (index > -1) {
                 this.messages[index].content = updated.content;
                 this.messages[index].path = updated.path;
+                this.messages[index].isEdited = updated.isEdited; 
+                this.messages[index].updatedAt = updated.updatedAt
                 this.cdr.detectChanges();
             }
         } catch (err) {
@@ -281,6 +287,50 @@ selectSession(sessionId: string) {
   this.openSession(sessionId); // זה כולל loadMessages + initSSE
 }
 
+// loadMessages() {
+//   if (!this.selectedSessionId) return;
+  
+//   this.loading = true;
+//   this.firstUnreadIndex = null;
+  
+//   this.feedbackService.getMessages(this.selectedSessionId).subscribe({
+//     next: (msgs) => {
+//       console.log('🔄 loadMessages - עדכון הודעות:', msgs.length);
+      
+//       this.messages = msgs.map((msg, index) => {
+//         const isUnread = !msg.isRead;
+        
+//         if (this.firstUnreadIndex === null && isUnread) {
+//           this.firstUnreadIndex = index;
+//         }
+        
+//         return {
+//           ...msg,
+//           isUnread,
+//           isFirstUnread: this.firstUnreadIndex === index,
+//           signedUrl: msg.signedUrl || null,
+//           safeAudioUrl: msg.signedUrl 
+//             ? this.sanitizer.bypassSecurityTrustResourceUrl(msg.signedUrl)
+//             : null
+//         };
+//       });
+      
+//       this.loading = false;
+//       console.log('🔄 messages עודכן:', this.messages.length);
+      
+//       // סימון כנקראו אחרי עדכון המסרים
+//       this.markMessagesAsRead();
+      
+//       // זיהוי שינויים אם נדרש
+//       this.cdr.detectChanges();
+//     },
+//     error: (err) => {
+//       console.error('שגיאה בטעינת הודעות:', err);
+//       this.loading = false;
+//     }
+//   });
+  
+// }
 loadMessages() {
   if (!this.selectedSessionId) return;
   
@@ -293,14 +343,20 @@ loadMessages() {
       
       this.messages = msgs.map((msg, index) => {
         const isUnread = !msg.isRead;
-        
+        const isDeleted = msg.isDeleted || false;
+        const isEdited = msg.isEdited || false;
+        const updatedAt = msg.updatedAt ? new Date(msg.updatedAt) : null;
+        // איתור ההודעה הראשונה שלא נקראה
         if (this.firstUnreadIndex === null && isUnread) {
           this.firstUnreadIndex = index;
         }
-        
+
         return {
           ...msg,
           isUnread,
+          isDeleted,
+          isEdited,
+          updatedAt,
           isFirstUnread: this.firstUnreadIndex === index,
           signedUrl: msg.signedUrl || null,
           safeAudioUrl: msg.signedUrl 
@@ -308,22 +364,18 @@ loadMessages() {
             : null
         };
       });
-      
+
       this.loading = false;
-      console.log('🔄 messages עודכן:', this.messages.length);
-      
-      // סימון כנקראו אחרי עדכון המסרים
+      console.log('✅ messages עודכן:', this.messages.length);
+
       this.markMessagesAsRead();
-      
-      // זיהוי שינויים אם נדרש
       this.cdr.detectChanges();
     },
     error: (err) => {
-      console.error('שגיאה בטעינת הודעות:', err);
+      console.error('❌ שגיאה בטעינת הודעות:', err);
       this.loading = false;
     }
   });
-  
 }
 
 private markMessagesAsRead() {

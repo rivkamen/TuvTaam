@@ -1,6 +1,7 @@
 
-<div class="message-wrapper" [ngClass]="message.fromUser ? 'user' : 'admin'">
+<div class="message-item-wrapper" [ngClass]="message.fromUser ? 'user' : 'admin'">
 
+  <!-- עריכה -->
   <div *ngIf="isEditing; else showMessage" class="edit-message-container">
     <textarea
       pInputTextarea
@@ -32,28 +33,47 @@
     </div>
   </div>
 
+  <!-- תצוגת הודעה רגילה -->
   <ng-template #showMessage>
-    <div class="bubble">
-      <div *ngIf="message.content" [innerHTML]="message.content"></div>
-
-      <app-fancy-audio-player
-        *ngIf="message.signedUrl"
-        [src]="message.safeAudioUrl"
-        [downloadUrl]="message.signedUrl">
-      </app-fancy-audio-player>
+    
+    <!-- שורת שעה וסטטוס "נערכה" -->
+    <div class="message-meta">
+      <span>{{ message.updatedAt | date:'HH:mm' }}</span>
+      <span *ngIf="message.isEdited" class="edited-label">
+        | <i class="pi pi-pencil small-icon"></i> נערכה
+      </span>
     </div>
 
-    <div class="msg-menu-wrapper" *ngIf="message.fromUser" #menuWrapper>
-      <button class="menu-toggle-btn" (click)="toggleMenu()">⋮</button>
-      <div class="msg-menu-modern" *ngIf="openedMenuId === message._id">
-        <button *ngIf="!message.signedUrl" class="icon-btn" (click)="startEdit()">
-          <i class="pi pi-pencil"></i>
-        </button>
-        <button class="icon-btn delete" (click)="deleteMessage()">
-          <i class="pi pi-trash"></i>
-        </button>
+    <!-- בועה + תפריט ⋮ בשורה אחת -->
+    <div class="message-content-row">
+      <!-- בועה -->
+      <div class="bubble" [ngClass]="{ 'deleted': message.isDeleted }">
+        <ng-container *ngIf="!message.isDeleted; else deletedTemplate">
+          <div *ngIf="message.content" [innerHTML]="message.content"></div>
+          <app-fancy-audio-player
+            *ngIf="message.signedUrl"
+            [src]="message.safeAudioUrl"
+            [downloadUrl]="message.signedUrl">
+          </app-fancy-audio-player>
+        </ng-container>
+        <ng-template #deletedTemplate>
+          <div class="deleted-text">הודעה נמחקה</div>
+        </ng-template>
+      </div>
+
+      <!-- תפריט הודעה -->
+      <div class="msg-menu-wrapper" *ngIf="message.fromUser && !message.isDeleted" #menuWrapper>
+        <button class="menu-toggle-btn" (click)="toggleMenu()">⋮</button>
+        <div class="msg-menu-modern" *ngIf="openedMenuId === message._id">
+          <button *ngIf="!message.signedUrl" class="icon-btn" (click)="startEdit()">
+            <i class="pi pi-pencil"></i>
+          </button>
+          <button class="icon-btn delete" (click)="deleteMessage()">
+            <i class="pi pi-trash"></i>
+          </button>
+        </div>
       </div>
     </div>
+    
   </ng-template>
-
 </div>
