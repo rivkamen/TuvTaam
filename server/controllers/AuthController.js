@@ -61,7 +61,7 @@ const login = async (req, res) => {
 async function register(req, res) {
 	try {
 		const { username, password, email, dueDate, parashah, haftarah } = req.body
-		if (!email || !password || !dueDate || !parashah) {
+		if (!email || !password || !dueDate) {
 			return res.status(400).json({ message: 'חסרים שדות נדרשים' })
 		}
 		if (typeof email !== "string" || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -137,4 +137,4 @@ const loginWithGoogle = async (req, res) => {
 	}
 }
 
-module.exports = { login, register }
+module.exports = { login, register, loginWithGoogle }
