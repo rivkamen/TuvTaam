@@ -187,9 +187,7 @@ toggleRecording() {
     const title = this.newSessionTitle || 'ללא שם';
     const initialMessage = this.newSessionMessage.trim();
 
-    this.feedbackService.createSession(userId, title, initialMessage ? [
-      { content: initialMessage, fromUser: true}
-    ] : []).subscribe(session => {
+    this.feedbackService.createSession(userId, title).subscribe(session => {
       this.sessions.push(session);
       this.selectedSessionId = session._id;
       this.messages = session.messages || [];
@@ -344,8 +342,8 @@ loadUserProfile() {
       console.log("hi");
       
       this.userEmail = userSession.userId[0].email;
-      this.userPhotoUrl = 'assets/vivid-blurred-colorful-wallpaper-background.jpg'; 
-      this.adminPhotoUrl = 'assets/DSCN0107.JPG';
+      this.userPhotoUrl = 'assets/teacher.gif'; 
+      this.adminPhotoUrl = 'assets/student.gif';
     }}
   }
 

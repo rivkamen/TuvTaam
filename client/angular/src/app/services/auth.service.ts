@@ -15,12 +15,19 @@ export class AuthService {
 
   user = new BehaviorSubject<User | null>(null);
 
-  constructor() {
-    const storagedUser = sessionStorage.getItem('user');
-    if (storagedUser && (JSON.parse(storagedUser) as User)) {
-      this.user.next(JSON.parse(storagedUser) as User);
+constructor() {
+  const storagedUser = sessionStorage.getItem('user');
+  if (storagedUser && storagedUser !== "undefined") {
+    try {
+      const parsedUser = JSON.parse(storagedUser) as User;
+      this.user.next(parsedUser);
+    } catch (e) {
+      console.error('שגיאה בפענוח user מ-sessionStorage:', e);
+      this.user.next(null);
     }
   }
+}
+
 
   login(email: string, password: string): Observable<User> {
     let url = this.apiServerAddress + '/auth/login';
@@ -29,8 +36,13 @@ export class AuthService {
       password,
     };
     return this.#http
-      .post<User>(url, body)
-      .pipe(tap((data) => this.user.next(data as User)));
+      .post(url, body)
+      .pipe(
+        tap((res:any) => {
+          this.user.next(res.user as User);
+          sessionStorage.setItem('user', JSON.stringify(res.user as User));
+        })
+      );
   }
 
   register(

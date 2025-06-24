@@ -5,7 +5,8 @@ const createSession=async(req,res)=>{
     const {userId,adminId,messages/*,title*/} = req.body
     console.log("hi");
     
-    if (!userId ||!messages) {
+    if (!userId) {
+      
         return res.status(400).json({message:'required field is missing'})
         }
     

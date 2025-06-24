@@ -11,6 +11,7 @@ export interface Message {
   createdAt?: string;
   signedUrl?: string;
   safeAudioUrl?: SafeUrl;
+  isRead?: boolean;   
 }
 
 export interface Session {
@@ -30,8 +31,14 @@ getSessions(): Observable<any[]> {
   return this.http.get<any[]>(`${this.apiUrl}`); // ���� ������������ ���� ������������/��
 }
 
-createSession(userId: string, title: string, messages: any[] = []) {
-  return this.http.post<any>(`${this.apiUrl}`, { userId, messages,title });
+// createSession(userId: string, title: string, messages: any[] = []) {
+//   return this.http.post<any>(`${this.apiUrl}`, { userId, messages,title });
+// }
+createSession(title: string, targetUserId: string): Observable<any> {
+  return this.http.post(`${this.apiUrl}`, {
+    title,
+    userId: targetUserId // או איך שאת מקבלת את זה בצד שרת
+  });
 }
 
   getUserSessions(): Observable<Session[]> {
@@ -69,4 +76,11 @@ deleteMessage(id: string,messageId:string) {
   
   return this.http.put(`${this.apiUrl}/${id}/messages/${messageId}/delete`,{});
 }
+markAllMessagesAsRead(sessionId: string): Observable<any> {
+  return this.http.put(`${this.apiUrl}/${sessionId}/messages/mark-all-read`, {});
+}
+getMessageById(sessionId: string, messageId: string): Observable<any> {
+  return this.http.get<any>(`${this.apiUrl}/${sessionId}/messages/${messageId}`);
+}
+
 }

@@ -43,11 +43,22 @@
   </div>
 
   <!-- אם זו הודעה בעריכה -->
-  <div *ngIf="editMessageId === msg._id; else showMessage">
+  <!-- <div *ngIf="editMessageId === msg._id; else showMessage">
     <textarea [(ngModel)]="editedMessageContent"></textarea>
     <button (click)="saveEdit(msg._id)">שמירה</button>
     <button (click)="cancelEdit()">ביטול</button>
+  </div> -->
+<!-- הודעה בעריכה -->
+<!-- הודעה בעריכה -->
+<div *ngIf="editMessageId === msg._id; else showMessage" class="edit-message-container">
+<textarea pInputTextarea [(ngModel)]="editedMessageContent" rows="4" autoResize="true"></textarea>
+
+  <div class="edit-buttons">
+    <button pButton type="button" label="שמירה" icon="pi pi-check" class="p-button-success" (click)="saveEdit(msg._id)"></button>
+    <button pButton type="button" label="ביטול" icon="pi pi-times" class="p-button-secondary" (click)="cancelEdit()"></button>
   </div>
+</div>
+
 
   <!-- תצוגה רגילה של ההודעה -->
   <ng-template #showMessage>

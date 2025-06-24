@@ -7,10 +7,13 @@ import { RecordListComponent } from './components/record/record-list.component';
 import { TeacherChatComponent } from './components/session/teacherChat/teacher-chat.component';
 import { StudentChatComponent } from './components/session/studentChat/student-chat.component';
 import { FeedbackChatComponent } from './components/feedbackChat/student/feedback-chat.component';
+
 import { RegisterComponent } from './components/register/register.component';
 import { authGuard } from './core/guards/auth.guard';
 import { adminGuard } from './core/guards/admin.guard';
 import { MyParashaComponent } from './components/my-parasha/my-parasha.component';
+import { MChatComponent } from './components/chat/m-chat.component';
+import { SChatComponent } from './components/chat/s-chat/s-chat.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent, title: 'TuvTaam: Login' },
@@ -51,6 +54,10 @@ export const routes: Routes = [
     title: 'TuvTaam: My Parasha',
     canActivate: [authGuard],
   },
-  { path: 'home', component: FeedbackChatComponent, title: 'TuvTaam' }, // TODO: Change to HomeComponent when created
+  { path: 'mChat', component: MChatComponent, title: 'TuvTaam: chat', canActivate: [authGuard],
+ }, 
+  { path: 'sChat', component: SChatComponent, title: 'TuvTaam: chat', canActivate: [authGuard],
+ }, 
+ // TODO: Change to HomeComponent when created
   { path: '', redirectTo: 'home', pathMatch: 'full' },
 ];

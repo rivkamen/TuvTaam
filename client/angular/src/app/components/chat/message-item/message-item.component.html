@@ -1,0 +1,59 @@
+
+<div class="message-wrapper" [ngClass]="message.fromUser ? 'admin' : 'user'">
+
+  <div *ngIf="isEditing; else showMessage" class="edit-message-container">
+    <textarea
+      pInputTextarea
+      [(ngModel)]="localEditedContent"
+      rows="3"
+      autoResize="true"
+      placeholder="ערוך את ההודעה שלך..."
+      class="edit-textarea">
+    </textarea>
+
+    <div class="edit-buttons">
+      <button
+        pButton
+        type="button"
+        label="שמירה"
+        icon="pi pi-check"
+        class="p-button p-button-success save-btn"
+        (click)="saveEdit()">
+      </button>
+
+      <button
+        pButton
+        type="button"
+        label="ביטול"
+        icon="pi pi-times"
+        class="p-button p-button-secondary cancel-btn"
+        (click)="cancelEdit()">
+      </button>
+    </div>
+  </div>
+
+  <ng-template #showMessage>
+    <div class="bubble">
+      <div *ngIf="message.content" [innerHTML]="message.content"></div>
+
+      <app-fancy-audio-player
+        *ngIf="message.signedUrl"
+        [src]="message.safeAudioUrl"
+        [downloadUrl]="message.signedUrl">
+      </app-fancy-audio-player>
+    </div>
+
+    <div class="msg-menu-wrapper" *ngIf="!message.fromUser" #menuWrapper>
+      <button class="menu-toggle-btn" (click)="toggleMenu()">⋮</button>
+      <div class="msg-menu-modern" *ngIf="openedMenuId === message._id">
+        <button *ngIf="!message.signedUrl" class="icon-btn" (click)="startEdit()">
+          <i class="pi pi-pencil"></i>
+        </button>
+        <button class="icon-btn delete" (click)="deleteMessage()">
+          <i class="pi pi-trash"></i>
+        </button>
+      </div>
+    </div>
+  </ng-template>
+
+</div>

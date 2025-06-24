@@ -43,6 +43,9 @@ export class RoleService {
   getUserId(): string | null {
     const token = this.getToken();
     if (!token) return null;
+console.log('token', token);
+console.log('payload', JSON.parse(atob(token.split('.')[1])));
+
 
     const payload = JSON.parse(atob(token.split('.')[1]));
     return payload._id || null;
@@ -56,7 +59,9 @@ export class RoleService {
     return payload.role || null;
   }
 
-  isAdmin(): boolean {
+  isAdmin(): boolean {0
+    console.log(this.getRole());
+    
     return this.getRole() === 'admin';
   } 
    isUser(): boolean {

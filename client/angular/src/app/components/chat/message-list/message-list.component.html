@@ -1,0 +1,70 @@
+<!-- <p-scrollPanel #scrollPanel 
+               styleClass="messages-container" 
+               [style]="{height: '400px'}">
+  
+     <div *ngFor="let msg of messages; let i = index; trackBy: trackByMessageId"
+
+  class="message-wrapper" 
+       [ngClass]="msg.fromUser ? 'admin' : 'user'">
+    <div *ngIf="shouldShowUnreadDivider(i)" class="unread-divider">
+
+    הודעות חדשות<br/>
+  </div>
+  <br/>
+    <div class="message-profile">
+      <img [src]="msg.fromUser ?  userPhotoUrl:adminPhotoUrl"
+           alt="תמונת פרופיל"
+           class="profile-img-small" />
+    </div>
+
+    <app-message-item
+      [message]="msg"
+      [isEditing]="editMessageId === msg._id"
+      [editedContent]="editedMessageContent"
+      (editStarted)="onEditStarted($event)"
+      (editSaved)="onEditSaved($event)"
+      (editCancelled)="onEditCancelled()"
+      (messageDeleted)="onMessageDeleted($event)"
+      (menuToggled)="onMenuToggled($event)">
+    </app-message-item>
+  </div>
+</p-scrollPanel> -->
+
+<p-scrollPanel #scrollPanel 
+(onScroll)="onScroll($event)"
+               styleClass="messages-container" 
+               [style]="{height: '400px'}">
+<ng-container *ngFor="let msg of messages; let i = index; trackBy: trackByMessageId">
+  
+  <div *ngIf="shouldShowUnreadDivider(i)" #unreadDivider class="unread-divider">
+     הודעות חדשות 
+  </div>
+  
+  <div class="message-wrapper" [ngClass]="msg.fromUser ? 'admin' : 'user'">
+    <div class="message-profile">
+      <img [src]="msg.fromUser ? userPhotoUrl : adminPhotoUrl"
+           alt="תמונת פרופיל"
+           class="profile-img-small" />
+    </div>
+
+    <app-message-item
+      [message]="msg"
+      [isEditing]="editMessageId === msg._id"
+      [editedContent]="editedMessageContent"
+      (editStarted)="onEditStarted($event)"
+      (editSaved)="onEditSaved($event)"
+      (editCancelled)="onEditCancelled()"
+      (messageDeleted)="onMessageDeleted($event)"
+      (menuToggled)="onMenuToggled($event)">
+    </app-message-item>
+  </div>
+</ng-container>
+
+</p-scrollPanel>
+
+<button *ngIf="showScrollToBottom"
+        class="scroll-to-bottom-btn"
+        (click)="scrollToBottom()">
+  לתחתית הדף
+</button>
+
