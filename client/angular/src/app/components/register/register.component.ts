@@ -137,16 +137,29 @@ export class RegisterComponent implements OnInit {
     });
   }
 
+  loginWithGoogle(): void {
+    this.#authService.loginWithGoogle();
+  }
+
   register(): void {
     if (!this.isFirstStepValid() || !this.isSecondStepValid()) {
       alert('יש למלא את כל השדות כראוי');
       return;
     }
-    const finalParasha = this.getFinalParasha();
-    if (!finalParasha) {
-      alert('נא לבחור קריאות ברצף.');
+    let finalParasha = undefined;
+    // נבדוק אם המשתמש בחר לפחות קריאה אחת
+    if (
+      this.leyningFormControl.value &&
+      this.leyningFormControl.value.length > 0
+    ) {
+      if (this.leyningMap) {
+        finalParasha = this.getFinalParasha();
+        if (!finalParasha) {
+          alert('נא לבחור קריאות ברצף.');
+          return;
+        }
+      }
     }
-
     const email = this.emailFormControl.value!;
     const password = this.passwordFormControl.value ?? '';
     const username = this.usernameFormControl.value!;
@@ -161,8 +174,7 @@ export class RegisterComponent implements OnInit {
             sessionStorage.setItem('token', res.token);
             sessionStorage.setItem('role', res.role);
             setTimeout(() => {
-              alert('הרשמה הצליחה');
-              this.#router.navigateByUrl('/home');
+              this.#router.navigate(['/home'])
             }, 3000);
           } else {
             alert('שגיאה בהרשמה');

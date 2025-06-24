@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import {  LoginComponent } from './components/login/login.component';
+import { LoginComponent } from './components/login/login.component';
 import { UploadComponent } from './components/upload/upload.component';
 import { AdminComponent } from './components/admin/admin.component';
 import { UserComponent } from './components/user/user.component';
@@ -17,7 +17,11 @@ import { SChatComponent } from './components/chat/s-chat/s-chat.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent, title: 'TuvTaam: Login' },
-  { path: 'register', component: RegisterComponent, title: 'TuvTaam: Register' },
+  {
+    path: 'register',
+    component: RegisterComponent,
+    title: 'TuvTaam: Register',
+  },
   {
     path: 'admin',
     component: AdminComponent,
@@ -54,10 +58,24 @@ export const routes: Routes = [
     title: 'TuvTaam: My Parasha',
     canActivate: [authGuard],
   },
-  { path: 'mChat', component: MChatComponent, title: 'TuvTaam: chat', canActivate: [authGuard],
- }, 
-  { path: 'sChat', component: SChatComponent, title: 'TuvTaam: chat', canActivate: [authGuard],
- }, 
- // TODO: Change to HomeComponent when created
+  {
+    path: 'mChat',
+    component: MChatComponent,
+    title: 'TuvTaam: chat',
+    canActivate: [authGuard],
+  },
+  {
+    path: 'sChat',
+    component: SChatComponent,
+    title: 'TuvTaam: chat',
+    canActivate: [authGuard],
+  },
+  // TODO: Change to HomeComponent when created
+  {
+    path: 'home',
+    component: MyParashaComponent,
+    title: 'TuvTaam',
+    canActivate: [authGuard],
+  },
   { path: '', redirectTo: 'home', pathMatch: 'full' },
 ];

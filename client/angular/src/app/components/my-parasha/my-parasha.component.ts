@@ -18,7 +18,7 @@ import { FontSelectorsComponent } from './font-selectors/font-selectors.componen
 })
 export class MyParashaComponent {
   private _parashaService = inject(ParashaService);
-  private parasha: Parasha | undefined;
+  parasha?: Parasha | undefined;
   haftara?: Parasha | undefined;
 
   textSettings = defaultTextSettings;
