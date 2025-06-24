@@ -73,7 +73,7 @@ export class RegisterComponent implements OnInit {
     { label: 'מפטיר', value: 7 },
   ];
   birthdateFormControl = new FormControl('', [Validators.required]);
-  leyningFormControl = new FormControl([], [Validators.required]);
+  leyningFormControl = new FormControl([]);
   withHafatara = new FormControl(false);
 
   ngOnInit() {
@@ -113,7 +113,7 @@ export class RegisterComponent implements OnInit {
   }
 
   isSecondStepValid(): boolean {
-    return this.birthdateFormControl.valid && this.leyningFormControl.valid;
+    return this.birthdateFormControl.valid;
   }
 
   formatVerse = (verseRef: VerseRef) =>
@@ -137,23 +137,36 @@ export class RegisterComponent implements OnInit {
     });
   }
 
+  loginWithGoogle(): void {
+    this.#authService.loginWithGoogle();
+  }
+
   register(): void {
     if (!this.isFirstStepValid() || !this.isSecondStepValid()) {
       alert('יש למלא את כל השדות כראוי');
       return;
     }
-    const finalParasha = this.getFinalParasha();
-    if (!finalParasha) {
-      alert('נא לבחור קריאות ברצף.');
+    let finalParasha = undefined;
+    // נבדוק אם המשתמש בחר לפחות קריאה אחת
+    if (
+      this.leyningFormControl.value &&
+      this.leyningFormControl.value.length > 0
+    ) {
+      if (this.leyningMap) {
+        finalParasha = this.getFinalParasha();
+        if (!finalParasha) {
+          alert('נא לבחור קריאות ברצף.');
+          return;
+        }
+      }
     }
-
     const email = this.emailFormControl.value!;
     const password = this.passwordFormControl.value ?? '';
     const username = this.usernameFormControl.value!;
     const dueDate = this.birthdateFormControl.value!;
     const haftara = this.withHafatara?.value ? this.haftara : undefined;
     this.#authService
-      .register(username, email, password, dueDate, finalParasha!, haftara)
+      .register(username, email, password, dueDate, finalParasha, haftara)
       .subscribe({
         next: (res: any) => {
           if (res?.token) {
@@ -161,8 +174,7 @@ export class RegisterComponent implements OnInit {
             sessionStorage.setItem('token', res.token);
             sessionStorage.setItem('role', res.role);
             setTimeout(() => {
-              alert('הרשמה הצליחה');
-              this.#router.navigateByUrl('/home');
+              this.#router.navigate(['/home'])
             }, 3000);
           } else {
             alert('שגיאה בהרשמה');
@@ -175,12 +187,8 @@ export class RegisterComponent implements OnInit {
       });
   }
 
-  loginWithGoogle(): void {
-    this.#authService.loginWithGoogle();
-  }
-
-  private getFinalParasha(): VerseRef | null {
-    if (!this.leyningFormControl.value || !this.leyningMap) return null;
+  private getFinalParasha(): VerseRef | undefined {
+    if (!this.leyningFormControl.value || !this.leyningMap) return undefined;
     const values = this.leyningFormControl.value
       .map((item) => item['value'])
       .sort((a, b) => a - b);
@@ -189,14 +197,14 @@ export class RegisterComponent implements OnInit {
       (val, idx, arr) => idx === 0 || val === arr[idx - 1] + 1
     );
 
-    if (!isConsecutive) return null;
+    if (!isConsecutive) return undefined;
 
     const minIndex = values[0];
     const maxIndex = values[values.length - 1];
     const start = this.leyningMap[minIndex];
     const end = this.leyningMap[maxIndex];
 
-    if (!start || !end) return null;
+    if (!start || !end) return undefined;
 
     return {
       bookName: start.bookName,

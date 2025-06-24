@@ -50,7 +50,7 @@ constructor() {
     email: string,
     password: string,
     dueDate: string,
-    parashah: VerseRef,
+    parashah?: VerseRef,
     haftarah?: VerseRef
   ): Observable<User> {
     let url = this.apiServerAddress + '/auth/register';

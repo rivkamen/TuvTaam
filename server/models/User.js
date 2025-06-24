@@ -34,8 +34,7 @@ const userSchema = new Schema(
 			required: true
 		},
 		parashah: {
-			type: TanakhRef,
-			require: true
+			type: TanakhRef
 		},
 		haftarah: {
 			type: TanakhRef

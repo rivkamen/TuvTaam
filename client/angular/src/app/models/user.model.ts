@@ -7,7 +7,7 @@ export interface User {
   email: string;
   adminId: string;
   dueDate: Date;
-  parashah: VerseRef;
+  parashah?: VerseRef;
   haftarah?: VerseRef;
   recordBookmark: number;
 }
