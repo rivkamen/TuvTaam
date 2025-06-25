@@ -18,7 +18,7 @@ const app = express();
 // --- מגביל בקשות ---
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 דקות
-  max: 100, // מגביל ל־100 בקשות לכל IP ב־15 דקות
+  max: 300, // מגביל ל־300 בקשות לכל IP ב־15 דקות
   message: 'Too many requests from this IP, please try again later.',
   standardHeaders: true,
   legacyHeaders: false,

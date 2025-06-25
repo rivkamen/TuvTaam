@@ -29,6 +29,31 @@ const clients = {};
 //     clients[sessionId] = clients[sessionId].filter((r) => r !== res);
 //   });
 // };
+// const sseConnection = (req, res) => {
+//   const sessionId = req.params._id;
+
+//   res.set({
+//     'Content-Type': 'text/event-stream',
+//     'Cache-Control': 'no-cache',
+//     'Connection': 'keep-alive',
+//     'Access-Control-Allow-Origin': '*', // אפשר להחליף ל-origin ספציפי
+//   });
+
+//   res.flushHeaders();
+
+//   // שליחה ראשונית למנוע timeout
+//   res.write(`data: ${JSON.stringify({ status: 'connected' })}\n\n`);
+
+//   if (!clients[sessionId]) {
+//     clients[sessionId] = [];
+//   }
+//   clients[sessionId].push(res);
+
+//   req.on('close', () => {
+//     clients[sessionId] = clients[sessionId].filter((r) => r !== res);
+//   });
+// };
+
 const sseConnection = (req, res) => {
   const sessionId = req.params._id;
 
@@ -41,6 +66,8 @@ const sseConnection = (req, res) => {
 
   res.flushHeaders();
 
+  const clientCountBefore = clients[sessionId]?.length || 0;
+
   // שליחה ראשונית למנוע timeout
   res.write(`data: ${JSON.stringify({ status: 'connected' })}\n\n`);
 
@@ -48,12 +75,13 @@ const sseConnection = (req, res) => {
     clients[sessionId] = [];
   }
   clients[sessionId].push(res);
+console.log(`🔌 לקוח חדש התחבר ל-SSE של השיחה ${sessionId} (סה"כ עכשיו: ${clients[sessionId].length})`);
 
   req.on('close', () => {
     clients[sessionId] = clients[sessionId].filter((r) => r !== res);
+  console.log(`🔌 חיבור ל-SSE נסגר. סה"כ עכשיו: ${clients[sessionId]?.length || 0}`);
   });
 };
-
 
 const createSession = async (req, res) => {
 
@@ -217,6 +245,72 @@ const deleteSession = async (req, res) => {
 
   return res.status(405).json({ message: "unauthorized" });
 };
+// const createMessage = async (req, res) => {
+//   console.log("🚀 התחלת createMessage");
+
+//   const { _id } = req.params;
+//   const message = req.body;
+//   const file = req.file;
+
+//   let session;
+//   try {
+//     session = await SessionFeedback.findById(_id).exec();
+//     if (!session) {
+//       return res.status(404).json({ message: "session not found" });
+//     }
+//   } catch (err) {
+//     return res.status(500).json({ message: "Error finding session", error: err.message });
+//   }
+
+//   if (file) {
+//     try {
+//       const uploadResult = await uploadToGCSWithBackup(file);
+//       message.path = uploadResult.name;
+
+//       try {
+//         const signedUrlData = await gcs.generateSignedUrl(message.path);
+//         message.signedUrl = signedUrlData.signedUrl;
+//         message.expiresAt = signedUrlData.expiresAt;
+//       } catch (error) {
+//         console.error("⚠️ שגיאה ביצירת signed URL:", error.message);
+//       }
+
+//     } catch (err) {
+//       return res.status(500).json({ message: "File upload failed", error: err.message });
+//     }
+//   }
+
+//   if (message.fromUser === undefined) {
+//     message.fromUser = false;
+//   }
+
+//   session.messages.push(message);
+
+//   try {
+//     await session.save();
+//   } catch (err) {
+//     return res.status(500).json({ message: "Error saving session", error: err.message });
+//   }
+
+//   // 🔴 שליחת עדכון ללקוחות SSE
+//   const subscribers = clients[_id];
+// if (subscribers) {
+//   console.log(`[SSE] שולחת ל-${subscribers.length} מאזינים עבור שיחה ${_id}`);
+//   const msgToSend = JSON.stringify({ sessionId: _id });
+//   subscribers.forEach((clientRes) => {
+//     clientRes.write(`event: message\ndata: ${msgToSend}\n\n`);
+//   });
+// } else {
+//   console.log(`[SSE] אין מאזינים מחוברים לשיחה ${_id}`);
+// }
+
+  
+//   return res.status(201).json({
+//     success: true,
+//     message: `Message added to session \"${session.title}\"`,
+//     data: message,
+//   });
+// };
 const createMessage = async (req, res) => {
   console.log("🚀 התחלת createMessage");
 
@@ -224,30 +318,39 @@ const createMessage = async (req, res) => {
   const message = req.body;
   const file = req.file;
 
+  console.log("📥 הודעה שהתקבלה מהקליינט:", message);
+
   let session;
   try {
     session = await SessionFeedback.findById(_id).exec();
     if (!session) {
+      console.warn("⚠️ שיחה לא נמצאה:", _id);
       return res.status(404).json({ message: "session not found" });
     }
+    console.log("📚 session נמצא:", session._id);
   } catch (err) {
+    console.error("❌ שגיאה בשליפת session:", err.message);
     return res.status(500).json({ message: "Error finding session", error: err.message });
   }
 
   if (file) {
+    console.log("📎 קובץ מצורף – מנסה להעלות...");
     try {
       const uploadResult = await uploadToGCSWithBackup(file);
       message.path = uploadResult.name;
+      console.log("✅ קובץ הועלה:", message.path);
 
       try {
         const signedUrlData = await gcs.generateSignedUrl(message.path);
         message.signedUrl = signedUrlData.signedUrl;
         message.expiresAt = signedUrlData.expiresAt;
+        console.log("🔐 signed URL נוצר:", signedUrlData.signedUrl);
       } catch (error) {
         console.error("⚠️ שגיאה ביצירת signed URL:", error.message);
       }
 
     } catch (err) {
+      console.error("❌ העלאת קובץ נכשלה:", err.message);
       return res.status(500).json({ message: "File upload failed", error: err.message });
     }
   }
@@ -255,34 +358,38 @@ const createMessage = async (req, res) => {
   if (message.fromUser === undefined) {
     message.fromUser = false;
   }
+console.log("💬 מוסיף הודעה לשיחה:", message);
 
   session.messages.push(message);
 
   try {
     await session.save();
+    console.log("💾 הודעה נשמרה בהצלחה בשיחה:", session._id);
   } catch (err) {
+    console.error("❌ שגיאה בשמירת השיחה:", err.message);
     return res.status(500).json({ message: "Error saving session", error: err.message });
   }
 
   // 🔴 שליחת עדכון ללקוחות SSE
   const subscribers = clients[_id];
-if (subscribers) {
-  console.log(`[SSE] שולחת ל-${subscribers.length} מאזינים עבור שיחה ${_id}`);
-  const msgToSend = JSON.stringify({ sessionId: _id });
-  subscribers.forEach((clientRes) => {
-    clientRes.write(`event: message\ndata: ${msgToSend}\n\n`);
-  });
-} else {
-  console.log(`[SSE] אין מאזינים מחוברים לשיחה ${_id}`);
-}
+  if (subscribers && subscribers.length) {
+    console.log(`[📡 SSE] שולחת ל-${subscribers.length} מאזינים עבור שיחה ${_id}`);
+    const msgToSend = JSON.stringify({ sessionId: _id, message });
+    subscribers.forEach((clientRes, index) => {
+      console.log(`📨 שולחת למאזין [${index + 1}]:`, msgToSend);
+      clientRes.write(`event: message\ndata: ${msgToSend}\n\n`);
+    });
+  } else {
+    console.log(`[📭 SSE] אין מאזינים מחוברים לשיחה ${_id}`);
+  }
 
-  
   return res.status(201).json({
     success: true,
     message: `Message added to session \"${session.title}\"`,
     data: message,
   });
 };
+
 const updateMessage = async (req, res) => {
   const { _id, messageId } = req.params;
   const { content, path } = req.body;
@@ -404,6 +511,8 @@ const deleteMessage = async (req, res) => {
 //   });
 // };
 const updateMessageReadStatus = async (req, res) => {
+  console.log("🦒🦒🦒🦒🦒🦒🦒🦒🦒🦒🦒🦒🦒🦒🦒🦒🦒🦒🦒🦒🦒🦒🦒🦒");
+  
   const { _id, messageId } = req.params;
   const session = await SessionFeedback.findById(_id).exec();
   if (!session) return res.status(404).json({ message: "Session not found" });
@@ -463,6 +572,8 @@ const updateMessageReadStatus = async (req, res) => {
 // };
 const markAllMessagesAsRead = async (req, res) => {
   try {
+    console.log("🐸🐸🐸🐸🐸🐸🐸🐸🐸🐸🐸🐸🐸🐸🐸🐸🐸🐸🐸🐸🐸🐸🐸🐸");
+    
     const { _id } = req.params; // session ID
     console.log('[markAllMessagesAsRead] התחלה, sessionId:', _id);
     console.log('[markAllMessagesAsRead] משתמש מבקש:', req.user);

@@ -9,7 +9,6 @@ const sseVerifyJWT=(req,res,next)=>{
         (err,decoded)=>{
             if(err) return res.status(403).json({message:'forbidden'})
             req.user=decoded
-            console.log(req.user);
 
             next()
         }
