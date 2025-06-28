@@ -1,11 +1,14 @@
 <div class="session-list">
-  <button *ngFor="let s of sessions"
+  <button *ngFor="let s of sessions; trackBy: trackBySessionId" 
           class="session-item"
           [class.selected]="s._id === selectedSessionId"
           (click)="onSessionSelect(s._id)">
     <div class="session-title">
       שיחה עם {{ s.userId[0].email || 'לא ידוע' }}
         <span *ngIf="s.hasUnreadMessages" class="unread-dot">  {{ getUnreadCount(s) }}
+</span>
+<span *ngIf="s.hasUnreadMessages" class="unread-dot">
+  🔴 {{ s.unreadCount || getUnreadCount(s) }}
 </span>
 
     </div>

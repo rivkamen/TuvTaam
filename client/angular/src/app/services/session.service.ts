@@ -18,6 +18,8 @@ export interface Session {
   // title?: string;
   messages?: Message[];
   createdAt?: string;
+  hasUnreadMessages?: boolean;
+
 }
 
 @Injectable({ providedIn: 'root' })

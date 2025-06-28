@@ -11,7 +11,6 @@ import { UserProfileBarComponent } from './user-profile-bar/user-profile-bar.com
 import { environment } from '../../environments/environment';
 import { UserService } from '../../services/user.service';
 import { User } from '../../models/user.model';
-
 @Component({
   selector: 'app-m-chat',
   standalone: true,
@@ -32,7 +31,6 @@ export class MChatComponent implements OnInit, OnDestroy {
   messages: any[] = [];
   loading = false;
   newSessionMode = false;
-  
   userEmail: string = '';
   userPhotoUrl: string = '';
   adminPhotoUrl: string = '';
@@ -44,7 +42,6 @@ firstUnreadIndex: number | null = null;
 apiUrl: string = '';
 private sseMap = new Map<string, EventSource>();
 users: User[] = [];
-
   constructor(
     private feedbackService: FeedbackService,
     private userService: UserService,
@@ -55,199 +52,9 @@ users: User[] = [];
   ngOnInit() {
     this.loadSessions();
   }
-
  ngOnDestroy() {
     this.closeAllSSE(); // ניתוק כל החיבורים
   }
-// openSession(sessionId: string) {
-//     this.selectedSessionId = sessionId;
-//     this.loadMessages();
-//     this.loadUserProfile();
-
-//     this.initSSE(sessionId); // התחלת האזנה ל-SSE עבור שיחה זו
-//   }
-//   private initSSE(sessionId: string) {
-//     console.log(`[SSE] מנסה לפתוח חיבור לשיחה ${sessionId}`);
-//     if (this.sseMap.has(sessionId)) return; // לא פותחים פעמיים
-// const token = sessionStorage.getItem('token'); // או מאיפה שאת שומרת אותו
-// const eventSource = new EventSource(`${environment.apiUrl}/feedback/sse/${sessionId}?token=${token}`);
-// console.log(`[SSE] EventSource נפתח עבור ${sessionId}`);
-//     eventSource.onmessage = (event) => {
-//       const data = JSON.parse(event.data);
-//       console.log(`[SSE] הודעה חדשה לשיחה ${sessionId}, data`);
-//       if (data.sessionId === this.selectedSessionId) {
-//             console.log('[SSE] מדובר בשיחה הפתוחה כעת – טוען הודעות מחדש...');
-
-//         this.loadMessages();
-//       } else {
-//         console.log('[SSE] מדובר בשיחה אחרת – מסמן כהודעה שלא נקראה');
-
-//         const session = this.sessions.find(s => s._id === data.sessionId);
-//         if (session) {
-//           session.hasUnreadMessages = true;
-//         }
-//       }
-//     };
-
-//     eventSource.onerror = () => {
-//       console.warn(`[SSE] שגיאה בשיחה ${sessionId}, מנסה שוב בעוד 3 שניות...`);
-//       eventSource.close();
-//       this.sseMap.delete(sessionId);
-//       setTimeout(() => this.initSSE(sessionId), 3000);
-//     };
-
-//     this.sseMap.set(sessionId, eventSource);
-//   }
-openSession(sessionId: string) {
-    // סגור SSE של שיחות אחרות
-    if (this.selectedSessionId && this.selectedSessionId !== sessionId) {
-        this.closeSSE(this.selectedSessionId);
-    }
-    
-    this.selectedSessionId = sessionId;
-    this.loadMessages();
-    this.loadUserProfile();
-    
-    this.initSSE(sessionId);
-}
-// private initSSE(sessionId: string) {
-//     console.log(`[SSE] מנסה לפתוח חיבור לשיחה ${sessionId}`);
-    
-//     // סגור חיבור קיים אם יש
-//     if (this.sseMap.has(sessionId)) {
-//         this.closeSSE(sessionId);
-//     }
-    
-//     const token = sessionStorage.getItem('token');
-//     if (!token) {
-//         console.error('[SSE] אין טוקן - לא ניתן להתחבר');
-//         return;
-//     }
-    
-//     const eventSource = new EventSource(`${environment.apiUrl}/feedback/sse/${sessionId}?token=${token}`);
-//     console.log(`[SSE] EventSource נפתח עבור ${sessionId}`);
-//     eventSource.onopen = () => {
-//   console.log('[SSE] חיבור נפתח בהצלחה 🎉');
-// };
-//     eventSource.onmessage = (event) => {
-//         try {
-//             const data = JSON.parse(event.data);
-//             console.log(`[SSE] הודעה חדשה לשיחה ${sessionId}:`, data);
-            
-//             if (data.sessionId === this.selectedSessionId) {
-//                 console.log('[SSE] מדובר בשיחה הפתוחה כעת – טוען הודעות מחדש...');
-//                 this.loadMessages();
-//             } else {
-//                 console.log('[SSE] מדובר בשיחה אחרת – מסמן כהודעה שלא נקראה');
-//                 const session = this.sessions.find(s => s._id === data.sessionId);
-//                 if (session) {
-//                     session.hasUnreadMessages = true;
-//                 }
-//             }
-//         } catch (error) {
-//             console.error('[SSE] שגיאה בפענוח נתונים:', error);
-//         }
-//     };
-
-//     eventSource.onerror = (error) => {
-//         console.warn(`[SSE] שגיאה בשיחה ${sessionId}:`, error);
-//         eventSource.close();
-//         this.sseMap.delete(sessionId);
-        
-//         // נסה להתחבר שוב אחרי 3 שניות
-//         setTimeout(() => {
-//             if (this.selectedSessionId === sessionId) { // רק אם עדיין בשיחה הזו
-//                 this.initSSE(sessionId);
-//             }
-//         }, 3000);
-//     };
-
-//     this.sseMap.set(sessionId, eventSource);
-// }
-private initSSE(sessionId: string) {
-    console.log(`[SSE] מנסה לפתוח חיבור לשיחה ${sessionId}`);
-
-    if (this.sseMap.has(sessionId)) {
-        this.closeSSE(sessionId);
-    }
-
-    const token = sessionStorage.getItem('token');
-    if (!token) {
-        console.error('[SSE] אין טוקן - לא ניתן להתחבר');
-        return;
-    }
-
-    const eventSource = new EventSource(`${environment.apiUrl}/feedback/sse/${sessionId}?token=${token}`);
-    console.log(`[SSE] EventSource נפתח עבור ${sessionId}`);
-
-    eventSource.onopen = () => {
-        console.log('[SSE] חיבור נפתח בהצלחה 🎉');
-    };
-
-    eventSource.onmessage = (event) => {
-        try {
-            const data = JSON.parse(event.data);
-            console.log(`[SSE] הודעה חדשה לשיחה ${sessionId}:`, data);
-
-            if (data.sessionId === this.selectedSessionId) {
-                console.log('[SSE] מדובר בשיחה הפתוחה כעת – טוען הודעות מחדש...');
-                this.loadMessages();
-            } else {
-                console.log('[SSE] מדובר בשיחה אחרת – מסמן כהודעה שלא נקראה');
-                const session = this.sessions.find(s => s._id === data.sessionId);
-                if (session) {
-                    session.hasUnreadMessages = true;
-                }
-            }
-        } catch (error) {
-            console.error('[SSE] שגיאה בפענוח נתונים:', error);
-        }
-    };
-
-    eventSource.addEventListener('message-updated', (event) => {
-        try {
-            const data = JSON.parse(event.data);
-            console.log('[SSE] ✏️ הודעה עודכנה:', data);
-
-            const updated = data.message;
-            const index = this.messages.findIndex(m => m._id === updated._id);
-            if (index > -1) {
-                this.messages[index].content = updated.content;
-                this.messages[index].path = updated.path;
-                this.cdr.detectChanges();
-            }
-        } catch (err) {
-            console.error('[SSE] שגיאה ב-message-updated:', err);
-        }
-    });
-
-    eventSource.addEventListener('message-deleted', (event) => {
-        try {
-            const data = JSON.parse(event.data);
-            console.log('[SSE] 🗑️ הודעה נמחקה:', data);
-
-            this.messages = this.messages.filter(m => m._id !== data.messageId);
-            this.cdr.detectChanges();
-        } catch (err) {
-            console.error('[SSE] שגיאה ב-message-deleted:', err);
-        }
-    });
-
-    eventSource.onerror = (error) => {
-        console.warn(`[SSE] שגיאה בשיחה ${sessionId}:`, error);
-        eventSource.close();
-        this.sseMap.delete(sessionId);
-
-        setTimeout(() => {
-            if (this.selectedSessionId === sessionId) {
-                this.initSSE(sessionId);
-            }
-        }, 3000);
-    };
-
-    this.sseMap.set(sessionId, eventSource);
-}
-
   private closeSSE(sessionId: string) {
     const source = this.sseMap.get(sessionId);
     if (source) {
@@ -255,52 +62,37 @@ private initSSE(sessionId: string) {
       this.sseMap.delete(sessionId);
     }
   }
-
   private closeAllSSE() {
     this.sseMap.forEach((source, id) => {
       source.close();
     });
     this.sseMap.clear();
   }
-
-loadSessions() {
-  this.feedbackService.getSessions().subscribe((sessions) => {
-    this.sessions = sessions.map(session => {
-      const hasUnreadMessages = session.messages?.some((msg: any) =>
-        !msg.isRead && msg.fromUser === true
-      );
-      return {
-        ...session,
-        hasUnreadMessages
-      };
-    });
-  });
-}
-
 selectSession(sessionId: string) {
   this.openSession(sessionId); // זה כולל loadMessages + initSSE
 }
-
 loadMessages() {
   if (!this.selectedSessionId) return;
-  
+
   this.loading = true;
   this.firstUnreadIndex = null;
-  
+
   this.feedbackService.getMessages(this.selectedSessionId).subscribe({
+
     next: (msgs) => {
       console.log('🔄 loadMessages - עדכון הודעות:', msgs.length);
-      
+
       this.messages = msgs.map((msg, index) => {
         const isUnread = !msg.isRead;
-        
         if (this.firstUnreadIndex === null && isUnread) {
           this.firstUnreadIndex = index;
         }
-        
         return {
           ...msg,
           isUnread,
+          isDeleted: msg.isDeleted || false,
+          isEdited: msg.isEdited || false,
+          updatedAt: msg.updatedAt ? new Date(msg.updatedAt) : null,
           isFirstUnread: this.firstUnreadIndex === index,
           signedUrl: msg.signedUrl || null,
           safeAudioUrl: msg.signedUrl 
@@ -308,32 +100,34 @@ loadMessages() {
             : null
         };
       });
-      
+
       this.loading = false;
-      console.log('🔄 messages עודכן:', this.messages.length);
-      
-      // סימון כנקראו אחרי עדכון המסרים
       this.markMessagesAsRead();
-      
-      // זיהוי שינויים אם נדרש
       this.cdr.detectChanges();
     },
     error: (err) => {
-      console.error('שגיאה בטעינת הודעות:', err);
+      console.error('❌ שגיאה בטעינת הודעות:', err);
       this.loading = false;
     }
   });
-  
 }
-
 private markMessagesAsRead() {
+  const unreadExists = this.messages.some(m => !m.isRead && m.fromUser);
+  if (!unreadExists) return;
+
   this.feedbackService.markAllMessagesAsRead(this.selectedSessionId).subscribe({
-    next: () => console.log("עודכן כנקראו"),
+    next: () => {
+      this.sessions = this.sessions.map(session =>
+        session._id === this.selectedSessionId
+          ? { ...session, hasUnreadMessages: false, unreadCount: 0 }
+          : session
+      );
+      this.cdr.detectChanges();
+    },
     error: (err) => console.error("שגיאה בעדכון isRead", err)
   });
 }
-
-  sendMessage(messageData: MessageData) {
+sendMessage(messageData: MessageData) {
     if (!this.selectedSessionId) return;
     this.loading = true;
 
@@ -389,21 +183,26 @@ startNewSession() {
   console.log(this.users);
   
 }
+
 createNewSession(sessionData: NewSessionData) {
+  const title = sessionData.title || 'ללא שם';
   const userId = this.roleService.getUserId() || 'undefined';
-  console.log("userId", userId);
-    const title = sessionData.title || 'ללא שם';
+
   this.feedbackService.createSession(title, sessionData.targetUserId).subscribe(newSession => {
-    // רענון כל השיחות כדי לקבל את השיחה החדשה עם userId ונתונים מלאים
-    this.loadSessions();
-    // סימון השיחה החדשה כנבחרת
+    this.sessions = [...this.sessions, {
+      ...newSession,
+      messages: [],
+      hasUnreadMessages: false,
+      unreadCount: 0
+    }];
     this.selectedSessionId = newSession._id;
-    // יציאה ממצב יצירת שיחה
     this.newSessionMode = false;
-    // התחלת האזנת SSE לשיחה החדשה
     this.initSSE(newSession._id);
+    this.loadMessages();
+    this.cdr.detectChanges();
   });
 }
+
 startEdit(message: any) {
   this.editMessageId = null; // מאפס כדי להבטיח זיהוי שינוי
   setTimeout(() => {
@@ -411,7 +210,7 @@ startEdit(message: any) {
     this.editedContent = message.content;
   });
 }
-  saveEdit(editData: MessageEditData) {
+saveEdit(editData: MessageEditData) {
   this.feedbackService.updateMessage(
     this.selectedSessionId, 
     editData.messageId, 
@@ -433,11 +232,21 @@ cancelEdit() {
   this.editMessageId = null;
   this.editedContent = '';
 }
+  // deleteMessage(messageId: string) {
+  //   this.feedbackService.deleteMessage(this.selectedSessionId, messageId).subscribe(() => {
+  //     this.messages = this.messages.filter(m => m._id !== messageId);
+  //   });
+  // }
   deleteMessage(messageId: string) {
-    this.feedbackService.deleteMessage(this.selectedSessionId, messageId).subscribe(() => {
-      this.messages = this.messages.filter(m => m._id !== messageId);
-    });
-  }
+  this.feedbackService.deleteMessage(this.selectedSessionId, messageId).subscribe(() => {
+    const index = this.messages.findIndex(m => m._id === messageId);
+    if (index !== -1) {
+      this.messages[index].isDeleted = true;
+      this.cdr.detectChanges(); // עדכון מיידי של ה־UI
+    }
+  });
+}
+
   toggleMenu(messageId: string) {
     this.openedMenuId = this.openedMenuId === messageId ? null : messageId;
   }
@@ -456,5 +265,206 @@ cancelEdit() {
         this.adminPhotoUrl = 'assets/teacher.gif';
       }
     }
-  }  
+  } 
+private initSSE(sessionId: string) {
+  console.log(`[SSE] מנסה לפתוח חיבור לשיחה ${sessionId}`);
+
+  if (this.sseMap.has(sessionId)) {
+    this.closeSSE(sessionId);
+  }
+
+  const token = sessionStorage.getItem('token');
+  if (!token) {
+    console.error('[SSE] אין טוקן - לא ניתן להתחבר');
+    return;
+  }
+
+  const eventSource = new EventSource(`${environment.apiUrl}/feedback/sse/${sessionId}?token=${token}`);
+  this.sseMap.set(sessionId, eventSource);
+
+  eventSource.onopen = () => {
+    console.log('[SSE] חיבור נפתח בהצלחה 🎉');
+  };
+
+  
+eventSource.onmessage = (event) => {
+  console.log('[📨 SSE] התקבל אירוע:', event.data);
+
+  try {
+    const data = JSON.parse(event.data);
+    const incomingMessage = data.message;
+
+    if (!incomingMessage) {
+      console.log('[ℹ️ SSE] אין הודעה – מתעלם');
+      return;
+    }
+
+    const isActiveSession = data.sessionId === this.selectedSessionId;
+    const isFromCurrentUser = incomingMessage.fromUser === false; // או בדיקה לפי userId אם יש
+
+    if (isActiveSession) {
+      if (!isFromCurrentUser) {
+        console.log('[🔄 SSE] הודעה משולח אחר בשיחה פתוחה – טוען מחדש');
+        this.loadMessages();
+      } else {
+        console.log('[🟢 SSE] הודעה שלנו – כבר הוספנו מקומית');
+      }
+    } else {
+      console.log('[🕓 SSE] הודעה משיחה אחרת – מעדכן סטטוס');
+      this.updateSessionWithNewMessage(data);
+    }
+
+    this.updateSessionsUnreadStatus();
+
+  } catch (error) {
+    console.error('[💥 SSE] שגיאה בפענוח:', error);
+  }
+};
+
+eventSource.addEventListener('message-updated', (event) => {
+  try {
+    const data = JSON.parse(event.data);
+    console.log('[SSE] ✏️ הודעה עודכנה:', data);
+
+    const updated = data.message;
+    const index = this.messages.findIndex(m => m._id === updated._id);
+    if (index > -1) {
+      this.messages[index].content = updated.content;
+      this.messages[index].path = updated.path;
+      this.messages[index].isEdited = updated.isEdited;
+      this.messages[index].updatedAt = updated.updatedAt;
+      this.cdr.detectChanges();
+    }
+  } catch (err) {
+    console.error('[SSE] שגיאה ב-message-updated:', err);
+  }
+});
+
+eventSource.addEventListener('message-deleted', (event) => {
+  try {
+    const data = JSON.parse(event.data);
+    console.log('[SSE] 🗑️ הודעה נמחקה:', data);
+
+    const index = this.messages.findIndex(m => m._id === data.messageId);
+    if (index !== -1) {
+      this.messages[index].isDeleted = true;
+      this.cdr.detectChanges();
+    }
+  } catch (err) {
+    console.error('[SSE] שגיאה ב-message-deleted:', err);
+  }
+});
+eventSource.onerror = (err) => {
+  console.error('[SSE] שגיאה בחיבור:', err);
+};
+
+}
+
+private calculateUnreadCount(session: any): number {
+  console.log('caculate');
+  
+  if (!session.messages) {
+    console.log('[📉 calculateUnreadCount] אין הודעות בשיחה:', session._id);
+    return 0;
+  }
+  const count = session.messages.filter((msg: any) => !msg.isRead && msg.fromUser).length;
+  console.log(`[📊 calculateUnreadCount] לשיחה ${session._id} יש ${count} הודעות לא נקראו`);
+  return count;
+}
+// עדכון פונקציית loadSessions
+loadSessions() {
+    this.feedbackService.getSessions().subscribe((sessions) => {
+          console.log('🟢 loadSessions - sessions from server:', sessions);
+
+        this.sessions = sessions.map(session => {
+            const unreadCount = this.calculateUnreadCount(session);
+            const hasUnreadMessages = unreadCount > 0;
+            
+            return {
+                ...session,
+                hasUnreadMessages,
+                unreadCount
+            };
+        });
+        
+        this.cdr.detectChanges();
+    });
+}
+// פונקציה לעדכון סטטוס הודעות שלא נקראו
+private updateSessionsUnreadStatus() {
+    this.sessions = this.sessions.map(session => {
+        const unreadCount = this.calculateUnreadCount(session);
+        return {
+            ...session,
+            hasUnreadMessages: unreadCount > 0,
+            unreadCount
+        };
+    });
+    
+    this.cdr.detectChanges();
+}
+// עדכון פונקציית openSession
+openSession(sessionId: string) {
+    if (this.selectedSessionId && this.selectedSessionId !== sessionId) {
+        this.closeSSE(this.selectedSessionId);
+    }
+
+    // סימון כל ההודעות כנקראו לפני פתיחת השיחה
+    const session = this.sessions.find(s => s._id === sessionId);
+    if (session) {
+        session.hasUnreadMessages = false;
+        session.unreadCount = 0;
+        
+        if (session.messages) {
+            session.messages.forEach((msg: any) => {
+                if (!msg.isRead && msg.fromUser) {
+                    msg.isRead = true;
+                }
+            });
+        }
+    }
+
+    this.selectedSessionId = sessionId;
+    this.loadMessages();
+    this.loadUserProfile();
+    this.initSSE(sessionId);
+    
+    // עדכון הדיספליי
+    this.cdr.detectChanges();
+}
+private updateSessionWithNewMessage(data: any) {
+  console.log('[🔔 updateSessionWithNewMessage] התחלה עם data:', data);
+
+  if (!data || !data.message) {
+    console.warn('[⚠️ updateSessionWithNewMessage] אין הודעה בנתונים שהתקבלו:', data);
+    return;
+  }
+
+  const session = this.sessions.find(s => s._id === data.sessionId);
+  if (!session) {
+    console.warn('[⚠️ updateSessionWithNewMessage] שיחה לא נמצאה:', data.sessionId);
+    return;
+  }
+
+  console.log('[🧩 updateSessionWithNewMessage] נמצא session:', session);
+
+  if (!session.messages) {
+    console.log('[📭 updateSessionWithNewMessage] יוצר מערך הודעות חדש בשיחה');
+    session.messages = [];
+  }
+
+  const newMessage = {
+    ...data.message,
+    isRead: false,
+    fromUser: data.message.fromUser ?? true,
+  };
+
+  session.messages.push(newMessage);
+  session.hasUnreadMessages = true;
+  session.unreadCount = this.calculateUnreadCount(session);
+
+  console.log('[✅ updateSessionWithNewMessage] הודעה הוספה. unreadCount:', session.unreadCount);
+
+  this.cdr.detectChanges();
+}
 }

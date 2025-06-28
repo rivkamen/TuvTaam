@@ -45,5 +45,10 @@ export class SessionListComponent {
   getUnreadCount(session: any): number {
   return session.messages?.filter((msg: any) => !msg.isRead && msg.fromUser)?.length || 0;
 }
+trackBySessionId(index: number, session: any): string {
+  return session._id;
+}
 
 }
+
+
