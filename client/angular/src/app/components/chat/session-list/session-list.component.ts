@@ -32,16 +32,31 @@ export class SessionListComponent {
 }
 
 
+  // getHebrewDate(dateStr: string | Date): string {
+  //   const date = new Date(dateStr);
+  //   const formatter = new Intl.DateTimeFormat('he-IL-u-ca-hebrew', {
+  //     weekday: 'long',
+  //     year: 'numeric',
+  //     month: 'long',
+  //     day: 'numeric'
+  //   });
+  //   return formatter.format(date);
+  // }
   getHebrewDate(dateStr: string | Date): string {
-    const date = new Date(dateStr);
-    const formatter = new Intl.DateTimeFormat('he-IL-u-ca-hebrew', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-    return formatter.format(date);
-  }
+  if (!dateStr) return 'תאריך לא זמין';
+
+  const date = new Date(dateStr);
+  if (isNaN(date.getTime())) return 'תאריך שגוי';
+
+  const formatter = new Intl.DateTimeFormat('he-IL-u-ca-hebrew', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+  return formatter.format(date);
+}
+
   getUnreadCount(session: any): number {
   return session.messages?.filter((msg: any) => !msg.isRead && msg.fromUser)?.length || 0;
 }
