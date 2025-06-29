@@ -184,21 +184,38 @@ startNewSession() {
   
 }
 
+// createNewSession(sessionData: NewSessionData) {
+//   const title = sessionData.title || 'ללא שם';
+//   const userId = this.roleService.getUserId() || 'undefined';
+
+//   this.feedbackService.createSession(title, sessionData.targetUserId).subscribe(newSession => {
+//     this.sessions = [...this.sessions, {
+//       ...newSession,
+//       messages: [],
+//       hasUnreadMessages: false,
+//       unreadCount: 0
+//     }];
+//     this.selectedSessionId = newSession._id;
+//     this.newSessionMode = false;
+//     this.initSSE(newSession._id);
+//     this.loadMessages();
+//     this.cdr.detectChanges();
+//   });
+// }
 createNewSession(sessionData: NewSessionData) {
   const title = sessionData.title || 'ללא שם';
-  const userId = this.roleService.getUserId() || 'undefined';
 
   this.feedbackService.createSession(title, sessionData.targetUserId).subscribe(newSession => {
-    this.sessions = [...this.sessions, {
-      ...newSession,
-      messages: [],
-      hasUnreadMessages: false,
-      unreadCount: 0
-    }];
     this.selectedSessionId = newSession._id;
     this.newSessionMode = false;
+
+    // 💡 ריענון רשימת השיחות מהשרת (במקום לדחוף ידנית)
+    this.loadSessions();
+
+    // ממשיכים כרגיל עם ההודעות ו-SSE
     this.initSSE(newSession._id);
     this.loadMessages();
+
     this.cdr.detectChanges();
   });
 }
