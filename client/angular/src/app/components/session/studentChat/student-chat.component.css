@@ -40,20 +40,6 @@
   font-weight: bold;
 }
 
-.new-session-btn {
-  margin-top: auto;
-  padding: 10px;
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.new-session-btn:hover {
-  background-color: #45a049;
-}
 
 /* אזור הצ'אט */
 .chat-container {

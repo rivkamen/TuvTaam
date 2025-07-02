@@ -85,24 +85,7 @@
   font-weight: bold;
 }
 
-.new-session-btn {
-  margin-top: auto;
-  padding: 10px;
-  background-color: #28a745;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
 
-/* צד הודעות */
-.chat-container {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  padding: 10px;
-  position: relative;
-}
 
 /* תיבת הודעות */
 /* .messages {
@@ -195,25 +178,6 @@
   font-weight: bold;
 }
 
-.new-session-btn {
-  margin-top: 1rem;
-  padding: 0.5rem;
-  background-color: #2196f3;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-/* אזור הצ'אט */
-.chat-container {
-  flex: 1;
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  border-right: 1px solid #ccc;
-  max-height: 100vh;
-}
 
 /* הודעות */
 .messages {

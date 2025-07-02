@@ -40,28 +40,33 @@ export class AppbarComponent implements OnInit {
     const routes = [
       {
         path: '/home',
-        label: 'Home',
+        label: 'בית',
       },
       {
         path: this.roleService.isAdmin() ?'/mChat' : '/sChat',
-        label: 'Feedback Chat',
+        label: 'צאט',
       },
       {
         path: '/records',
-        label: 'Records',
+        label: 'הקלטות',
       },
       {
         path: this.roleService.isAdmin() ? '/admin' : '/user',
-        label: 'PersonalArea',
+        label: 'אזור אישי',
       },
     ];
     if (this.roleService.isUser()) {
       routes.splice(1, 0, {
         path: '/my-parasha',
-        label: 'MyParasha',
+        label: 'הפרשה שלי',
       });
     }
-
+  if (this.roleService.isAdmin()) {
+      routes.splice(1, 0, {
+        path: '/manageUsers',
+        label: 'ניהול משתמשים',
+      });
+    }
     this.routes = routes.map((route) => ({
       ...route,
       icon: this.getIcon(route.label),
@@ -70,12 +75,13 @@ export class AppbarComponent implements OnInit {
 
   private getIcon = (label: string) => {
     const mapIcons = {
-      Home: 'pi pi-home',
-      'Feedback Chat': 'pi pi-comments',
+      בית: 'pi pi-home',
+      צאט: 'pi pi-comments',
       Upload: 'pi pi-cloud-upload',
-      PersonalArea: 'pi pi-user',
-      Records: 'pi pi-list',
-      MyParasha: 'pi pi-book',
+     "אזור אישי" : 'pi pi-user',
+      הקלטות: 'pi pi-list',
+    "הפרשה שלי" :'pi pi-book',
+    "ניהול משתמשים":'pi pi-users'
     };
     return (mapIcons as any)[label] || 'pi pi-circle';
   };

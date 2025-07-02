@@ -8,5 +8,8 @@
   font-size: 14px;
   font-family: "Playpen Sans Hebrew", cursive;
   font-weight: 450;
-  color: var(--p-primary-500);
+  color: var(--color-praimary);
+}
+.p-menubar-item-link{
+  font-family: 'Verela Round', sans-serif;
 }

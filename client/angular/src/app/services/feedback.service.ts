@@ -49,6 +49,11 @@ createSession(title: string, targetUserId: string): Observable<any> {
   getSessionById(id: string): Observable<Session> {
     return this.http.get<Session>(`${this.apiUrl}/${id}`);
   }
+  // feedback.service.ts
+deleteSession(id: string): Observable<any> {
+  return this.http.delete(`${this.apiUrl}/${id}`);
+}
+
 sendMessageWithAudio(sessionId: string, formData: FormData): Observable<any> {
   return this.http.put(`${this.apiUrl}/${sessionId}/messages`, formData);
 }

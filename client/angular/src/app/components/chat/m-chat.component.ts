@@ -203,7 +203,7 @@ startNewSession() {
 //   });
 // }
 createNewSession(sessionData: NewSessionData) {
-  const title = sessionData.title || 'ללא שם';
+  const title = sessionData.title || 'ללא נושא';
 
   this.feedbackService.createSession(title, sessionData.targetUserId).subscribe(newSession => {
     this.selectedSessionId = newSession._id;
@@ -484,4 +484,16 @@ private updateSessionWithNewMessage(data: any) {
 
   this.cdr.detectChanges();
 }
+deleteSession(sessionId: string) {
+  this.feedbackService.deleteSession(sessionId).subscribe(() => {
+    this.sessions = this.sessions.filter(s => s._id !== sessionId);
+
+    // אם השיחה שנבחרה נמחקה – ננקה אותה
+    if (this.selectedSessionId === sessionId) {
+      this.selectedSessionId = '';
+      this.messages = [];
+    }
+  });
+}
+
 }
