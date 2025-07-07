@@ -1,3 +1,22 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.app-wrapper {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+app-appbar {
+  height: 60px; 
+  flex-shrink: 0;
+}
+
 .page-content {
-  padding-top: 60px; /* גובה ה-navbar */
+  flex-grow: 1;
+  overflow-y: auto;
+  background: var(--color-secondary); 
 }

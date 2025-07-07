@@ -19,3 +19,15 @@
   --color-text: #000000;            /* טקסט רגיל */
   --color-muted: #4A4A4A;           /* טקסט אפור/משני */
 }
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* חשוב – לא נותן גלילה כללית */
+}
+
+app-root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}

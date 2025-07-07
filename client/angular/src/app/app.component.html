@@ -1,11 +1,10 @@
+<div class="app-wrapper">
+@if (roleService.isLoggedIn()) {
+  <app-appbar></app-appbar>
+}
 
-
-@if (roleService.isLoggedIn()) { 
-    <nav>
-    <app-appbar></app-appbar> 
-  </nav>
-  }
-  <div [style]="{background: 'var(--color-primary)'}"></div>
 <div class="page-content">
-<router-outlet></router-outlet>
+  <router-outlet></router-outlet>
 </div>
+</div>
+

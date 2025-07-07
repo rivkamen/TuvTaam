@@ -1,45 +1,4 @@
-<!-- 
-<div class="session-list">
-  <div class="session-scrollable">
-    <div *ngFor="let s of sessions; trackBy: trackBySessionId"
-         class="session-item"
-         [class.selected]="s._id === selectedSessionId"
-         (click)="onSessionSelect(s._id)">
-      <div class="session-header">
-       <div class="session-user-bar">
-  <div class="user-name">
-    {{ s.userId[0]?.username || 'שם לא זמין' }}
-    <span class="email-small">
-      ({{ s.userId[0]?.email || 'לא ידוע' }})
-    </span>
-  </div>
-        <div class="session-dates">
-     {{ s.updatedAt ? getHebrewDate(s.updatedAt) : 'תאריך עברי לא זמין' }},
-        
-          {{ s.updatedAt | date: 'HH:mm' }}
-        
-        </div>
-      </div>
-</div>
-      <div class="session-footer">
-         <div class="session-title">{{ s.title || 'ללא נושא' }}</div>
 
-  <button class="delete-btn"
-          (click)="onDeleteSession(s._id); $event.stopPropagation()">
-    <i class="pi pi-trash"></i>
-  </button> 
-
-        <div *ngIf="s.hasUnreadMessages" class="unread-badge">
-          🔴 {{ s.unreadCount || getUnreadCount(s) }}
-        </div>
- 
-      </div>
-
-    </div>
-  </div>
-
-  <button round class="new-session-btn" (click)="onNewSession()">+ שיחה חדשה</button>
-</div> -->
 <div class="session-list">
   <!-- כפתור חדש למעלה -->
   <button class="new-session-btn" (click)="onNewSession()" aria-label="שיחה חדשה">
