@@ -173,7 +173,7 @@ startNewSession() {
     this.newSessionMode = true;
   }
 createNewSession(sessionData: NewSessionData) {
-  const title = sessionData.title || 'ללא שם';
+  const title = sessionData.title || 'ללא נושא';
   const userId = this.roleService.getUserId() || 'undefined';
   this.feedbackService.createSession(title, userId).subscribe(newSession => {
     this.loadSessions(); // ← זה הפתרון

@@ -81,6 +81,9 @@ export class MessageItemComponent implements OnChanges {
     this.openedMenuId = this.openedMenuId === this.message._id ? null : this.message._id;
     this.menuToggled.emit(this.message._id);
   }
+sanitizeMessage(message: string): string {
+  return message.replace(/\n/g, '<br>');
+}
 
   @HostListener('document:click', ['$event'])
   onClickOutside(event: MouseEvent): void {

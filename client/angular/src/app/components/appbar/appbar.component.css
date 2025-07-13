@@ -8,5 +8,28 @@
   font-size: 14px;
   font-family: "Playpen Sans Hebrew", cursive;
   font-weight: 450;
-  color: var(--p-primary-500);
+  color: var(--color-praimary);
 }
+.p-menubar-item-link{
+  font-family: 'Verela Round', sans-serif;
+}
+::ng-deep .p-menubar {
+  background: var(--color-primary-light) !important;
+  border: none !important;
+}
+::ng-deep .p-button-outlined.p-button-danger {
+  color: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+}
+::ng-deep .p-button-outlined.p-button-danger:not(:disabled):hover {
+  background: var(--color-secondary) !important;
+}
+:host {
+  display: block;
+  width: 100%;
+  height: 60px; /* או הגובה האמיתי של ה-navbar שלך */
+  /* background-color: var(--color-primary);  */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* רק אם את רוצה הצללה */
+  z-index: 1;
+}
+

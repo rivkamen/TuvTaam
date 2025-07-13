@@ -3,7 +3,8 @@
     [sessions]="sessions"
     [selectedSessionId]="selectedSessionId"
     (sessionSelected)="selectSession($event)"
-    (newSessionRequested)="startNewSession()">
+    (newSessionRequested)="startNewSession()" 
+    (deleteSession)="deleteSession($event)">
   </app-session-list>
   <div class="chat-container">
     <br/><br/>

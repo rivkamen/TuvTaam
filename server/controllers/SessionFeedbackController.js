@@ -114,7 +114,7 @@ console.log(userId);
   }
 };
 const getSessions=async(req,res)=>{
-  const session = await SessionFeedback.find().populate('userId', 'email').lean();
+  const session = await SessionFeedback.find().populate('userId', 'email username').lean();
   if(!session)
   {
     res.status(500).json({ error: error.message });
@@ -236,7 +236,7 @@ const deleteSession = async (req, res) => {
   if (req.user.role==='admin') {
     for (const msg of session.messages) {
       if (msg.path) {
-        await deleteFromGCSIfExists(msg.path);
+        await deleteFromGCS(msg.path);
       }
     }
     await session.deleteOne();

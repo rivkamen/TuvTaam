@@ -184,7 +184,7 @@ toggleRecording() {
 
   createNewSession() {
     const userId = this.roleService.getUserId() || 'undefined'; // Default user ID if not found
-    const title = this.newSessionTitle || 'ללא שם';
+    const title = this.newSessionTitle || 'ללא נושא';
     const initialMessage = this.newSessionMessage.trim();
 
     this.feedbackService.createSession(userId, title).subscribe(session => {

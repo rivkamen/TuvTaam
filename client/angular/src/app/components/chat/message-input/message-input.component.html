@@ -1,8 +1,14 @@
 <div class="message-input">
-  <input [(ngModel)]="messageContent" 
-         placeholder="הקלד הודעה..." 
-         (keydown.enter)="onSendMessage()" />
-  
+  <textarea  
+    #textArea
+    [(ngModel)]="messageContent"
+    class="message-input-textarea"
+    rows="1"
+    placeholder="הקלד הודעה..."
+    (input)="autoGrow()"
+    (keydown.enter)="handleEnter($event )">
+  </textarea>
+
   <div class="start-recording" *ngIf="!isRecording && !recordedBlob">
     <button class="icon-btn record" 
             (click)="onOpenRecording()" 

@@ -1,8 +1,10 @@
+<div class="app-wrapper">
+@if (roleService.isLoggedIn()) {
+  <app-appbar></app-appbar>
+}
 
+<div class="page-content">
+  <router-outlet></router-outlet>
+</div>
+</div>
 
-@if (roleService.isLoggedIn()) { 
-    <nav>
-    <app-appbar></app-appbar> 
-  </nav>
-  }
-<router-outlet></router-outlet>

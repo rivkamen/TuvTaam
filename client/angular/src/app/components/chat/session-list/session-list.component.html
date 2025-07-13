@@ -1,24 +1,45 @@
-<div class="session-list">
-  <button *ngFor="let s of sessions; trackBy: trackBySessionId" 
-          class="session-item"
-          [class.selected]="s._id === selectedSessionId"
-          (click)="onSessionSelect(s._id)">
-    <div class="session-title" >
-      שיחה עם {{s.userId[0].email || 'לא ידוע' }}
-        <span *ngIf="s.hasUnreadMessages" class="unread-dot">  {{ getUnreadCount(s) }}
-</span>
-<span *ngIf="s.hasUnreadMessages" class="unread-dot">
-  🔴 {{ s.unreadCount || getUnreadCount(s) }}
-</span>
 
-    </div>
-    <div class="session-dates">
-<div class="hebrew-date">
-  {{ s.createdAt ? getHebrewDate(s.createdAt) : 'תאריך לא זמין' }}
-</div>
-      <div class="gregorian-date" *ngIf="s.createdAt">{{ s.createdAt | date: 'dd/MM/yyyy HH:mm' }}</div>
-    </div>
+<div class="session-list">
+  <!-- כפתור חדש למעלה -->
+  <button class="new-session-btn" (click)="onNewSession()" title="הוספת שיחה חדשה" aria-label="שיחה חדשה">
+    <i class="pi pi-plus"></i>
   </button>
-  
-  <button class="new-session-btn" (click)="onNewSession()">+ שיחה חדשה</button>
+
+  <div class="session-scrollable">
+    <div *ngFor="let s of sessions; trackBy: trackBySessionId"
+         class="session-item"
+         [class.selected]="s._id === selectedSessionId"
+         (click)="onSessionSelect(s._id)">
+         
+      <!-- שורת שם, מייל ותאריך -->
+      <div class="session-header">
+        <div class="session-user-bar">
+          <div class="user-name">
+            {{ s.userId[0]?.username || 'שם לא זמין' }}
+            <span class="email-small">
+              ({{ s.userId[0]?.email || 'לא ידוע' }})
+            </span>
+          </div>
+          <div class="session-dates">
+            {{ s.updatedAt ? getHebrewDate(s.updatedAt) : 'תאריך עברי לא זמין' }},
+            {{ s.updatedAt | date: 'HH:mm' }}
+          </div>
+        </div>
+      </div>
+
+      <!-- שורת נושא, מחיקה וקריאה -->
+      <div class="session-footer">
+        <div class="session-title">{{ s.title || 'ללא נושא' }}</div>
+
+        <button class="delete-btn" title="מחק שיחה"
+                (click)="onDeleteSession(s._id); $event.stopPropagation()">
+          <i class="pi pi-trash"></i>
+        </button>
+
+        <div *ngIf="s.hasUnreadMessages" class="unread-badge">
+          🔴 {{ s.unreadCount || getUnreadCount(s) }}
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
