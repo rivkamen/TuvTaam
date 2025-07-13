@@ -49,7 +49,7 @@
       <!-- בועה -->
       <div class="bubble" [ngClass]="{ 'deleted': message.isDeleted }">
         <ng-container *ngIf="!message.isDeleted; else deletedTemplate">
-          <div *ngIf="message.content" [innerHTML]="message.content"></div>
+          <div *ngIf="message.content" [innerHTML]="sanitizeMessage(message.content)"></div>
           <app-fancy-audio-player
             *ngIf="message.signedUrl"
             [src]="message.safeAudioUrl"
