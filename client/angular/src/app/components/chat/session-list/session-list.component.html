@@ -1,7 +1,7 @@
 
 <div class="session-list">
   <!-- כפתור חדש למעלה -->
-  <button class="new-session-btn" (click)="onNewSession()" aria-label="שיחה חדשה">
+  <button class="new-session-btn" (click)="onNewSession()" title="הוספת שיחה חדשה" aria-label="שיחה חדשה">
     <i class="pi pi-plus"></i>
   </button>
 
@@ -31,7 +31,7 @@
       <div class="session-footer">
         <div class="session-title">{{ s.title || 'ללא נושא' }}</div>
 
-        <button class="delete-btn"
+        <button class="delete-btn" title="מחק שיחה"
                 (click)="onDeleteSession(s._id); $event.stopPropagation()">
           <i class="pi pi-trash"></i>
         </button>

@@ -1,8 +1,47 @@
+<!-- <div class="message-input">
+<textarea  
+ [(ngModel)]="messageContent"
+  class="message-input-textarea"
+  [autoResize]="true"
+  rows="1"
+  cols="30"
+  height="5px"
+ pTextarea   
+  placeholder="הקלד הודעה..."
+  (keydown.enter)="onSendMessage()"></textarea>
+  <div class="start-recording" *ngIf="!isRecording && !recordedBlob">
+    <button class="icon-btn record" 
+            (click)="onOpenRecording()" 
+            title="התחל הקלטה">
+      <i class="pi pi-microphone"></i>
+    </button>
+  </div>
+
+  <button type="button" 
+          class="send-btn" 
+          (click)="onSendMessage()">
+    <i class="pi pi-send"></i>
+  </button>
+</div>
+
+<app-recording
+  *ngIf="isRecordingDialogOpen"
+  (closed)="onRecordingClosed()"
+  (audioRecorded)="onAudioRecorded($event)"
+  class="recording-dialog-overlay">
+</app-recording> -->
+
 <div class="message-input">
-  <input [(ngModel)]="messageContent" 
-         placeholder="הקלד הודעה..." 
-         (keydown.enter)="onSendMessage()" />
-  
+  <textarea  
+    #textArea
+    [(ngModel)]="messageContent"
+    class="message-input-textarea"
+    rows="1"
+    placeholder="הקלד הודעה..."
+    (input)="autoGrow()"
+    (keydown.enter)="handleEnter($event )">
+  </textarea>
+
   <div class="start-recording" *ngIf="!isRecording && !recordedBlob">
     <button class="icon-btn record" 
             (click)="onOpenRecording()" 

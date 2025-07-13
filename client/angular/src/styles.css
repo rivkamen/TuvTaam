@@ -8,7 +8,7 @@
   --color-primary-light: #c7e9ff;   /* כחול בהיר – כותרות, תפריטים */
 
   /* צבעים משניים (אפור) */
-  --color-secondary: #F5F5F5;       /* אפור בהיר – רקע כללי */
+  --color-secondary: #e3e3e3;       /* אפור בהיר – רקע כללי */
   --color-secondary-dark: #4A4A4A;  /* אפור כהה – טקסטים משניים */
 --color-secondary-light: #cacaca; /* אפור בהיר – גבולות, רקעים משניים */
   /* צבעי אזהרה/הדגשה */
@@ -18,6 +18,8 @@
   --color-surface: #ffffff;         /* רקע כללי */
   --color-text: #000000;            /* טקסט רגיל */
   --color-muted: #4A4A4A;           /* טקסט אפור/משני */
+  --p-focus-ring: #003366; /* כחול למשל */
+
 }
 html, body {
   height: 100%;

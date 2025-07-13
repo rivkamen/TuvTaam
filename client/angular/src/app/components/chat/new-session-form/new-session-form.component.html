@@ -1,38 +1,8 @@
-<!-- <div class="new-session-box" *ngIf="isVisible">
-  <input type="text" 
-         [(ngModel)]="sessionTitle" 
-         placeholder="נושא השיחה (לא חובה)" />
-  
-
-  <textarea [(ngModel)]="sessionMessage" placeholder="כתוב את ההודעה הראשונה..."></textarea>
-
-  <div class="form-buttons">
-    <p-button label="שליחה" 
-              icon="pi pi-send" 
-              (click)="onSubmit()" 
-              class="p-button-sm p-mt-2" />
-    <button (click)="onCancel()">ביטול</button>
-  </div>
-</div> -->
-
 <div class="new-session-box" *ngIf="isVisible">
   <input type="text"
          [(ngModel)]="sessionTitle"
          placeholder="נושא השיחה (לא חובה)" />
 
-  <!-- <p-dropdown
-    [options]="filteredUsers"
-    [(ngModel)]="selectedUserId"
-    optionLabel="username"
-    optionValue="_id"
-    [filter]="true"
-    [filterBy]="'username,email'"
-    placeholder="בחר משתמש"
-    (filterChange)="onFilterUsers($event)">
-    <ng-template let-user pTemplate="item">
-      {{ user.username }} ({{ user.email }})
-    </ng-template>
-  </p-dropdown> -->
 <p-dropdown
   [options]="filteredUsers"
   [(ngModel)]="selectedUserId"
@@ -56,7 +26,7 @@
     <p-button label="יצירה"
               icon="pi pi-plus"
               (click)="onSubmit()"
-              class="p-button-sm p-mt-2" />
-    <button (click)="onCancel()">ביטול</button>
+              class="create-session-button" />
+    <p-button class="cancel-session-button" (click)="onCancel()">ביטול</p-button>
   </div>
 </div>

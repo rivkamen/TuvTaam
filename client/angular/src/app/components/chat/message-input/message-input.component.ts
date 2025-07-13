@@ -1,8 +1,8 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RecordingComponent } from '../../recording/recording.component';
-
+import { TextareaModule } from 'primeng/textarea';
 export interface MessageData {
   content: string;
   audioBlob?: Blob;
@@ -11,7 +11,7 @@ export interface MessageData {
 @Component({
   selector: 'app-message-input',
   standalone: true,
-  imports: [CommonModule, FormsModule, RecordingComponent],
+  imports: [CommonModule, FormsModule, RecordingComponent,TextareaModule],
   templateUrl: './message-input.component.html',
   styleUrls: ['./message-input.component.css']
 })
@@ -20,13 +20,27 @@ export class MessageInputComponent {
   
   @Output() messageSent = new EventEmitter<MessageData>();
   @Output() recordingRequested = new EventEmitter<void>();
+//  @ViewChild('textarea') textareaRef!: ElementRef<HTMLTextAreaElement>;
+@ViewChild('textArea') textArea!: ElementRef<HTMLTextAreaElement>;
+
 
   messageContent = '';
   recordedBlob: Blob | null = null;
   isRecording = false;
   isRecordingDialogOpen = false;
+handleEnter(event: Event) {
+  const keyboardEvent = event as KeyboardEvent;
 
-  onSendMessage() {
+  if (keyboardEvent.key === 'Enter' && !keyboardEvent.shiftKey) {
+    keyboardEvent.preventDefault();
+    const textarea = this.textArea?.nativeElement;
+    this.onSendMessage(textarea);
+  }
+}
+
+
+
+  onSendMessage(textarea?: HTMLTextAreaElement) {
     if (!this.messageContent.trim() && !this.recordedBlob) return;
 
     this.messageSent.emit({
@@ -34,8 +48,12 @@ export class MessageInputComponent {
       audioBlob: this.recordedBlob || undefined
     });
 
-    this.resetInput();
-  }
+  this.resetInput();
+
+  // איפוס גובה התיבה
+  if (textarea) {
+    textarea.style.height = 'auto';
+  }  }
 
   onOpenRecording() {
     this.isRecordingDialogOpen = true;
@@ -51,8 +69,22 @@ export class MessageInputComponent {
     this.onSendMessage();
   }
 
-  private resetInput() {
-    this.messageContent = '';
-    this.recordedBlob = null;
+private resetInput() {
+  this.messageContent = '';
+  const el = this.textArea?.nativeElement;
+  if (el) {
+    el.style.height = 'auto'; // חזרה לגובה שורה אחת
   }
+  this.recordedBlob = null;
+}
+
+
+autoGrow() {
+  const textAreaEl = this.textArea?.nativeElement;
+  if (textAreaEl) {
+    textAreaEl.style.height = 'auto';
+    textAreaEl.style.height = textAreaEl.scrollHeight + 'px';
+  }
+}
+
 }
