@@ -3,7 +3,6 @@
   gap: 10px;
   margin-top: auto;
   padding-top: 10px;
-  border-top: 1px solid var(--color-primary);
 }
 .message-input input {
   flex: 1;
@@ -46,45 +45,6 @@
   align-items: center;     /* מרכז אנכית */
   z-index: 9999;
 }
-
-
-/* .message-textarea {
-  border: 1px solid #ccc;
-  border-radius: 20px;
-  padding: 0.6rem 1rem;
-  font-size: 1rem;
-  resize: none;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  width: 100%;
-  line-height: 1.4;
-} */
-
-/* .message-textarea:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-primary) 25%, transparent);
-  outline: none;
-}
-.p-inputtextarea {
-  max-height: 200px;
-  overflow-y: auto;
-} */
-.message-input-textarea {
-  width: 100%;
-  max-width: 500px;
-  font-size: 1rem;
-  padding: 0.75rem 1rem;
-  border: 2px solid var(--color-primary);
-  border-radius: 1rem;
-  background-color: white;
-  color: var(--color-primary);
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-  resize: none;
-  box-sizing: border-box;
-  margin: 0 auto;
-  display: block;
-  height: 20px important; /* גובה התחלתי */
-}
-
 .message-input-textarea:focus {
   outline: none;
   border-color: var(--color-primary-dark, var(--color-primary));
@@ -96,22 +56,7 @@
   align-items: flex-end;
   gap: 0.5rem;
   padding: 0.5rem;
-  background-color: var(--color-secondary-light);
-  border-radius: 1rem;
   max-width: 100%;
-}
-
-.message-input-textarea {
-  flex: 1;
-  resize: none;
-  overflow: hidden;
-  padding: 0.5rem 0.75rem;
-  font-size: 1rem;
-  border-radius: 1rem;
-  border: 1px solid var(--color-primary);
-  font-family: inherit;
-  width: 100%;
-  transition: border-color 0.2s;
 }
 
 .message-input-textarea:focus {
@@ -133,4 +78,24 @@
 .send-btn:hover,
 .icon-btn:hover {
   background: var(--color-primary-dark);
+}
+
+
+.message-input {
+  direction: rtl;
+}
+.message-input-textarea {
+  flex: 1;
+  width: 100%;
+  resize: none;
+  overflow: hidden;
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  border-radius: 1rem;
+  border: 1px solid var(--color-primary);
+  font-family: inherit;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+  background-color: white;
+  color: var(--color-primary);
 }
