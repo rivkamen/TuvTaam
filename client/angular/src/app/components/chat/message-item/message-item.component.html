@@ -60,6 +60,19 @@
           <div class="deleted-text">הודעה נמחקה</div>
         </ng-template>
       </div>
+<button
+  *ngIf="message.type === 'rich'"
+  (click)="downloadMessageAsHtml(message)"
+  class="download-rich-btn">
+  📥 הורד כהודעת תיקון
+</button>
+<button
+  *ngIf="message.type === 'rich'"
+  class="open-rich-btn"
+  (click)="openRichMessage(message.content)">
+  👁️ צפייה בהודעת תיקון
+</button>
+
 
       <!-- תפריט הודעה -->
       <div class="msg-menu-wrapper" *ngIf="!message.fromUser && !message.isDeleted" #menuWrapper>
@@ -77,3 +90,19 @@
     
   </ng-template>
 </div>
+<p-dialog
+  header="תצוגת הודעת תיקון"
+  [(visible)]="showRichViewer"
+  [modal]="true"
+  [style]="{ width: '70vw', maxHeight: '80vh' }"
+  [contentStyle]="{ overflow: 'auto' }"
+  [closable]="true"
+  [dismissableMask]="true"
+  (onHide)="showRichViewer = false">
+
+  <app-rich-message-view
+    [rawHtml]="richHtmlContent"
+    (closed)="showRichViewer = false">
+  </app-rich-message-view>
+
+</p-dialog>

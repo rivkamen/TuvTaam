@@ -19,7 +19,11 @@ const testRecordSchema = new mongoose.Schema({
   },
   isDeleted: { type: Boolean, default: false },
   isEdited: { type: Boolean, default: false },
-
+    type: {
+        type: String,
+        enum: ['text', 'rich'],
+        default: 'text'
+    }
 }, {
   timestamps: true
 });

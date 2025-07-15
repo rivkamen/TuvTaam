@@ -36,10 +36,12 @@
         (messageDeleted)="deleteMessage($event)"
         (menuToggled)="toggleMenu($event)">
       </app-message-list>
-      <app-message-input
-        [loading]="loading"
-        (messageSent)="sendMessage($event)">
-      </app-message-input>
+   <app-message-input
+  [loading]="loading"
+  [sessionId]="selectedSessionId"
+  (messageSent)="sendMessage($event)">
+</app-message-input>
+
     </div>
   </div>
 </div>

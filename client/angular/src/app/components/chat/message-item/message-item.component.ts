@@ -6,6 +6,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { FancyAudioPlayerComponent } from '../../audioComponent/fancy-audio-player.component';
+import { Message } from '../../../services/session.service';
+import { Router } from '@angular/router';
+import { RichMessageViewComponent } from '../rich-message-view/rich-message-view.component';
+import { DialogModule } from 'primeng/dialog';
 
 export interface MessageEditData {
   messageId: string;
@@ -15,7 +19,7 @@ export interface MessageEditData {
 @Component({
   selector: 'app-message-item',
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonModule, FancyAudioPlayerComponent],
+  imports: [CommonModule, FormsModule, ButtonModule, FancyAudioPlayerComponent,RichMessageViewComponent,DialogModule],
   templateUrl: './message-item.component.html',
   styleUrls: ['./message-item.component.css']
 })
@@ -33,8 +37,19 @@ export class MessageItemComponent implements OnChanges {
 
   localEditedContent: string = '';
   openedMenuId: string | null = null;
+showRichViewer: boolean = false;
+richHtmlContent: string = '';
 
-  constructor(private elementRef: ElementRef) {}
+  constructor(private elementRef: ElementRef, private router: Router) {}
+
+
+
+openRichMessage(content: string) {
+  this.richHtmlContent = content;
+  this.showRichViewer = true;
+}
+
+
 
   ngOnInit() {
     this.localEditedContent = this.message?.content || '';
@@ -69,6 +84,18 @@ export class MessageItemComponent implements OnChanges {
     console.log(...args);
     return true;
   }
+downloadMessageAsHtml(message: Message) {
+  const blob = new Blob(
+    [`<html><head><meta charset="UTF-8"><title>תיקון</title></head><body>${message.content}</body></html>`],
+    { type: 'text/html;charset=utf-8' }
+  );
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'תיקון-לתלמיד.html';
+  link.click();
+  URL.revokeObjectURL(url);
+}
 
   deleteMessage() {
     if (confirm('האם למחוק את ההודעה?')) {

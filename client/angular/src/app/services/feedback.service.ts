@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../environments/environment';
 import { SafeUrl } from '@angular/platform-browser';
+export type MessageType = 'text' | 'rich';
 
 export interface Message {
   _id?: string;
@@ -11,7 +12,8 @@ export interface Message {
   updatedAt?: string;
   signedUrl?: string;
   safeAudioUrl?: SafeUrl;
-  isRead?: boolean; 
+  type?: string;
+  isRead?: boolean;
   isEdited?: boolean;
 isDeleted?: boolean; // הוסף שדה זה
 }
