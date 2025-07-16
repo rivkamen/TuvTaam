@@ -10,6 +10,7 @@ import { Message } from '../../../services/session.service';
 import { Router } from '@angular/router';
 import { RichMessageViewComponent } from '../rich-message-view/rich-message-view.component';
 import { DialogModule } from 'primeng/dialog';
+import { RichNoteComponent } from '../rich-note/rich-note.component';
 
 export interface MessageEditData {
   messageId: string;
@@ -19,7 +20,7 @@ export interface MessageEditData {
 @Component({
   selector: 'app-message-item',
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonModule, FancyAudioPlayerComponent,RichMessageViewComponent,DialogModule],
+  imports: [CommonModule, FormsModule, ButtonModule, FancyAudioPlayerComponent,RichMessageViewComponent,DialogModule,RichNoteComponent],
   templateUrl: './message-item.component.html',
   styleUrls: ['./message-item.component.css']
 })
@@ -27,6 +28,7 @@ export class MessageItemComponent implements OnChanges {
   @Input() message: any;
   @Input() isEditing: boolean = false;
   @Input() editedContent: string = '';
+@Input() sessionId!: string;
 
   @Output() editStarted = new EventEmitter<any>();
   @Output() editSaved = new EventEmitter<MessageEditData>();
@@ -39,6 +41,7 @@ export class MessageItemComponent implements OnChanges {
   openedMenuId: string | null = null;
 showRichViewer: boolean = false;
 richHtmlContent: string = '';
+hoveredMessageId: string | null = null;
 
   constructor(private elementRef: ElementRef, private router: Router) {}
 

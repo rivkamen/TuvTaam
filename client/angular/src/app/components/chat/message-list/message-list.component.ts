@@ -13,7 +13,7 @@ export interface MessageEditData {
   selector: 'app-message-list',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, ScrollPanelModule, MessageItemComponent],
+  imports: [CommonModule, ScrollPanelModule, MessageItemComponent, MessageItemComponent],
   templateUrl: './message-list.component.html',
   styleUrls: ['./message-list.component.css']
 })
@@ -35,11 +35,21 @@ export class MessageListComponent implements OnChanges, AfterViewInit  {
 @ViewChild('scrollPanel') scrollPanelRef!: ScrollPanel;
 @ViewChildren('unreadDivider') unreadDividers!: QueryList<ElementRef>;
 @Input() firstUnreadIndex: number | null = null;
+@Output() openRichNoteRequested = new EventEmitter<{ messageId: string, content: string }>();
+@Output() richNoteEditRequested = new EventEmitter<{ messageId: string; content: string }>();
+
+
 showScrollToBottom = false;
 
   editedMessageContent: string = '';
+isNoteEditorOpen: boolean = false;
+richEditorMessageId: string | null = null;
+richEditorHtmlContent: string = '';
 
 
+onOpenRichNote(event: { messageId: string; content: string }) {
+  this.richNoteEditRequested.emit(event); // העברה לסבא
+}
 ngOnChanges(changes: SimpleChanges) {
 
  if (changes['messages'] && this.messages.length > 0) {

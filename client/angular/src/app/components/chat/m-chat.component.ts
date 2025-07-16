@@ -495,5 +495,21 @@ deleteSession(sessionId: string) {
     }
   });
 }
+noteEditorOpen = false;
+noteMessageId: string = '';
+noteMessageContent: string = '';
+
+handleRichNoteEdit(event: { messageId: string; content: string }) {
+  this.noteEditorOpen = true;
+  this.noteMessageId = event.messageId;
+  this.noteMessageContent = event.content;
+}
+
+onRichNoteSubmitted(event: { id: string; html: string }) {
+  this.feedbackService.updateMessage(this.selectedSessionId, event.id, { content: event.html }).subscribe(() => {
+    this.loadMessages(); // רענון ההודעות
+    this.noteEditorOpen = false;
+  });
+}
 
 }

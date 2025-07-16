@@ -1,3 +1,4 @@
+
 import { Component, ViewChild, ElementRef, Input, Output, EventEmitter } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -14,6 +15,8 @@ export class RichNoteComponent {
   @ViewChild('editor') editorRef!: ElementRef<HTMLDivElement>;
   @Input() sessionId!: string;
   @Output() closed = new EventEmitter<void>();
+@Input() htmlContent: string = '';
+@Output() htmlContentChange = new EventEmitter<string>();
 
   activeTab: 'basic' | 'table' = 'basic';
   tableRows = 2;
@@ -26,6 +29,11 @@ export class RichNoteComponent {
   execCommand(command: string) {
     document.execCommand(command, false, '');
   }
+ngAfterViewInit() {
+  if (this.htmlContent && this.editorRef) {
+    this.editorRef.nativeElement.innerHTML = this.htmlContent;
+  }
+}
 
   execCommandWithArg(command: string, arg: string) {
     document.execCommand(command, false, arg);
@@ -139,12 +147,12 @@ insertTable() {
         padding: 8px;
         vertical-align: top;
         min-width: 100px;
-      ">&nbsp;</td>`;
+      ">&nbsp;</td>;`
     }
     table += '</tr>';
   }
 
-  table += '</table><br/>';
+  table += `'</table><br/>'`;
   this.execCommandWithArg('insertHTML', table);
 }
 
@@ -176,14 +184,13 @@ insertTable() {
 
   downloadAsHtml() {
     const content = this.editorRef.nativeElement.innerHTML;
-    const fullHtml = `
-      <html dir="rtl" lang="he">
+    const fullHtml = 
+      `<html dir="rtl" lang="he">
         <head><meta charset="UTF-8"></head>
         <body style="direction: rtl; text-align: right;">
           ${content}
         </body>
-      </html>
-    `;
+      </html>`;
     const blob = new Blob([fullHtml], { type: 'text/html;charset=utf-8' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);

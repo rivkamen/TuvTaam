@@ -34,7 +34,8 @@
         (editSaved)="saveEdit($event)"
         (editCancelled)="cancelEdit()"
         (messageDeleted)="deleteMessage($event)"
-        (menuToggled)="toggleMenu($event)">
+        (menuToggled)="toggleMenu($event)"
+        (richNoteEditRequested)="handleRichNoteEdit($event)">
       </app-message-list>
    <app-message-input
   [loading]="loading"

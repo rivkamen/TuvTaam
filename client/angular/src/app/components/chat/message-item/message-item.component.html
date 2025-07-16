@@ -2,7 +2,7 @@
 <div class="message-item-wrapper" [ngClass]="message.fromUser ? 'admin' : 'user'">
 
   <!-- עריכה -->
-  <div *ngIf="isEditing; else showMessage" class="edit-message-container">
+  <!-- <div *ngIf="isEditing; else showMessage" class="edit-message-container">
     <textarea
       pInputTextarea
       [(ngModel)]="localEditedContent"
@@ -31,7 +31,53 @@
         (click)="cancelEdit()">
       </button>
     </div>
-  </div>
+  </div> -->
+<div *ngIf="isEditing; else showMessage" class="edit-message-container">
+
+  <!-- עריכה של rich -->
+<app-rich-note
+  *ngIf="isEditing"
+  [sessionId]="sessionId"
+  [htmlContent]="localEditedContent"
+  (htmlContentChange)="localEditedContent = $event"
+  (closed)="cancelEdit()"
+  class="note-dialog-overlay">
+</app-rich-note>
+
+
+  <!-- עריכה רגילה -->
+  <ng-template #normalEdit>
+    <textarea
+      pInputTextarea
+      [(ngModel)]="localEditedContent"
+      rows="3"
+      autoResize="true"
+      placeholder="ערוך את ההודעה שלך..."
+      class="edit-textarea">
+    </textarea>
+
+    <div class="edit-buttons">
+      <button
+        pButton
+        type="button"
+        label="שמירה"
+        icon="pi pi-check"
+        class="p-button p-button-success save-btn"
+        (click)="saveEdit()">
+      </button>
+
+      <button
+        pButton
+        type="button"
+        label="ביטול"
+        icon="pi pi-times"
+        class="p-button p-button-secondary cancel-btn"
+        (click)="cancelEdit()">
+      </button>
+    </div>
+  </ng-template>
+
+</div>
 
   <!-- תצוגת הודעה רגילה -->
   <ng-template #showMessage>
@@ -45,11 +91,31 @@
     </div>
 
     <!-- בועה + תפריט ⋮ בשורה אחת -->
-    <div class="message-content-row">
+    <div class="message-content-row" (mouseenter)="hoveredMessageId = message._id"
+     (mouseleave)="hoveredMessageId = null">
       <!-- בועה -->
       <div class="bubble" [ngClass]="{ 'deleted': message.isDeleted }">
+        <div class="word-badge" *ngIf="message.type === 'rich'">
+  <i class="pi pi-file-word"></i> Word
+</div>
+
         <ng-container *ngIf="!message.isDeleted; else deletedTemplate">
-          <div *ngIf="message.content" [innerHTML]="sanitizeMessage(message.content)"></div>
+          <div *ngIf="message.content && message.type !== 'rich'" [innerHTML]="sanitizeMessage(message.content)"></div>
+          <div
+  *ngIf="message.content && message.type === 'rich'"
+  class="rich-message-preview"
+  [innerHTML]="sanitizeMessage(message.content)"
+  (dblclick)="openRichMessage(message.content)">
+</div>
+
+<div *ngIf="message.content && message.type !== 'rich'" [innerHTML]="sanitizeMessage(message.content)">
+</div>
+  <div
+    *ngIf="hoveredMessageId === message._id && message.type === 'rich'"
+    class="rich-hint"
+  >
+    🛈 לצפייה לחץ פעמיים
+  </div>
           <app-fancy-audio-player
             *ngIf="message.signedUrl"
             [src]="message.safeAudioUrl"
@@ -60,18 +126,7 @@
           <div class="deleted-text">הודעה נמחקה</div>
         </ng-template>
       </div>
-<button
-  *ngIf="message.type === 'rich'"
-  (click)="downloadMessageAsHtml(message)"
-  class="download-rich-btn">
-  📥 הורד כהודעת תיקון
-</button>
-<button
-  *ngIf="message.type === 'rich'"
-  class="open-rich-btn"
-  (click)="openRichMessage(message.content)">
-  👁️ צפייה בהודעת תיקון
-</button>
+
 
 
       <!-- תפריט הודעה -->
@@ -89,6 +144,7 @@
     </div>
     
   </ng-template>
+
 </div>
 <p-dialog
   header="תצוגת הודעת תיקון"
@@ -106,3 +162,5 @@
   </app-rich-message-view>
 
 </p-dialog>
+
+
