@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RecordingComponent } from '../../recording/recording.component';
 import { TextareaModule } from 'primeng/textarea';
 import { RichNoteComponent } from '../rich-note/rich-note.component';
+import { Message } from '../../../services/session.service';
 export interface MessageData {
   content: string;
   audioBlob?: Blob;
@@ -25,6 +26,7 @@ export class MessageInputComponent {
 @ViewChild('textArea') textArea!: ElementRef<HTMLTextAreaElement>;
 
 @Input() sessionId!: string;
+@Input() editingMessage: Message | null = null;
 
   messageContent = '';
   recordedBlob: Blob | null = null;

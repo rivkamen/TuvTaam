@@ -36,6 +36,7 @@ export class MessageItemComponent implements OnChanges {
   @Output() messageDeleted = new EventEmitter<string>();
   @Output() menuToggled = new EventEmitter<string>();
   @Input() editMessageId: string | null = null;
+@Input() editingMessage?: { _id?: string };
 
   localEditedContent: string = '';
   openedMenuId: string | null = null;

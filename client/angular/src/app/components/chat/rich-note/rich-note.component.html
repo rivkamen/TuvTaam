@@ -1,6 +1,5 @@
 <div class="note-wrapper">
   <button class="close-btn" (click)="closed.emit()" title="סגור">❌</button>
-
   <!-- Tabs -->
   <div class="tabs">
     <button [class.active]="activeTab === 'basic'" (click)="activeTab = 'basic'">📝 טקסט</button>
@@ -35,14 +34,16 @@
   <button (click)="deleteColumn()">🗑️ מחק עמודה</button>
   <button (click)="deleteTable()">❌ מחק טבלה</button>
 </div>
-
     <button (click)="insertTable()">✅ צור טבלה</button>
   </div>
-
   <!-- אזור העריכה -->
   <div #editor class="editor" contenteditable="true" placeholder="כתוב כאן את ההערות לתלמיד..."></div>
 
   <!-- כפתורי פעולה -->
   <button class="download-btn" (click)="downloadAsHtml()">📄 הורד כקובץ</button>
-  <button class="send-btn" (click)="sendRichMessage()">📤 שלח לתלמיד</button>
+  <!-- <button class="send-btn" (click)="sendRichMessage()">📤 שלח לתלמיד</button> -->
+  <button class="send-btn" (click)="submitRichMessage()">
+  {{ editingMessage ? '💾 שמור שינויים' : '📤 שלח לתלמיד' }}
+</button>
+
 </div>

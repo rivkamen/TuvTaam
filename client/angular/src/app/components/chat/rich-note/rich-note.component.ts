@@ -1,8 +1,9 @@
 
-import { Component, ViewChild, ElementRef, Input, Output, EventEmitter } from '@angular/core';
+import { Component, ViewChild, ElementRef, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FeedbackService } from '../../../services/feedback.service';
+import { Message } from '../../../services/session.service';
 
 @Component({
   selector: 'app-rich-note',
@@ -17,6 +18,7 @@ export class RichNoteComponent {
   @Output() closed = new EventEmitter<void>();
 @Input() htmlContent: string = '';
 @Output() htmlContentChange = new EventEmitter<string>();
+@Input() editingMessage: Message | null | undefined = null;
 
   activeTab: 'basic' | 'table' = 'basic';
   tableRows = 2;
@@ -34,7 +36,11 @@ ngAfterViewInit() {
     this.editorRef.nativeElement.innerHTML = this.htmlContent;
   }
 }
-
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['editingMessage']) {
+      console.log('📌 editingMessage השתנה:', changes['editingMessage'].currentValue);
+    }
+  }
   execCommandWithArg(command: string, arg: string) {
     document.execCommand(command, false, arg);
   }
@@ -152,19 +158,66 @@ insertTable() {
     table += '</tr>';
   }
 
-  table += `'</table><br/>'`;
+  table += '</table><br/>';
   this.execCommandWithArg('insertHTML', table);
 }
 
-  sendRichMessage() {
-    const rawHtml = this.editorRef.nativeElement.innerHTML.trim();
-    const textOnly = this.editorRef.nativeElement.innerText.trim();
+  // sendRichMessage() {
+  //   const rawHtml = this.editorRef.nativeElement.innerHTML.trim();
+  //   const textOnly = this.editorRef.nativeElement.innerText.trim();
 
-    if (!textOnly) {
-      alert("לא ניתן לשלוח הודעה ריקה");
-      return;
-    }
+  //   if (!textOnly) {
+  //     alert("לא ניתן לשלוח הודעה ריקה");
+  //     return;
+  //   }
 
+  //   const formData = new FormData();
+  //   formData.append('content', rawHtml);
+  //   formData.append('type', 'rich');
+  //   formData.append('fromUser', 'false');
+
+  //   this.feedbackService.sendMessageWithAudio(this.sessionId, formData).subscribe({
+  //     next: () => {
+  //       console.log('%c💬 הודעה עשירה נשלחה!', 'color: purple; font-weight: bold;');
+  //       this.editorRef.nativeElement.innerHTML = '';
+  //       this.closed.emit();
+  //     },
+  //     error: err => {
+  //       console.error('%cשגיאה בשליחה', 'color: red;', err);
+  //     }
+  //   });
+  // }
+submitRichMessage() {
+  const rawHtml = this.editorRef.nativeElement.innerHTML.trim();
+  const textOnly = this.editorRef.nativeElement.innerText.trim();
+
+  if (!textOnly) {
+    alert("לא ניתן לשלוח הודעה ריקה");
+    return;
+  }
+
+if (this.editingMessage && this.editingMessage._id) {
+  console.log("yes, editingMessage is set:", this.editingMessage, this.editingMessage._id);
+  
+    // עדכון הודעה קיימת
+    this.feedbackService.updateMessage(
+      this.sessionId,
+      this.editingMessage._id,
+      { content: rawHtml }
+    ).subscribe({
+      next: () => {
+        console.log('%c✏️ הודעה נערכה בהצלחה!', 'color: teal; font-weight: bold;');
+        this.editorRef.nativeElement.innerHTML = '';
+        this.closed.emit();
+      },
+      error: err => {
+        console.error('%cשגיאה בעדכון ההודעה', 'color: red;', err);
+      }
+    });
+  } else {
+    console.log("elsee");
+
+    // יצירת הודעה חדשה
     const formData = new FormData();
     formData.append('content', rawHtml);
     formData.append('type', 'rich');
@@ -172,7 +225,7 @@ insertTable() {
 
     this.feedbackService.sendMessageWithAudio(this.sessionId, formData).subscribe({
       next: () => {
-        console.log('%c💬 הודעה עשירה נשלחה!', 'color: purple; font-weight: bold;');
+        console.log('%c💬 הודעה חדשה נשלחה!', 'color: purple; font-weight: bold;');
         this.editorRef.nativeElement.innerHTML = '';
         this.closed.emit();
       },
@@ -181,6 +234,7 @@ insertTable() {
       }
     });
   }
+}
 
   downloadAsHtml() {
     const content = this.editorRef.nativeElement.innerHTML;

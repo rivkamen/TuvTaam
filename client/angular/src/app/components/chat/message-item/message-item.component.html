@@ -34,19 +34,60 @@
   </div> -->
 <div *ngIf="isEditing; else showMessage" class="edit-message-container">
 
-  <!-- עריכה של rich -->
 <app-rich-note
-  *ngIf="isEditing"
+  *ngIf="isEditing && message?.type === 'rich'"
   [sessionId]="sessionId"
   [htmlContent]="localEditedContent"
+  [editingMessage]="editingMessage" 
   (htmlContentChange)="localEditedContent = $event"
   (closed)="cancelEdit()"
   class="note-dialog-overlay">
 </app-rich-note>
 
-
   <!-- עריכה רגילה -->
-  <ng-template #normalEdit>
+   <ng-container *ngIf="isEditing && message?.type !== 'rich'; else richEdit">
+  <textarea
+    pInputTextarea
+    [(ngModel)]="localEditedContent"
+    rows="3"
+    autoResize="true"
+    placeholder="ערוך את ההודעה שלך..."
+    class="edit-textarea">
+  </textarea>
+
+  <div class="edit-buttons">
+    <button
+      pButton
+      type="button"
+      label="שמירה"
+      icon="pi pi-check"
+      class="p-button p-button-success save-btn"
+      (click)="saveEdit()">
+    </button>
+
+    <button
+      pButton
+      type="button"
+      label="ביטול"
+      icon="pi pi-times"
+      class="p-button p-button-secondary cancel-btn"
+      (click)="cancelEdit()">
+    </button>
+  </div>
+</ng-container>
+
+<ng-template #richEdit>
+  <app-rich-note
+    [sessionId]="sessionId"
+    [htmlContent]="localEditedContent"
+    [editingMessage]="editingMessage"
+    (htmlContentChange)="localEditedContent = $event"
+    (closed)="cancelEdit()"
+    class="note-dialog-overlay">
+  </app-rich-note>
+</ng-template>
+
+<!-- <ng-container *ngIf="isEditing && message?.type !== 'rich'; else richEdit">
     <textarea
       pInputTextarea
       [(ngModel)]="localEditedContent"
@@ -75,7 +116,7 @@
         (click)="cancelEdit()">
       </button>
     </div>
-  </ng-template>
+  </ng-template> -->
 
 </div>
 
