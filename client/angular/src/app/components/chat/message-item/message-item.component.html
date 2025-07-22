@@ -1,7 +1,6 @@
 
 <div class="message-item-wrapper" [ngClass]="message.fromUser ? 'admin' : 'user'">
 
-  <!-- עריכה -->
   <!-- <div *ngIf="isEditing; else showMessage" class="edit-message-container">
     <textarea
       pInputTextarea
@@ -31,20 +30,9 @@
         (click)="cancelEdit()">
       </button>
     </div>
-  </div> -->
+  </div>
 <div *ngIf="isEditing; else showMessage" class="edit-message-container">
 
-<app-rich-note
-  *ngIf="isEditing && message?.type === 'rich'"
-  [sessionId]="sessionId"
-  [htmlContent]="localEditedContent"
-  [editingMessage]="editingMessage" 
-  (htmlContentChange)="localEditedContent = $event"
-  (closed)="cancelEdit()"
-  class="note-dialog-overlay">
-</app-rich-note>
-
-  <!-- עריכה רגילה -->
    <ng-container *ngIf="isEditing && message?.type !== 'rich'; else richEdit">
   <textarea
     pInputTextarea
@@ -80,14 +68,14 @@
   <app-rich-note
     [sessionId]="sessionId"
     [htmlContent]="localEditedContent"
-    [editingMessage]="editingMessage"
     (htmlContentChange)="localEditedContent = $event"
     (closed)="cancelEdit()"
     class="note-dialog-overlay">
   </app-rich-note>
-</ng-template>
+</ng-template> -->
 
-<!-- <ng-container *ngIf="isEditing && message?.type !== 'rich'; else richEdit">
+<div *ngIf="isEditing; else showMessage" class="edit-message-container">
+  <ng-container *ngIf="message?.type !== 'rich'; else richEdit">
     <textarea
       pInputTextarea
       [(ngModel)]="localEditedContent"
@@ -116,9 +104,20 @@
         (click)="cancelEdit()">
       </button>
     </div>
-  </ng-template> -->
+  </ng-container>
 
+  <ng-template #richEdit>
+    <app-rich-note
+      [sessionId]="sessionId"
+      [htmlContent]="localEditedContent"
+      (htmlContentChange)="localEditedContent = $event"
+      (closed)="cancelEdit()"
+      class="note-dialog-overlay">
+    </app-rich-note>
+  </ng-template>
 </div>
+
+<!-- </div> -->
 
   <!-- תצוגת הודעה רגילה -->
   <ng-template #showMessage>
@@ -141,7 +140,6 @@
 </div>
 
         <ng-container *ngIf="!message.isDeleted; else deletedTemplate">
-          <div *ngIf="message.content && message.type !== 'rich'" [innerHTML]="sanitizeMessage(message.content)"></div>
           <div
   *ngIf="message.content && message.type === 'rich'"
   class="rich-message-preview"
