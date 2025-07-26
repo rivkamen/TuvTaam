@@ -19,6 +19,7 @@ export class RichNoteComponent {
 @Input() htmlContent: string = '';
 @Output() htmlContentChange = new EventEmitter<string>();
 @Input() editingMessage: Message | null | undefined = null;
+@Output() saved = new EventEmitter<void>();
 
   activeTab: 'basic' | 'table' = 'basic';
   tableRows = 2;
@@ -197,23 +198,15 @@ submitRichMessage() {
   }
 
 if (this.editingMessage && this.editingMessage._id) {
+  console.log("dfdfdf");
+  
   console.log("yes, editingMessage is set:", this.editingMessage, this.editingMessage._id);
   
     // עדכון הודעה קיימת
-    this.feedbackService.updateMessage(
-      this.sessionId,
-      this.editingMessage._id,
-      { content: rawHtml }
-    ).subscribe({
-      next: () => {
-        console.log('%c✏️ הודעה נערכה בהצלחה!', 'color: teal; font-weight: bold;');
-        this.editorRef.nativeElement.innerHTML = '';
-        this.closed.emit();
-      },
-      error: err => {
-        console.error('%cשגיאה בעדכון ההודעה', 'color: red;', err);
-      }
-    });
+  this.htmlContentChange.emit(this.editorRef.nativeElement.innerHTML);
+
+  // קריאה לפונקציה מההורה (לשמור)
+  this.saved.emit();
   } else {
     console.log("elsee");
 
@@ -252,4 +245,11 @@ if (this.editingMessage && this.editingMessage._id) {
     link.click();
     URL.revokeObjectURL(link.href);
   }
+//   submitRichMessage() {
+//   // שליחת התוכן למעלה
+//   this.htmlContentChange.emit(this.editor.nativeElement.innerHTML);
+
+//   // קריאה לפונקציה מההורה (לשמור)
+//   this.saved.emit();
+// }
 }

@@ -36,7 +36,7 @@ export class MessageItemComponent implements OnChanges {
   @Output() messageDeleted = new EventEmitter<string>();
   @Output() menuToggled = new EventEmitter<string>();
   @Input() editMessageId: string | null = null;
-@Input() editingMessage?: { _id?: string };
+editingMessage: Message | null = null;
 
   localEditedContent: string = '';
   openedMenuId: string | null = null;
@@ -46,7 +46,10 @@ hoveredMessageId: string | null = null;
 
   constructor(private elementRef: ElementRef, private router: Router) {}
 
-
+// startEdit(message: Message) {
+//   this.localEditedContent = message.content;
+//   this.selectedMessage = message;
+// }
 
 openRichMessage(content: string) {
   this.richHtmlContent = content;
@@ -66,11 +69,17 @@ openRichMessage(content: string) {
     }
   }
 
-  startEdit() {
-    this.localEditedContent = this.message?.content || '';
-    this.editStarted.emit(this.message);
-    this.openedMenuId = null;
-  }
+  // startEdit() {
+  //   this.localEditedContent = this.message?.content || '';
+  //   this.editStarted.emit(this.message);
+  //   this.openedMenuId = null;
+  // }
+startEdit() {
+  this.localEditedContent = this.message?.content || '';
+  this.editingMessage = this.message; // 🔧 הוספה חשובה!
+  this.editStarted.emit(this.message);
+  this.openedMenuId = null;
+}
 
   saveEdit() {
     this.editSaved.emit({
@@ -79,10 +88,15 @@ openRichMessage(content: string) {
     });
   }
 
-  cancelEdit() {
-    this.localEditedContent = this.message?.content || '';
-    this.editCancelled.emit();
-  }
+  // cancelEdit() {
+  //   this.localEditedContent = this.message?.content || '';
+  //   this.editCancelled.emit();
+  // }
+cancelEdit() {
+  this.localEditedContent = this.message?.content || '';
+  this.editingMessage = null;
+  this.editCancelled.emit();
+}
 
   log(...args: any[]) {
     console.log(...args);

@@ -76,6 +76,9 @@ uploadAudioWithBackup(formData: FormData) {
 }
 
 updateMessage(id: string,messageId:string, data: { content: string }) {
+  alert("updateMessage");
+  console.log(id);
+  
   return this.http.put(`${this.apiUrl}/${id}/messages/${messageId}`, data);
 }
 

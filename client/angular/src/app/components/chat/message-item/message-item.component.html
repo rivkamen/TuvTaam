@@ -1,79 +1,6 @@
 
 <div class="message-item-wrapper" [ngClass]="message.fromUser ? 'admin' : 'user'">
 
-  <!-- <div *ngIf="isEditing; else showMessage" class="edit-message-container">
-    <textarea
-      pInputTextarea
-      [(ngModel)]="localEditedContent"
-      rows="3"
-      autoResize="true"
-      placeholder="ערוך את ההודעה שלך..."
-      class="edit-textarea">
-    </textarea>
-
-    <div class="edit-buttons">
-      <button
-        pButton
-        type="button"
-        label="שמירה"
-        icon="pi pi-check"
-        class="p-button p-button-success save-btn"
-        (click)="saveEdit()">
-      </button>
-
-      <button
-        pButton
-        type="button"
-        label="ביטול"
-        icon="pi pi-times"
-        class="p-button p-button-secondary cancel-btn"
-        (click)="cancelEdit()">
-      </button>
-    </div>
-  </div>
-<div *ngIf="isEditing; else showMessage" class="edit-message-container">
-
-   <ng-container *ngIf="isEditing && message?.type !== 'rich'; else richEdit">
-  <textarea
-    pInputTextarea
-    [(ngModel)]="localEditedContent"
-    rows="3"
-    autoResize="true"
-    placeholder="ערוך את ההודעה שלך..."
-    class="edit-textarea">
-  </textarea>
-
-  <div class="edit-buttons">
-    <button
-      pButton
-      type="button"
-      label="שמירה"
-      icon="pi pi-check"
-      class="p-button p-button-success save-btn"
-      (click)="saveEdit()">
-    </button>
-
-    <button
-      pButton
-      type="button"
-      label="ביטול"
-      icon="pi pi-times"
-      class="p-button p-button-secondary cancel-btn"
-      (click)="cancelEdit()">
-    </button>
-  </div>
-</ng-container>
-
-<ng-template #richEdit>
-  <app-rich-note
-    [sessionId]="sessionId"
-    [htmlContent]="localEditedContent"
-    (htmlContentChange)="localEditedContent = $event"
-    (closed)="cancelEdit()"
-    class="note-dialog-overlay">
-  </app-rich-note>
-</ng-template> -->
-
 <div *ngIf="isEditing; else showMessage" class="edit-message-container">
   <ng-container *ngIf="message?.type !== 'rich'; else richEdit">
     <textarea
@@ -107,13 +34,23 @@
   </ng-container>
 
   <ng-template #richEdit>
-    <app-rich-note
+    <!-- <app-rich-note
       [sessionId]="sessionId"
       [htmlContent]="localEditedContent"
       (htmlContentChange)="localEditedContent = $event"
       (closed)="cancelEdit()"
       class="note-dialog-overlay">
-    </app-rich-note>
+    </app-rich-note> -->
+    <app-rich-note
+  [sessionId]="sessionId"
+  [editingMessage]="editingMessage"
+  [htmlContent]="localEditedContent"
+  (htmlContentChange)="localEditedContent = $event"
+  (closed)="cancelEdit()"
+  (saved)="saveEdit()"
+  class="note-dialog-overlay">
+</app-rich-note>
+
   </ng-template>
 </div>
 
