@@ -1,8 +1,8 @@
 
 <div class="message-item-wrapper" [ngClass]="message.fromUser ? 'admin' : 'user'">
 
-  <!-- עריכה -->
-  <div *ngIf="isEditing; else showMessage" class="edit-message-container">
+<div *ngIf="isEditing; else showMessage" class="edit-message-container">
+  <ng-container *ngIf="message?.type !== 'rich'; else richEdit">
     <textarea
       pInputTextarea
       [(ngModel)]="localEditedContent"
@@ -31,12 +31,26 @@
         (click)="cancelEdit()">
       </button>
     </div>
-  </div>
+  </ng-container>
 
-  <!-- תצוגת הודעה רגילה -->
+  <ng-template #richEdit>
+
+    <app-rich-note
+  [sessionId]="sessionId"
+  [editingMessage]="editingMessage"
+  [htmlContent]="localEditedContent"
+  (htmlContentChange)="localEditedContent = $event"
+  (closed)="cancelEdit()"
+  (saved)="saveEdit()"
+  class="note-dialog-overlay">
+</app-rich-note>
+
+  </ng-template>
+</div>
+
+
   <ng-template #showMessage>
     
-    <!-- שורת שעה וסטטוס "נערכה" -->
     <div class="message-meta">
       <span>{{ message.updatedAt | date:'HH:mm' }}</span>
       <span *ngIf="message.isEdited" class="edited-label">
@@ -44,12 +58,29 @@
       </span>
     </div>
 
-    <!-- בועה + תפריט ⋮ בשורה אחת -->
-    <div class="message-content-row">
-      <!-- בועה -->
+    <div class="message-content-row" (mouseenter)="hoveredMessageId = message._id"
+     (mouseleave)="hoveredMessageId = null">
       <div class="bubble" [ngClass]="{ 'deleted': message.isDeleted }">
+        <div class="word-badge" *ngIf="message.type === 'rich'">
+  <i class="pi pi-file-word"></i> Word
+</div>
+
         <ng-container *ngIf="!message.isDeleted; else deletedTemplate">
-          <div *ngIf="message.content" [innerHTML]="sanitizeMessage(message.content)"></div>
+          <div
+  *ngIf="message.content && message.type === 'rich'"
+  class="rich-message-preview"
+  [innerHTML]="sanitizeMessage(message.content)"
+  (dblclick)="openRichMessage(message.content)">
+</div>
+
+<div *ngIf="message.content && message.type !== 'rich'" [innerHTML]="sanitizeMessage(message.content)">
+</div>
+  <div
+    *ngIf="hoveredMessageId === message._id && message.type === 'rich'"
+    class="rich-hint"
+  >
+    🛈 לצפייה לחץ פעמיים
+  </div>
           <app-fancy-audio-player
             *ngIf="message.signedUrl"
             [src]="message.safeAudioUrl"
@@ -61,7 +92,8 @@
         </ng-template>
       </div>
 
-      <!-- תפריט הודעה -->
+
+
       <div class="msg-menu-wrapper" *ngIf="!message.fromUser && !message.isDeleted" #menuWrapper>
         <button class="menu-toggle-btn" (click)="toggleMenu()">⋮</button>
         <div class="msg-menu-modern" *ngIf="openedMenuId === message._id">
@@ -76,4 +108,23 @@
     </div>
     
   </ng-template>
+
 </div>
+<p-dialog
+  header="תצוגת הודעת תיקון"
+  [(visible)]="showRichViewer"
+  [modal]="true"
+  [style]="{ width: '70vw', maxHeight: '80vh' }"
+  [contentStyle]="{ overflow: 'auto' }"
+  [closable]="true"
+  [dismissableMask]="true"
+  (onHide)="showRichViewer = false">
+
+  <app-rich-message-view
+    [rawHtml]="richHtmlContent"
+    (closed)="showRichViewer = false">
+  </app-rich-message-view>
+
+</p-dialog>
+
+

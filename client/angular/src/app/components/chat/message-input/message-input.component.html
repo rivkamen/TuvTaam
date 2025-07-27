@@ -16,7 +16,11 @@
       <i class="pi pi-microphone"></i>
     </button>
   </div>
-
+<button class="icon-btn note"
+          (click)="onOpenNoteEditor()"
+          title="כתוב תיקון לתלמיד">
+    <i class="pi pi-file-edit"></i>
+  </button>
   <button type="button" 
           class="send-btn" 
           (click)="onSendMessage()">
@@ -30,3 +34,10 @@
   (audioRecorded)="onAudioRecorded($event)"
   class="recording-dialog-overlay">
 </app-recording>
+<app-rich-note
+  *ngIf="isNoteEditorOpen"
+  [sessionId]="sessionId"
+  (closed)="onNoteEditorClosed()"
+  class="note-dialog-overlay">
+</app-rich-note>
+

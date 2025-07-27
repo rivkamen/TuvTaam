@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { EditorModule } from 'primeng/editor';
 import { ButtonModule } from 'primeng/button';
-
+import { DialogModule } from 'primeng/dialog';
 export interface NewSessionData {
   title: string;
   targetUserId: string;
@@ -12,7 +12,7 @@ export interface NewSessionData {
 @Component({
   selector: 'app-s-new-session-form',
   standalone: true,
-  imports: [CommonModule, FormsModule, EditorModule, ButtonModule],
+  imports: [CommonModule, FormsModule, EditorModule, ButtonModule,DialogModule],
   templateUrl: './s-new-session-form.component.html',
   styleUrls: ['./s-new-session-form.component.css']
 })

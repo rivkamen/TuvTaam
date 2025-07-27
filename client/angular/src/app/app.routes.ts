@@ -6,7 +6,6 @@ import { UserComponent } from './components/user/user.component';
 import { RecordListComponent } from './components/record/record-list.component';
 import { TeacherChatComponent } from './components/session/teacherChat/teacher-chat.component';
 import { StudentChatComponent } from './components/session/studentChat/student-chat.component';
-import { FeedbackChatComponent } from './components/feedbackChat/student/feedback-chat.component';
 
 import { RegisterComponent } from './components/register/register.component';
 import { authGuard } from './core/guards/auth.guard';
@@ -14,6 +13,7 @@ import { adminGuard } from './core/guards/admin.guard';
 import { MyParashaComponent } from './components/my-parasha/my-parasha.component';
 import { MChatComponent } from './components/chat/m-chat.component';
 import { SChatComponent } from './components/chat/s-chat/s-chat.component';
+import { RichMessageViewComponent } from './components/chat/rich-message-view/rich-message-view.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent, title: 'TuvTaam: Login' },
@@ -39,12 +39,6 @@ export const routes: Routes = [
     component: UploadComponent,
     title: 'TuvTaam: Upload Record',
     canActivate: [adminGuard],
-  },
-  {
-    path: 'feedbackChat',
-    component: FeedbackChatComponent,
-    title: 'TuvTaam: Feedback Chat',
-    canActivate: [authGuard],
   },
   {
     path: 'records',
@@ -77,5 +71,11 @@ export const routes: Routes = [
     title: 'TuvTaam',
     canActivate: [authGuard],
   },
+  // app-routing.module.ts
+{
+  path: 'rich-message/:id',
+  component: RichMessageViewComponent
+},
+
   { path: '', redirectTo: 'home', pathMatch: 'full' },
 ];

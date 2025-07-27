@@ -1,0 +1,43 @@
+.rich-message-wrapper {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  border-radius: 12px;
+  background-color: #fdfdfd;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  font-family: "Segoe UI", sans-serif;
+  direction: rtl;
+}
+
+.rich-message-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.2rem;
+}
+
+.actions .btn {
+  margin-right: 0.5rem;
+  background-color: #e0e0e0;
+  border: none;
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.actions .btn:hover {
+  background-color: #d0d0d0;
+}
+
+.actions .close {
+  background-color: #f28b82;
+}
+
+.rich-message-content {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 1rem;
+  background: white;
+  min-height: 200px;
+}

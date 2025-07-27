@@ -1,0 +1,232 @@
+:root {
+  --color-bg: #ffffff;
+  --color-border: #ccc;
+  --color-btn: #e0e0e0;
+  --color-btn-hover: #ccc;
+  --color-text: #333;
+  --color-primary: #4285f4;
+  --color-send: #4caf50;
+  --color-send-hover: #43a047;
+  --color-danger: #f44336;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #1e1e1e;
+    --color-border: #444;
+    --color-btn: #333;
+    --color-btn-hover: #555;
+    --color-text: #eee;
+    --color-primary: #90caf9;
+    --color-send: #81c784;
+    --color-send-hover: #66bb6a;
+    --color-danger: #ef5350;
+  }
+}
+
+.note-wrapper {
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 16px;
+  background: var(--color-bg);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  max-width: 900px;
+  margin: auto;
+  direction: rtl;
+  color: var(--color-text);
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: var(--color-border);
+  transition: color 0.3s;
+}
+.close-btn:hover {
+  color: var(--color-danger);
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.tabs button {
+  flex: 1;
+  padding: 8px 12px;
+  border: none;
+  background-color: var(--color-btn);
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s;
+  color: var(--color-text);
+}
+.tabs button.active {
+  background-color: var(--color-primary);
+  color: #fff;
+}
+.tabs button:hover {
+  background-color: var(--color-btn-hover);
+}
+
+.toolbar,
+.table-tab {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+  align-items: center;
+}
+
+.toolbar button,
+.table-tab button {
+  padding: 6px 10px;
+  font-size: 14px;
+  border: none;
+  border-radius: 6px;
+  background-color: var(--color-btn);
+  color: var(--color-text);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.toolbar button:hover,
+.table-tab button:hover {
+  background-color: var(--color-btn-hover);
+}
+
+.table-tab label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--color-text);
+}
+.table-tab input[type="number"],
+.table-tab input[type="text"] {
+  width: 60px;
+  padding: 4px;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--color-text);
+}
+
+input[type="color"] {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.editor {
+  min-height: 300px;
+  padding: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-bg);
+  overflow-y: auto;
+  line-height: 1.6;
+  font-size: 15px;
+  outline: none;
+  margin-bottom: 12px;
+  transition: border-color 0.2s;
+}
+.editor:focus {
+  border-color: var(--color-primary);
+}
+
+.download-btn,
+.send-btn {
+  padding: 10px 16px;
+  font-size: 15px;
+  border: none;
+  border-radius: 8px;
+  margin-left: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-weight: bold;
+  color: #1e1e1e !important;
+}
+
+.download-btn {
+  background-color: var(--color-btn);
+  color: var(--color-text);
+}
+.download-btn:hover {
+  background-color: var(--color-btn-hover);
+}
+
+.send-btn {
+  background-color: var(--color-send);
+}
+.send-btn:hover {
+  background-color: var(--color-send-hover);
+}
+
+@media (max-width: 600px) {
+  .toolbar,
+  .table-tab,
+  .tabs {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .editor {
+    min-height: 200px;
+  }
+}
+.rich-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed; /* חשוב - מונע שינוי אוטומטי של רוחב טורים */
+  direction: rtl;
+}
+
+.rich-table td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  vertical-align: top;
+  word-wrap: break-word;
+  white-space: normal;
+  overflow-wrap: break-word;
+  min-width: 100px;
+}
+.rich-table td {
+  color: var(--color-text);
+  background-color: transparent;
+}
+.rich-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  direction: rtl;
+}
+
+
+.rich-table {
+  width: 100%;
+  max-width: 100%;
+  border-collapse: collapse;
+  direction: rtl;
+  table-layout: auto; /* חשוב! */
+}
+
+.rich-table td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  vertical-align: top;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+}

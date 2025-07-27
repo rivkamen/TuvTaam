@@ -1,0 +1,49 @@
+<div class="note-wrapper">
+  <button class="close-btn" (click)="closed.emit()" title="סגור">❌</button>
+  <!-- Tabs -->
+  <div class="tabs">
+    <button [class.active]="activeTab === 'basic'" (click)="activeTab = 'basic'">📝 טקסט</button>
+    <button [class.active]="activeTab === 'table'" (click)="activeTab = 'table'">📊 טבלה</button>
+  </div>
+
+  <!-- טאב טקסט -->
+  <div *ngIf="activeTab === 'basic'" class="toolbar">
+    <button (click)="execCommand('bold')"><b>ב</b></button>
+    <button (click)="execCommand('italic')"><i>א</i></button>
+    <button (click)="execCommand('underline')"><u>ק</u></button>
+    <button (click)="execCommand('insertUnorderedList')">רשימה</button>
+    <button (click)="execCommand('justifyRight')">יישור ימין</button>
+    <button (click)="execCommand('justifyLeft')">יישור שמאל</button>
+    <button (click)="execCommand('justifyCenter')">מרכז</button>
+    <button (click)="execCommand('justifyFull')">יישור מלא</button>
+    <input type="color" (change)="onColorChange($event, 'foreColor')" title="בחר צבע טקסט" />
+    <input type="color" (change)="onColorChange($event, 'hiliteColor')" title="בחר צבע רקע" />
+  </div>
+
+  <!-- טאב טבלה -->
+  <div *ngIf="activeTab === 'table'" class="table-tab">
+    <label>שורות: <input type="number" [(ngModel)]="tableRows" min="1" /></label>
+    <label>עמודות: <input type="number" [(ngModel)]="tableCols" min="1" /></label>
+    <label>רוחב: <input type="text" [(ngModel)]="tableWidth" /></label>
+    <label>גובה: <input type="text" [(ngModel)]="tableHeight" /></label>
+    <div class="toolbar table-tools">
+  <span>ניהול טבלה:</span>
+  <button (click)="addRowBelow()">➕ שורה</button>
+  <button (click)="addColumnRight()">➕ עמודה</button>
+  <button (click)="deleteRow()">🗑️ מחק שורה</button>
+  <button (click)="deleteColumn()">🗑️ מחק עמודה</button>
+  <button (click)="deleteTable()">❌ מחק טבלה</button>
+</div>
+    <button (click)="insertTable()">✅ צור טבלה</button>
+  </div>
+  <!-- אזור העריכה -->
+  <div #editor class="editor" contenteditable="true" placeholder="כתוב כאן את ההערות לתלמיד..."></div>
+
+  <!-- כפתורי פעולה -->
+  <button class="download-btn" (click)="downloadAsHtml()">📄 הורד כקובץ</button>
+  <!-- <button class="send-btn" (click)="sendRichMessage()">📤 שלח לתלמיד</button> -->
+  <button class="send-btn" (click)="submitRichMessage()">
+  {{ editingMessage ? '💾 שמור שינויים' : '📤 שלח לתלמיד' }}
+</button>
+
+</div>

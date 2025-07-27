@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RecordingComponent } from '../../recording/recording.component';
 import { TextareaModule } from 'primeng/textarea';
+import { RichNoteComponent } from '../rich-note/rich-note.component';
+import { Message } from '../../../services/session.service';
 export interface MessageData {
   content: string;
   audioBlob?: Blob;
@@ -11,7 +13,7 @@ export interface MessageData {
 @Component({
   selector: 'app-message-input',
   standalone: true,
-  imports: [CommonModule, FormsModule, RecordingComponent,TextareaModule],
+  imports: [CommonModule, FormsModule, RecordingComponent,TextareaModule,RichNoteComponent],
   templateUrl: './message-input.component.html',
   styleUrls: ['./message-input.component.css']
 })
@@ -23,11 +25,15 @@ export class MessageInputComponent {
 //  @ViewChild('textarea') textareaRef!: ElementRef<HTMLTextAreaElement>;
 @ViewChild('textArea') textArea!: ElementRef<HTMLTextAreaElement>;
 
+@Input() sessionId!: string;
+@Input() editingMessage: Message | null = null;
 
   messageContent = '';
   recordedBlob: Blob | null = null;
   isRecording = false;
   isRecordingDialogOpen = false;
+  isNoteEditorOpen = false;
+
 handleEnter(event: Event) {
   const keyboardEvent = event as KeyboardEvent;
 
@@ -38,6 +44,13 @@ handleEnter(event: Event) {
   }
 }
 
+onOpenNoteEditor() {
+  this.isNoteEditorOpen = true;
+}
+
+onNoteEditorClosed() {
+  this.isNoteEditorOpen = false;
+}
 
 
   onSendMessage(textarea?: HTMLTextAreaElement) {

@@ -1,13 +1,34 @@
-<div class="new-session-box" *ngIf="isVisible">
-  <input type="text" 
-         [(ngModel)]="sessionTitle" 
-         placeholder="שם השיחה (לא חובה)" />
+
+<p-dialog 
+  [(visible)]="isVisible"
+  (onHide)="onCancel()"
+  [modal]="true"
+  [closable]="true"
+  [dismissableMask]="true"
+  [style]="{ width: '400px' }"
+  [baseZIndex]="10000"
+  [styleClass]="'new-session-dialog'"
+   [style]="{ width: '90vw', maxWidth: '400px' }"
+  [breakpoints]="{ '768px': '95vw', '576px': '100vw' }"
+  >
+ <ng-template pTemplate="header">
+    <div class="custom-dialog-header">
+      <i class="pi pi-plus" style="margin-inline-end: 0.5rem;"></i>
+      <span class="dialog-title">שיחה חדשה</span>
+    </div>
+  </ng-template>
+<div class="new-session-box">
+  <input type="text"
+         [(ngModel)]="sessionTitle"
+         placeholder="שם השיחה (לא חובה)"
+         class="session-title-input" />
 
   <div class="form-buttons">
-    <p-button label="שליחה" 
-              icon="pi pi-send" 
-              (click)="onSubmit()" 
-              class="p-button-sm p-mt-2" />
-    <button (click)="onCancel()">ביטול</button>
+    
+    <p-button label="יצירה"
+              icon="pi pi-check-circle"
+              (click)="onSubmit()"
+              class="create-session-button" />
   </div>
-</div>
+  </div>
+</p-dialog>
