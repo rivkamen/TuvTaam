@@ -1,12 +1,13 @@
 import { Component, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-
+import { ButtonModule } from 'primeng/button';
+import { RippleModule } from 'primeng/ripple';
 @Component({
   selector: 'app-rich-message-view',
   templateUrl: './rich-message-view.component.html',
   styleUrls: ['./rich-message-view.component.css'],
   standalone: true,
-  imports: [],
+  imports: [ButtonModule, RippleModule],
 })
 export class RichMessageViewComponent {
   @Input() rawHtml: string = '';

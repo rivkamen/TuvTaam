@@ -1,10 +1,14 @@
+
 <div class="rich-message-wrapper">
   <div class="rich-message-header">
-    <h2>✉️ הודעת תיקון</h2>
-    <div class="actions">
-      <button class="btn" (click)="printPage()">🖨️ הדפס</button>
-      <button class="btn" (click)="downloadAsWord()">💾 הורד</button>
-      <button class="btn close" (click)="close()">❌ סגור</button>
+    <h2 class="text-xl font-semibold"></h2>
+
+    <div class="button-group">
+      <button pButton pRipple icon="pi pi-print" class="files-buttons"
+              (click)="printPage()" title="הדפס" aria-label="הדפס"></button>
+
+      <button pButton pRipple icon="pi pi-download" class="files-buttons"
+              (click)="downloadAsWord()" title="הורד" aria-label="הורד"></button>
     </div>
   </div>
 

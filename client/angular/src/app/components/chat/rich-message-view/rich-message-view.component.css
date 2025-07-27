@@ -35,9 +35,38 @@
 }
 
 .rich-message-content {
-  border: 1px solid #ccc;
-  border-radius: 8px;
+
   padding: 1rem;
   background: white;
   min-height: 200px;
 }
+.rich-message-wrapper {
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.rich-message-header {
+  border-bottom: 1px solid #eee;
+  padding-bottom: 0.5rem;
+}
+
+.rich-message-content {
+  padding-top: 1rem;
+}
+.files-buttons{
+  color: var(--color-primary);
+  background-color: var(--color-secondary);
+  border: none;
+margin: 10px;
+padding:10px;
+}
+.files-buttons:hover{
+  color: var(--color-primary);
+  background-color: var(--color-secondary-light);
+  border: none;
+  
+}
+
