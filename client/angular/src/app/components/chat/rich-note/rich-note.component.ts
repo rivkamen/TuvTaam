@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FeedbackService } from '../../../services/feedback.service';
 import { Message } from '../../../services/session.service';
+import DOMPurify from 'dompurify';
 
 @Component({
   selector: 'app-rich-note',
@@ -32,11 +33,17 @@ export class RichNoteComponent {
   execCommand(command: string) {
     document.execCommand(command, false, '');
   }
+// ngAfterViewInit() {
+//   if (this.htmlContent && this.editorRef) {
+//     this.editorRef.nativeElement.innerHTML = this.htmlContent;
+//   }
+// }
 ngAfterViewInit() {
-  if (this.htmlContent && this.editorRef) {
-    this.editorRef.nativeElement.innerHTML = this.htmlContent;
+    if (this.htmlContent && this.editorRef) {
+      const sanitizedHtml = DOMPurify.sanitize(this.htmlContent); // 👈 מסנן הכל
+      this.editorRef.nativeElement.innerHTML = sanitizedHtml;
+    }
   }
-}
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['editingMessage']) {
       console.log('📌 editingMessage השתנה:', changes['editingMessage'].currentValue);
