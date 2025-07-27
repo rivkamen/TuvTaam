@@ -126,15 +126,24 @@ getHebrewYearLetters(year: number): string {
 }
 
 getHebrewDate(date: Date): string {
-  const months = [
-    'תשרי', 'חשוון', 'כסלו', 'טבת', 'שבט', 'אדר', 'אדר ב׳',
-    'ניסן', 'אייר', 'סיוון', 'תמוז', 'אב', 'אלול'
-  ];
+const months = [
+  'ניסן', 'אייר', 'סיוון', 'תמוז', 'אב', 'אלול',
+  'תשרי', 'חשוון', 'כסלו', 'טבת', 'שבט',
+  'אדר', 'אדר ב׳' // 13 אם השנה מעוברת
+];
 
-  const hebrew = this.toHebrewDate(date); // מחזיר { day, month, year }
+
+  const hebrew = this.toHebrewDate(date);
+  console.log('hebrew',hebrew);
+   // מחזיר { day, month, year }
   const dayInLetters = this.getHebrewLetters(hebrew.day);
+  console.log('dayInLetters', dayInLetters);
+  
   const monthName = months[hebrew.month - 1];
+  console.log('monthName', monthName);
+  
   const yearInLetters =this.getHebrewYearLetters(hebrew.year); 
+console.log('yearInLetters', yearInLetters);
 
   return `${dayInLetters} ב${monthName} ${yearInLetters}`;
 }
