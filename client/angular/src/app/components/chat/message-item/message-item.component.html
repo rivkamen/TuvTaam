@@ -34,13 +34,7 @@
   </ng-container>
 
   <ng-template #richEdit>
-    <!-- <app-rich-note
-      [sessionId]="sessionId"
-      [htmlContent]="localEditedContent"
-      (htmlContentChange)="localEditedContent = $event"
-      (closed)="cancelEdit()"
-      class="note-dialog-overlay">
-    </app-rich-note> -->
+
     <app-rich-note
   [sessionId]="sessionId"
   [editingMessage]="editingMessage"
@@ -54,12 +48,9 @@
   </ng-template>
 </div>
 
-<!-- </div> -->
 
-  <!-- תצוגת הודעה רגילה -->
   <ng-template #showMessage>
     
-    <!-- שורת שעה וסטטוס "נערכה" -->
     <div class="message-meta">
       <span>{{ message.updatedAt | date:'HH:mm' }}</span>
       <span *ngIf="message.isEdited" class="edited-label">
@@ -67,10 +58,8 @@
       </span>
     </div>
 
-    <!-- בועה + תפריט ⋮ בשורה אחת -->
     <div class="message-content-row" (mouseenter)="hoveredMessageId = message._id"
      (mouseleave)="hoveredMessageId = null">
-      <!-- בועה -->
       <div class="bubble" [ngClass]="{ 'deleted': message.isDeleted }">
         <div class="word-badge" *ngIf="message.type === 'rich'">
   <i class="pi pi-file-word"></i> Word
@@ -105,7 +94,6 @@
 
 
 
-      <!-- תפריט הודעה -->
       <div class="msg-menu-wrapper" *ngIf="!message.fromUser && !message.isDeleted" #menuWrapper>
         <button class="menu-toggle-btn" (click)="toggleMenu()">⋮</button>
         <div class="msg-menu-modern" *ngIf="openedMenuId === message._id">

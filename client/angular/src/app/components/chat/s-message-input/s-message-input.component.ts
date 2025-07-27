@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RecordingComponent } from '../../recording/recording.component';
@@ -20,13 +20,15 @@ export class SMessageInputComponent {
   
   @Output() messageSent = new EventEmitter<MessageData>();
   @Output() recordingRequested = new EventEmitter<void>();
+@ViewChild('textArea') textArea!: ElementRef<HTMLTextAreaElement>;
 
   messageContent = '';
   recordedBlob: Blob | null = null;
   isRecording = false;
   isRecordingDialogOpen = false;
 
-  onSendMessage() {
+
+  onSendMessage(textarea?: HTMLTextAreaElement) {
     if (!this.messageContent.trim() && !this.recordedBlob) return;
 
     this.messageSent.emit({
@@ -34,9 +36,12 @@ export class SMessageInputComponent {
       audioBlob: this.recordedBlob || undefined
     });
 
-    this.resetInput();
-  }
+  this.resetInput();
 
+  // איפוס גובה התיבה
+  if (textarea) {
+    textarea.style.height = 'auto';
+  }  }
   onOpenRecording() {
     this.isRecordingDialogOpen = true;
   }
@@ -55,4 +60,21 @@ export class SMessageInputComponent {
     this.messageContent = '';
     this.recordedBlob = null;
   }
+  autoGrow() {
+  const textAreaEl = this.textArea?.nativeElement;
+  if (textAreaEl) {
+    textAreaEl.style.height = 'auto';
+    textAreaEl.style.height = textAreaEl.scrollHeight + 'px';
+  }
+}
+
+handleEnter(event: Event) {
+  const keyboardEvent = event as KeyboardEvent;
+
+  if (keyboardEvent.key === 'Enter' && !keyboardEvent.shiftKey) {
+    keyboardEvent.preventDefault();
+    const textarea = this.textArea?.nativeElement;
+    this.onSendMessage(textarea);
+  }
+}
 }

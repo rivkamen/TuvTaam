@@ -61,6 +61,7 @@ import { FormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
 import { ButtonModule } from 'primeng/button';
 import { User } from '../../../models/user.model'; // או הנתיב המתאים
+import { DialogModule } from 'primeng/dialog';
 
 export interface NewSessionData {
   title: string;
@@ -70,7 +71,7 @@ export interface NewSessionData {
 @Component({
   selector: 'app-new-session-form',
   standalone: true,
-  imports: [CommonModule, FormsModule, DropdownModule, ButtonModule],
+  imports: [CommonModule, FormsModule, DropdownModule, ButtonModule,DialogModule],
   templateUrl: './new-session-form.component.html',
   styleUrls: ['./new-session-form.component.css']
 })

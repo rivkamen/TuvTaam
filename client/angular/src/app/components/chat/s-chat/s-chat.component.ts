@@ -5,12 +5,13 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { RoleService } from '../../../services/role.service';
 import { NewSessionData } from '../new-session-form/new-session-form.component';
 import { MessageEditData } from '../message-list/message-list.component';
-import { MessageInputComponent, MessageData } from '../message-input/message-input.component';
+import { MessageData } from '../message-input/message-input.component';
 import { AdminProfileBarComponent } from '../admin-profile-bar/admin-profile-bar.component';
 import { SSessionListComponent } from '../s-session-list/s-session-list.component';
 import { SMessageListComponent } from '../s-message-list/s-message-list.component';
 import { SNewSessionFormComponent } from '../s-new-session-form/s-new-session-form.component';
 import { environment } from '../../../environments/environment';
+import { SMessageInputComponent } from '../s-message-input/s-message-input.component';
 @Component({
   selector: 'app-s-chat',
   standalone: true,
@@ -19,7 +20,7 @@ import { environment } from '../../../environments/environment';
     SSessionListComponent,
     SNewSessionFormComponent,
     SMessageListComponent,
-    MessageInputComponent,
+    SMessageInputComponent,
     AdminProfileBarComponent
   ],
   templateUrl: './s-chat.component.html',

@@ -46,10 +46,6 @@ hoveredMessageId: string | null = null;
 
   constructor(private elementRef: ElementRef, private router: Router) {}
 
-// startEdit(message: Message) {
-//   this.localEditedContent = message.content;
-//   this.selectedMessage = message;
-// }
 
 openRichMessage(content: string) {
   this.richHtmlContent = content;
@@ -62,18 +58,12 @@ openRichMessage(content: string) {
     this.localEditedContent = this.message?.content || '';
   }
 
-  // הוספת OnChanges כדי לעדכן את התוכן כשמתחילים עריכה
   ngOnChanges(changes: SimpleChanges) {
     if (changes['isEditing'] && this.isEditing) {
       this.localEditedContent = this.message?.content || '';
     }
   }
 
-  // startEdit() {
-  //   this.localEditedContent = this.message?.content || '';
-  //   this.editStarted.emit(this.message);
-  //   this.openedMenuId = null;
-  // }
 startEdit() {
   this.localEditedContent = this.message?.content || '';
   this.editingMessage = this.message; // 🔧 הוספה חשובה!
@@ -88,10 +78,6 @@ startEdit() {
     });
   }
 
-  // cancelEdit() {
-  //   this.localEditedContent = this.message?.content || '';
-  //   this.editCancelled.emit();
-  // }
 cancelEdit() {
   this.localEditedContent = this.message?.content || '';
   this.editingMessage = null;

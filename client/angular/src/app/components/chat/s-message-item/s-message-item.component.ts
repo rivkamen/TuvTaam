@@ -1,3 +1,95 @@
+// import {
+//   Component, Input, Output, EventEmitter,
+//   HostListener, ElementRef, OnChanges, SimpleChanges
+// } from '@angular/core';
+// import { CommonModule } from '@angular/common';
+// import { FormsModule } from '@angular/forms';
+// import { ButtonModule } from 'primeng/button';
+// import { FancyAudioPlayerComponent } from '../../audioComponent/fancy-audio-player.component';
+
+// export interface MessageEditData {
+//   messageId: string;
+//   content: string;
+// }
+
+// @Component({
+//   selector: 'app-s-message-item',
+//   standalone: true,
+//   imports: [CommonModule, FormsModule, ButtonModule, FancyAudioPlayerComponent],
+//   templateUrl: './s-message-item.component.html',
+//   styleUrls: ['./s-message-item.component.css']
+// })
+// export class SMessageItemComponent implements OnChanges {
+//   @Input() message: any;
+//   @Input() isEditing: boolean = false;
+//   @Input() editedContent: string = '';
+
+//   @Output() editStarted = new EventEmitter<any>();
+//   @Output() editSaved = new EventEmitter<MessageEditData>();
+//   @Output() editCancelled = new EventEmitter<void>();
+//   @Output() messageDeleted = new EventEmitter<string>();
+//   @Output() menuToggled = new EventEmitter<string>();
+//   @Input() editMessageId: string | null = null;
+
+//   localEditedContent: string = '';
+//   openedMenuId: string | null = null;
+
+//   constructor(private elementRef: ElementRef) {}
+
+//   ngOnInit() {
+//     this.localEditedContent = this.message?.content || '';
+//   }
+
+//   // הוספת OnChanges כדי לעדכן את התוכן כשמתחילים עריכה
+//   ngOnChanges(changes: SimpleChanges) {
+//     if (changes['isEditing'] && this.isEditing) {
+//       this.localEditedContent = this.message?.content || '';
+//     }
+//   }
+
+//   startEdit() {
+//     this.localEditedContent = this.message?.content || '';
+//     this.editStarted.emit(this.message);
+//     this.openedMenuId = null;
+//   }
+
+//   saveEdit() {
+//     this.editSaved.emit({
+//       messageId: this.message._id,
+//       content: this.localEditedContent
+//     });
+//   }
+
+//   cancelEdit() {
+//     this.localEditedContent = this.message?.content || '';
+//     this.editCancelled.emit();
+//   }
+
+//   log(...args: any[]) {
+//     console.log(...args);
+//     return true;
+//   }
+
+//   deleteMessage() {
+//     if (confirm('האם למחוק את ההודעה?')) {
+//       this.messageDeleted.emit(this.message._id);
+//     }
+//     this.openedMenuId = null;
+//   }
+
+//   toggleMenu() {
+//     this.openedMenuId = this.openedMenuId === this.message._id ? null : this.message._id;
+//     this.menuToggled.emit(this.message._id);
+//   }
+
+//   @HostListener('document:click', ['$event'])
+//   onClickOutside(event: MouseEvent): void {
+//     if (!this.elementRef.nativeElement.contains(event.target)) {
+//       this.openedMenuId = null;
+//     }
+//   }
+// }
+
 import {
   Component, Input, Output, EventEmitter,
   HostListener, ElementRef, OnChanges, SimpleChanges
@@ -6,6 +98,11 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { FancyAudioPlayerComponent } from '../../audioComponent/fancy-audio-player.component';
+import { Message } from '../../../services/session.service';
+import { Router } from '@angular/router';
+import { RichMessageViewComponent } from '../rich-message-view/rich-message-view.component';
+import { DialogModule } from 'primeng/dialog';
+import { RichNoteComponent } from '../rich-note/rich-note.component';
 
 export interface MessageEditData {
   messageId: string;
@@ -15,7 +112,7 @@ export interface MessageEditData {
 @Component({
   selector: 'app-s-message-item',
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonModule, FancyAudioPlayerComponent],
+  imports: [CommonModule, FormsModule, ButtonModule, FancyAudioPlayerComponent,RichMessageViewComponent,DialogModule,RichNoteComponent],
   templateUrl: './s-message-item.component.html',
   styleUrls: ['./s-message-item.component.css']
 })
@@ -23,6 +120,7 @@ export class SMessageItemComponent implements OnChanges {
   @Input() message: any;
   @Input() isEditing: boolean = false;
   @Input() editedContent: string = '';
+@Input() sessionId!: string;
 
   @Output() editStarted = new EventEmitter<any>();
   @Output() editSaved = new EventEmitter<MessageEditData>();
@@ -30,28 +128,40 @@ export class SMessageItemComponent implements OnChanges {
   @Output() messageDeleted = new EventEmitter<string>();
   @Output() menuToggled = new EventEmitter<string>();
   @Input() editMessageId: string | null = null;
+editingMessage: Message | null = null;
 
   localEditedContent: string = '';
   openedMenuId: string | null = null;
+showRichViewer: boolean = false;
+richHtmlContent: string = '';
+hoveredMessageId: string | null = null;
 
-  constructor(private elementRef: ElementRef) {}
+  constructor(private elementRef: ElementRef, private router: Router) {}
+
+
+openRichMessage(content: string) {
+  this.richHtmlContent = content;
+  this.showRichViewer = true;
+}
+
+
 
   ngOnInit() {
     this.localEditedContent = this.message?.content || '';
   }
 
-  // הוספת OnChanges כדי לעדכן את התוכן כשמתחילים עריכה
   ngOnChanges(changes: SimpleChanges) {
     if (changes['isEditing'] && this.isEditing) {
       this.localEditedContent = this.message?.content || '';
     }
   }
 
-  startEdit() {
-    this.localEditedContent = this.message?.content || '';
-    this.editStarted.emit(this.message);
-    this.openedMenuId = null;
-  }
+startEdit() {
+  this.localEditedContent = this.message?.content || '';
+  this.editingMessage = this.message; // 🔧 הוספה חשובה!
+  this.editStarted.emit(this.message);
+  this.openedMenuId = null;
+}
 
   saveEdit() {
     this.editSaved.emit({
@@ -60,15 +170,28 @@ export class SMessageItemComponent implements OnChanges {
     });
   }
 
-  cancelEdit() {
-    this.localEditedContent = this.message?.content || '';
-    this.editCancelled.emit();
-  }
+cancelEdit() {
+  this.localEditedContent = this.message?.content || '';
+  this.editingMessage = null;
+  this.editCancelled.emit();
+}
 
   log(...args: any[]) {
     console.log(...args);
     return true;
   }
+downloadMessageAsHtml(message: Message) {
+  const blob = new Blob(
+    [`<html><head><meta charset="UTF-8"><title>תיקון</title></head><body>${message.content}</body></html>`],
+    { type: 'text/html;charset=utf-8' }
+  );
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'תיקון-לתלמיד.html';
+  link.click();
+  URL.revokeObjectURL(url);
+}
 
   deleteMessage() {
     if (confirm('האם למחוק את ההודעה?')) {
@@ -81,6 +204,9 @@ export class SMessageItemComponent implements OnChanges {
     this.openedMenuId = this.openedMenuId === this.message._id ? null : this.message._id;
     this.menuToggled.emit(this.message._id);
   }
+sanitizeMessage(message: string): string {
+  return message.replace(/\n/g, '<br>');
+}
 
   @HostListener('document:click', ['$event'])
   onClickOutside(event: MouseEvent): void {

@@ -28,6 +28,7 @@
 }
 
 
+
 .chat-container {
   flex: 1;
   display: flex;
@@ -66,6 +67,7 @@
 .message-wrapper.admin {
   flex-direction: row;
 }
+
 
 .message-wrapper.admin .bubble {
   background-color: var(--color-secondary);
@@ -359,11 +361,62 @@
 }
 .unread-divider {
   text-align: center;
-  color: #555;
-  background-color: #eee;
-  padding: 4px 8px;
-  margin: 10px 0;
-  border-top: 1px solid #ccc;
-  border-bottom: 1px solid #ccc;
   font-weight: bold;
+  color: #d32f2f;
+  margin: 16px 0;
+  border-top: 2px dashed var(--color-primary);
+  padding-top: 8px;
 }
+
+
+/* .scroll-to-bottom-btn {
+  position: fixed;
+  bottom: 90px;
+  left: 20px;
+  z-index: 1000;
+  background-color: #007ad9;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 50px;
+  font-size: 14px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+} */
+.scroll-to-bottom-btn {
+  position: fixed;
+  bottom: 90px;
+  left: 20px;
+  z-index: 1000;
+  background-color: #007ad9;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 50px;
+  font-size: 14px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+.message-wrapper {
+  display: flex;
+  align-items: flex-start; /* מיושר לראש */
+  gap: 10px; /* ריווח בין תמונה לתוכן */
+  margin-bottom: 1rem;
+  direction: rtl; /* אם צריך שמאל לימין תתאים */
+}
+
+.message-profile {
+  flex-shrink: 0; /* תמונה לא תתכווץ */
+}
+
+.profile-img-small {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-top: 25px; /* כדי ליישר במדויק לפי צורך */
+}
+
+
