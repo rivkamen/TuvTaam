@@ -208,11 +208,7 @@ cancelEdit() {
   this.editMessageId = null;
   this.editedContent = '';
 }  
-// deleteMessage(messageId: string) {
-//     this.feedbackService.deleteMessage(this.selectedSessionId, messageId).subscribe(() => {
-//       this.messages = this.messages.filter(m => m._id !== messageId);
-//     });
-//   }
+
 deleteMessage(messageId: string) {
   this.feedbackService.deleteMessage(this.selectedSessionId, messageId).subscribe(() => {
     const index = this.messages.findIndex(m => m._id === messageId);
@@ -242,88 +238,7 @@ loadUserProfile() {
       }
     }
   }
-// private initSSE(sessionId: string) {
-//     console.log(`[SSE] מנסה לפתוח חיבור לשיחה ${sessionId}`);
 
-//     if (this.sseMap.has(sessionId)) {
-//         this.closeSSE(sessionId);
-//     }
-//     const token = sessionStorage.getItem('token');
-//     if (!token) {
-//         console.error('[SSE] אין טוקן - לא ניתן להתחבר');
-//         return;
-//     }
-//     const eventSource = new EventSource(`${environment.apiUrl}/feedback/sse/${sessionId}?token=${token}`);
-//     console.log(`[SSE] EventSource נפתח עבור ${sessionId}`);
-
-//     eventSource.onopen = () => {
-//         console.log('[SSE] חיבור נפתח בהצלחה 🎉');
-//     };
-//     eventSource.onmessage = (event) => {
-//         try {
-//             const data = JSON.parse(event.data);
-//             console.log(`[SSE] הודעה חדשה לשיחה ${sessionId}:`, data);
-
-//             if (data.sessionId === this.selectedSessionId) {
-//                 console.log('[SSE] מדובר בשיחה הפתוחה כעת – טוען הודעות מחדש...');
-//                 this.loadMessages();
-//             } else {
-//                 console.log('[SSE] מדובר בשיחה אחרת – מסמן כהודעה שלא נקראה');
-//                 const session = this.sessions.find(s => s._id === data.sessionId);
-//                 if (session) {
-//                     session.hasUnreadMessages = true;
-//                 }
-//             }
-//         } catch (error) {
-//             console.error('[SSE] שגיאה בפענוח נתונים:', error);
-//         }
-//     };
-
-//     eventSource.addEventListener('message-updated', (event) => {
-//         try {
-//             const data = JSON.parse(event.data);
-//             console.log('[SSE] ✏️ הודעה עודכנה:', data);
-
-//             const updated = data.message;
-//             const index = this.messages.findIndex(m => m._id === updated._id);
-//             if (index > -1) {
-//                 this.messages[index].content = updated.content;
-//                 this.messages[index].path = updated.path;
-//                 this.messages[index].isEdited = updated.isEdited; 
-//                 this.messages[index].updatedAt = updated.updatedAt
-//                 this.cdr.detectChanges();
-//             }
-//         } catch (err) {
-//             console.error('[SSE] שגיאה ב-message-updated:', err);
-//         }
-//     });
-
-//     eventSource.addEventListener('message-deleted', (event) => {
-//         try {
-//             const data = JSON.parse(event.data);
-//             console.log('[SSE] 🗑️ הודעה נמחקה:', data);
-
-//             this.messages = this.messages.filter(m => m._id !== data.messageId);
-//             this.cdr.detectChanges();
-//         } catch (err) {
-//             console.error('[SSE] שגיאה ב-message-deleted:', err);
-//         }
-//     });
-
-//     eventSource.onerror = (error) => {
-//         console.warn(`[SSE] שגיאה בשיחה ${sessionId}:`, error);
-//         eventSource.close();
-//         this.sseMap.delete(sessionId);
-
-//         setTimeout(() => {
-//             if (this.selectedSessionId === sessionId) {
-//                 this.initSSE(sessionId);
-//             }
-//         }, 3000);
-//     };
-
-//     this.sseMap.set(sessionId, eventSource);
-// }
 private initSSE(sessionId: string) {
   console.log(`[SSE] מנסה לפתוח חיבור לשיחה ${sessionId}`);
 
